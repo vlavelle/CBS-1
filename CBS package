@@ -1,5 +1,5 @@
 # Run once:
-# install.packages("cbsodataR") (uncomment this)
+# install.packages("cbsodataR") #(uncomment this)
 
 library(cbsodataR)
 
