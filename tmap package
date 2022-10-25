@@ -1,0 +1,11 @@
+#install.packages("tmap")
+library(tmap)
+library(dplyr)
+tmap_mode("view")
+data("NLD_prov")
+
+NLD_prov <- NLD_prov %>% filter(name %in% c("Groningen", "Friesland", "Drenthe"))
+tm_shape(NLD_prov) +
+    tm_fill("population", palette = "RdYlBu") +
+    tm_facets(by = "name") +
+    tm_legend(show = FALSE)
