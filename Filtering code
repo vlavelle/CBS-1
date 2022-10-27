@@ -23,6 +23,9 @@ cbs_get_meta("84755ENG") # 84755 is an example
 data$column_name # will print the contents of this entire column, then you can copy and past the entries you need exactly
 #e.g.
 
+# TO REMOVE ANNOYING SPACES (can even run this if there are no spaces, it won't affect those columns)
+data$column_name <- gsub(" ", "", data$column_name, fixed = TRUE)
+
 north$RegionCharacteristics
 # will print (in the dataset I used) "LD01   " "LD02    " "PV20   " "PV21    " and then you copy and paste
 
