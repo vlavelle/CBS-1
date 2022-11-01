@@ -1,3 +1,5 @@
+install.packages("sf")
+library(sf)
 map <-st_read("st293bj4601.shp") # shape file uploaded separately
 north_provinces <- map %>% filter(name_1 %in% c("Drenthe", "Groningen", "Friesland"))
 
