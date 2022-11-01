@@ -1,0 +1,8 @@
+map <-st_read("st293bj4601.shp") # shape file uploaded separately
+north_provinces <- map %>% filter(name_1 %in% c("Drenthe", "Groningen", "Friesland"))
+
+
+ggplot(map) + # change to north_provinces if you don't want the whole of the netherlands
+  geom_sf() +
+  geom_sf_label(aes(label = name_1)) + # comment this out to leave out labels
+  theme_void()
