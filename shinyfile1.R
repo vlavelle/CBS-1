@@ -2,10 +2,16 @@ library(shiny)
 library(DT)
 library(tidyverse)
 
+#data709 <- cbs_get_data("84709NED")
+
 ### DATAFILTERED ############################# 
 datafiltered <- data709 %>%
   filter (Perioden == "2021JJ00") %>% 
-  filter(RegioS == "PV20    " | RegioS == "PV21    " | RegioS == "PV22    ")
+  filter(RegioS == "PV20    " | RegioS == "PV21    " | RegioS == "PV22    ") %>% 
+  mutate(RegioS = case_when(
+  RegioS == "PV20    " ~ "Groningen",
+  RegioS == "PV21    " ~"Friesland",
+  RegioS == "PV22    "~"Drenthe"))
 
 ### DATAPLOT1 ############################# 
 dataplot1 <- datafiltered %>%
