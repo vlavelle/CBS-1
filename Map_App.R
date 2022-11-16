@@ -56,22 +56,23 @@ tempPeriods <- metadata$Periods
 tempRegion <- metadata$Regions
 
 #These bits do the matching and replacing!
-#Periods
+#Periods is replaced
 dataImport$Periods <- tempPeriods$Title[
   match(dataImport$Periods, tempPeriods$Key)
 ]
-#Regions
-dataImport$Regions <- tempRegion$Title[
+#New Column "Municipality"made, "Region" is kept to match with shapefile
+dataImport$Municipality <- tempRegion$Title[
   match(dataImport$Regions, tempRegion$Key)
 ]
+#####Shapefile Import######
+#Shapefile Import, now new and improved!
+#Aestetic issue: The island boundaries are gone. very sad.
+municipalBoundaries <- st_read("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied")
 
-#####Map Stuff#####
-#Shapefile Import - currently from 2017, can't find a 2022 API link that works
-municipalBoundaries <- st_read("https://geodata.nationaalgeoregister.nl/cbsgebiedsindelingen/wfs?request=GetFeature&service=WFS&version=2.0.0&typeName=cbs_gemeente_2017_gegeneraliseerd&outputFormat=json")
-
-#Joining Shapefile by Municipality names 
+#####Joining Data#########
+#Joining Shapefile by Municipality  
 dataImport <- municipalBoundaries %>%
-  left_join(dataImport, by=c(statnaam="Regions"))
+  left_join(dataImport, by=c(identificatie="Regions"))
 
 ###UI####################################################
 ui <- fluidPage(
@@ -80,7 +81,7 @@ ui <- fluidPage(
         selectInput(inputId = "periods", # for server side interactivity
                     label = "Select Year", # text displayed 
                     choices = unique(dataImport$Periods), # input to choose from
-                    selected = "2018") # This is the most current year with data
+                    selected = "2020") # This is the most current year with data
       ),
       mainPanel(
         plotOutput("map")
@@ -99,6 +100,7 @@ server <- function(input, output, session) {
   output$map <- renderPlot(
     data() %>%
       ggplot() +
+      #geom_sf(aes(color = ligtInProvincieCode)) + (Will have to figure out how to do neat provincial borders)
       geom_sf(aes(fill = DistanceToGPPost_5)) +
       scale_fill_viridis_c() +
       labs(title = "Distance to GP", fill = "") +
