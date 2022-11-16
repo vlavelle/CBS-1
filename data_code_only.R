@@ -4,8 +4,8 @@ library(ggplot2)
 library(tidyverse)
 library(sf)
 
-###Data##################################################
-#currently outside of the server function for testing purposes
+###MapData#######################################################
+#for the global file
 metadata <- cbs_get_meta("80305ENG") 
 
 dataImport <- cbs_get_data(
@@ -64,19 +64,58 @@ dataImport$Regions <- tempRegion$Title[
   match(dataImport$Regions, tempRegion$Key)
 ]
 
-#####Map Stuff#####
-#Shapefile Import
+#####Shapefile Import######
+#Shapefile Import (need a better API link here)
 municipalBoundaries <- st_read("https://geodata.nationaalgeoregister.nl/cbsgebiedsindelingen/wfs?request=GetFeature&service=WFS&version=2.0.0&typeName=cbs_gemeente_2017_gegeneraliseerd&outputFormat=json")
 
+#####Joining Data#########
 #Joining Shapefile by Municipality names 
 dataImport <- municipalBoundaries %>%
   left_join(dataImport, by=c(statnaam="Regions"))
 
-###Map###
-dataImport %>%
-  ggplot() +
-  geom_sf(aes(fill = DistanceToGPPost_5)) +
-  scale_fill_viridis_c() +
-  labs(title = "Distance to Hospital", fill = "") +
-  theme_void()
+###DataIdea1##########################################################
+#Data in the same form as the data above, for Idea 1
+
+#It gives an error, but the data seems to be complete, so no clue why.
+metadata1 <- cbs_get_meta("84710ENG") 
+
+dataImport1 <- cbs_get_data(
+  id = "84710ENG",
+  Periods = has_substring("JJ"),
+  RegionCharacteristics = c("NL01    ", "LD01    ", "PV20    ",
+                            "PV21    ", "PV22    "),
+  select = c("TravelMotives", "Population", "TravelModes",
+             "RegionCharacteristics", "Periods", "Trips_4", 
+             "DistanceTravelled_5")
+)
+
+
+#####Data Prep1#####
+#First, we have to make temp tables from the Metadata, these include the
+#Key and Title column. We will use those to "match" and replace the Keys
+#with Titles in our Dataset.
+tempPeriods1 <- metadata1$Periods
+tempMotives1 <- metadata1$TravelMotives
+tempModes1 <- metadata1$TravelModes
+tempRegion1 <- metadata1$RegionCharacteristics
+
+##These bits do the matching and replacing!
+#Periods
+dataImport1$Periods <- tempPeriods1$Title[
+  match(dataImport1$Periods, tempPeriods1$Key)
+]
+#TravelMotives
+dataImport1$TravelMotives <- tempMotives1$Title[
+  match(dataImport1$TravelMotives, tempMotives1$Key)
+]
+#TravelModes
+dataImport1$TravelModes <- tempModes1$Title[
+  match(dataImport1$TravelModes, tempModes1$Key)
+]
+#RegionCharacteristics
+dataImport1$RegionCharacteristics <- tempRegion1$Title[
+  match(dataImport1$RegionCharacteristics, tempRegion1$Key)
+]
+
+
 
