@@ -4,8 +4,9 @@ library(ggplot2)
 library(tidyverse)
 library(sf)
 
-###MapData#######################################################
-#for the global file
+###Data#for#Map#################################################################
+#These should probably be in a global file!
+
 metadata <- cbs_get_meta("80305ENG") 
 
 dataImport <- cbs_get_data(
@@ -55,23 +56,23 @@ tempPeriods <- metadata$Periods
 tempRegion <- metadata$Regions
 
 #These bits do the matching and replacing!
-#Periods
+#Periods is replaced
 dataImport$Periods <- tempPeriods$Title[
   match(dataImport$Periods, tempPeriods$Key)
 ]
-#Regions
-dataImport$Regions <- tempRegion$Title[
+#New Column "Municipality"made, "Region" is kept to match with shapefile
+dataImport$Municipality <- tempRegion$Title[
   match(dataImport$Regions, tempRegion$Key)
 ]
-
 #####Shapefile Import######
-#Shapefile Import (need a better API link here)
-municipalBoundaries <- st_read("https://geodata.nationaalgeoregister.nl/cbsgebiedsindelingen/wfs?request=GetFeature&service=WFS&version=2.0.0&typeName=cbs_gemeente_2017_gegeneraliseerd&outputFormat=json")
+#Shapefile Import, now new and improved!
+#Aestetic issue: The island boundaries are gone. very sad.
+municipalBoundaries <- st_read("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied")
 
 #####Joining Data#########
-#Joining Shapefile by Municipality names 
+#Joining Shapefile by Municipality  
 dataImport <- municipalBoundaries %>%
-  left_join(dataImport, by=c(statnaam="Regions"))
+  left_join(dataImport, by=c(identificatie="Regions"))
 
 ###DataIdea1##########################################################
 #Data in the same form as the data above, for Idea 1
