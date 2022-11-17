@@ -1,0 +1,97 @@
+library(dplyr)
+library(shiny)
+library(shinydashboard)
+library(sf)
+library(cbsodataR)
+library(ggplot2)
+library(plotly)
+
+# set wd (at top of screen click session and choose how you set your wd)
+# shape file must be in same location as where you have your app saved
+setwd("~/R/CBS Project/Dashboard1/")
+
+metadata84710 <- cbs_get_meta("84710ENG") 
+
+data84710 <- cbs_get_data(
+  id = "84710ENG",
+  Periods = has_substring("JJ"),
+  RegionCharacteristics = c("NL01    ", "LD01    ", "PV20    ",
+                            "PV21    ", "PV22    "),
+  select = c(
+    "TravelMotives",
+    "Population",
+    "TravelModes",
+    "RegionCharacteristics",
+    "Periods",
+    "Trips_4",
+    "DistanceTravelled_5"
+  )
+)
+
+
+#####Data Prep Idea 1#####
+
+tempPeriods84710 <- metadata84710$Periods
+tempMotives84710 <- metadata84710$TravelMotives
+tempModes84710 <- metadata84710$TravelModes
+tempRegion84710 <- metadata84710$RegionCharacteristics
+
+##These bits do the matching and replacing!
+data84710$Periods <- tempPeriods84710$Title[match(data84710$Periods, tempPeriods84710$Key)]
+data84710$TravelMotives <- tempMotives84710$Title[match(data84710$TravelMotives, tempMotives84710$Key)]
+data84710$TravelModes <- tempModes84710$Title[match(data84710$TravelModes, tempModes84710$Key)]
+data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionCharacteristics, tempRegion84710$Key)]
+
+
+
+
+# Define UI for application that draws a histogram
+ui <- fluidPage(sidebarLayout(
+                           sidebarPanel(
+                             selectInput(
+                               inputId = "RegionCharacteristics",
+                               label = "Select region",
+                               choices = unique(data84710$RegionCharacteristics),
+                               multiple = FALSE,
+                               selected = "Noord-Nederland (LD)"
+                             )
+                           ),
+                           mainPanel(plotOutput("lineplot1"), plotOutput("lineplot2"))
+                         ))
+                
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+  data_8471 <- reactive(data84710  %>% 
+                          filter(TravelModes == "Total") %>% 
+                          filter(TravelMotives != "Total") %>% 
+                          filter(RegionCharacteristics == input$RegionCharacteristics) %>% 
+                          group_by(Periods, TravelMotives) %>% 
+                          select(TravelMotives, RegionCharacteristics, Periods, DistanceTravelled_5)  %>% 
+                          mutate(mean_distance_travelled = mean(DistanceTravelled_5, na.rm = TRUE)) %>% 
+                          select(TravelMotives, RegionCharacteristics, Periods, mean_distance_travelled) %>% 
+                          distinct()
+  )
+  output$lineplot1 <- renderPlot(ggplot(data_8471(), aes(x = Periods, y = mean_distance_travelled, group = TravelMotives, color = TravelMotives)) +
+                                   geom_line() + geom_point() + theme_minimal())
+  
+  
+  
+  data_8472 <- reactive(data84710 %>% 
+                          filter(TravelModes != "Total") %>% 
+                          filter(TravelMotives == "Total") %>% 
+                          filter(RegionCharacteristics == input$RegionCharacteristics) %>% 
+                          group_by(Periods, TravelModes) %>% 
+                          select(TravelModes, RegionCharacteristics, Periods, DistanceTravelled_5)%>%
+                          mutate(mean_distance_travelled = mean(DistanceTravelled_5, na.rm = TRUE)) %>% 
+                          select(TravelModes, RegionCharacteristics, Periods, mean_distance_travelled) %>% 
+                          distinct())
+  
+  output$lineplot2 <- renderPlot(ggplot(data_8472(), aes(x = Periods, y = mean_distance_travelled, group = TravelModes, color = TravelModes)) +
+                                   geom_line() + geom_point() + theme_minimal())
+  
+  
+  
+}
+
+shinyApp(ui = ui, server = server)
