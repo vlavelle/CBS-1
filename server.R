@@ -54,6 +54,56 @@ shinyServer(function(input, output) {
       theme_void()
   )
   
+  data_8471 <- reactive(data84710  %>% 
+                          filter(TravelModes == "Total") %>% 
+                          filter(TravelMotives != "Total") %>% 
+                          filter(RegionCharacteristics == input$RegionCharacteristics) %>% 
+                          group_by(Periods, TravelMotives) %>% 
+                          select(TravelMotives, RegionCharacteristics, Periods, DistanceTravelled_5)  %>% 
+                          mutate(mean_distance_travelled = mean(DistanceTravelled_5, na.rm = TRUE)) %>% 
+                          select(TravelMotives, RegionCharacteristics, Periods, mean_distance_travelled) %>% 
+                          distinct()
+  )
+  output$lineplot1 <- renderPlot(ggplot(data_8471(), aes(x = Periods, y = mean_distance_travelled, group = TravelMotives, color = TravelMotives)) +
+                                   geom_line() + geom_point() + theme_minimal())
+  
+  
+  
+  data_8472 <- reactive(data84710 %>% 
+                          filter(TravelModes != "Total") %>% 
+                          filter(TravelMotives == "Total") %>% 
+                          filter(RegionCharacteristics == input$RegionCharacteristics) %>% 
+                          group_by(Periods, TravelModes) %>% 
+                          select(TravelModes, RegionCharacteristics, Periods, DistanceTravelled_5)%>%
+                          mutate(mean_distance_travelled = mean(DistanceTravelled_5, na.rm = TRUE)) %>% 
+                          select(TravelModes, RegionCharacteristics, Periods, mean_distance_travelled) %>% 
+                          distinct())
+  
+  output$lineplot2 <- renderPlot(ggplot(data_8472(), aes(x = Periods, y = mean_distance_travelled, group = TravelModes, color = TravelModes)) +
+                                   geom_line() + geom_point() + theme_minimal())
+  
+  # Idea 6
+  data_85055 <- data85055 %>%
+    filter(Periods == "2019") %>%
+    filter(TripCharacteristics %in% c('Monday','Tuesday','Wednesday','Thursday','Friday')) %>%
+    mutate(TripCharacteristics = fct_relevel(TripCharacteristics, 'Monday','Tuesday','Wednesday','Thursday','Friday' ))
+  
+  
+  output$plot85055 <- renderPlot( #need to fix the colors and theme
+    ggplot(data_85055, aes(
+      x = TripCharacteristics, 
+      y = AverageTravelTimePerTrip_2, 
+      group = RegionCharacteristics,
+      color = RegionCharacteristics)) +
+      geom_line(size = 1) +
+      geom_point() +
+      ylim(20,36) +
+      labs(title = "Daily Commutes in the Northern Netherlands",
+           x = " ",
+           y = "Average commuting time in minutes",
+           caption = "Data Source: CBS  85055ENG") 
+  )
+  
   
 })
 

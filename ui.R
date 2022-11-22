@@ -4,7 +4,7 @@ shinyUI(fluidPage(
   navlistPanel(
     id = "tabset",
     "Ideas",
-    tabPanel("idea2",
+    tabPanel("Bar Graph",
              sidebarLayout(
                sidebarPanel(
                  selectInput(
@@ -23,8 +23,41 @@ shinyUI(fluidPage(
                ),
                mainPanel(plotOutput("plot"), plotOutput("plot2"))
              )),
+    
+    tabPanel("Bar Graph", sidebarLayout(
+      sidebarPanel(
+        selectInput(inputId = "region", #for server side
+                    label = "Select region", # text displayed 
+                    choices = unique(data84710$RegionCharacteristics), # input to choose from
+                    selected = "Noord-Nederland (LD)") # define default
+      ),
+      mainPanel(
+        plotOutput("plotidea1")
+      )
+    )),
+    tabPanel("Line graph", sidebarLayout(
+      sidebarPanel(
+        selectInput(
+          inputId = "RegionCharacteristics",
+          label = "Select region",
+          choices = unique(data84710$RegionCharacteristics),
+          multiple = FALSE,
+          selected = "Noord-Nederland (LD)"
+        )
+      ),
+      mainPanel(plotOutput("lineplot1"), plotOutput("lineplot2"))
+    )),
+    
+    tabPanel("Line graph Idea 6", sidebarLayout(
+      sidebarPanel(
+      ),
+      mainPanel(
+        plotOutput("plot85055") #I would like to have a second plot on this page
+      )
+    )),
+    
     "Maps",
-    tabPanel("panel 2", sidebarLayout(
+    tabPanel("Map", sidebarLayout(
       sidebarPanel(
         selectInput(
           inputId = "periods",
@@ -38,16 +71,6 @@ shinyUI(fluidPage(
       ),
       mainPanel(plotOutput("mapreactive"))
     )),
-    tabPanel("panel 3", sidebarLayout(
-      sidebarPanel(
-        selectInput(inputId = "region", #for server side
-                    label = "Select region", # text displayed 
-                    choices = unique(data84710$RegionCharacteristics), # input to choose from
-                    selected = "Noord-Nederland (LD)") # define default
-      ),
-      mainPanel(
-        plotOutput("plotidea1")
-      )
-    )),
+    
   )
 ))

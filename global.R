@@ -15,8 +15,11 @@ setwd("~/R/CBS Project/Dashboard1/")
 # the bar graph is not informative 
 # we will fix this later
 
-#data709 <- cbs_get_data("84709NED", select = c("RegioS", "Persoonskenmerken","Perioden", "Vervoerwijzen", "Reisduur_3", "Afstand_2", "Reisduur_3","Verplaatsingen_1", "Perioden"))
- # shape file uploaded separately
+data709 <- cbs_get_data(id = "84709NED", Populatie = "A048710", Geslacht = "T001038", 
+Vervoerwijzen = c("T001093", "A048583", "A048584", "A018981", "A018984"), 
+    Marges = "MW00000", RegioS = "NL01    ", 
+select = c("Populatie", "Geslacht", "Persoonskenmerken", "Vervoerwijzen", "Marges", 
+         "Perioden", "RegioS", "Verplaatsingen_1", "Afstand_2", "Reisduur_3"))
 data84709 <- data709
 metadata84709 <- cbs_get_meta("84709NED")
 tempPerioden84709 <- metadata84709$Perioden
@@ -138,4 +141,37 @@ data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionC
 
 
 
+# IDEA 6 #
+metadata85055 <- cbs_get_meta("85055ENG")
+
+data85055 <- cbs_get_data(
+  id = "85055ENG", 
+  TripCharacteristics = c(
+    "2031090", "2031100", "2031110", "2031120", "2031130", "2031140", "2031150", 
+    "2031160", "2031170", "2031180", "2031190", "2031200", "2031210", "2031220", 
+    "2031230", "2031240", "2031250", "2031260", "2031270"
+  ), 
+  Population = "A048710", 
+  TravelPurposes = "2030170", 
+  Margins = "MW00000",     
+  RegionCharacteristics = has_substring("NL") | 
+    c("LD01    ",     "PV20    ", "PV21    ", "PV22    ")
+)
+
+#####Data Prep Idea 6#####
+#temp tables
+temp_Region85055 <- metadata85055$RegionCharacteristics
+temp_Periods85055 <- metadata85055$Periods
+temp_TripCharacteristics85055 <- metadata85055$TripCharacteristics
+temp_TravelPurposes85055 <- metadata85055$TravelPurposes
+temp_Population85055 <- metadata85055$Population
+
+#Matching and replacing Keys for Keys
+data85055$RegionCharacteristics <- temp_Region85055$Title[match(data85055$RegionCharacteristics, temp_Region85055$Key)]
+data85055$Periods <- temp_Periods85055$Title[match(data85055$Periods, temp_Periods85055$Key)]
+data85055$TripCharacteristics <-
+  temp_TripCharacteristics85055$Title[match(data85055$TripCharacteristics,
+                                            temp_TripCharacteristics85055$Key)]
+data85055$TravelPurposes <- temp_TravelPurposes85055$Title[match(data85055$TravelPurposes, temp_TravelPurposes85055$Key)]
+data85055$Population <- temp_Population85055$Title[match(data85055$Population, temp_Population85055$Key)]
 
