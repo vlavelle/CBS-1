@@ -18,12 +18,12 @@ shinyServer(function(input, output) {
     ggplot(data84709, aes_string("Persoonskenmerken", input$variable, group = "RegioS", fill = "RegioS")) +
       geom_col(data = dataused(), aes_string("Persoonskenmerken", input$variable, group = "RegioS", colour = "RegioS"), size = 1.5) +
       labs(fill = "RegioS", colour = "RegioS") +
-      theme_minimal())
+      theme_minimal() + labs(caption = "CBS dataset 84709"))
   
   output$plot2 <- renderPlot(
     ggplot(data84709, aes_string("Persoonskenmerken", input$variable, group = "RegioS", fill = "RegioS"))+
       geom_col(data = dataused(), aes_string("Persoonskenmerken", input$variable, group = "RegioS", colour = "RegioS"))+
-      theme_minimal())
+      theme_minimal() + labs(caption = "CBS dataset 84709"))
   
   output$mapreactive <- renderPlot(
     data_80305() %>%
@@ -31,7 +31,7 @@ shinyServer(function(input, output) {
       #geom_sf(aes(color = ligtInProvincieCode)) + (Will have to figure out how to do neat provincial borders)
       geom_sf(aes(fill = DistanceToGPPost_5)) +
       scale_fill_viridis_c() +
-      labs(title = "Distance to GP", fill = "") +
+      labs(title = "Distance to GP", fill = "", caption = "CBS dataset 80305") +
       theme_void()
   )
   # idea 1
@@ -50,8 +50,7 @@ shinyServer(function(input, output) {
         title = "Avg Amount of trips by Travel Mode in 2021 in Northern Netherlands",
         x = "Travel Mode",
         y = "Avg Trips per Person Per Year",
-        caption = "Data Source: CBS 84710ENG") +
-      theme_void()
+        caption = "Data Source: CBS 84710ENG")
   )
   
   data_8471 <- reactive(data84710  %>% 
@@ -65,7 +64,8 @@ shinyServer(function(input, output) {
                           distinct()
   )
   output$lineplot1 <- renderPlot(ggplot(data_8471(), aes(x = Periods, y = mean_distance_travelled, group = TravelMotives, color = TravelMotives)) +
-                                   geom_line() + geom_point() + theme_minimal())
+                                   geom_line() + geom_point() + theme_minimal() +
+                                   labs(caption = "CBS dataset 84710"))
   
   
   
@@ -80,7 +80,8 @@ shinyServer(function(input, output) {
                           distinct())
   
   output$lineplot2 <- renderPlot(ggplot(data_8472(), aes(x = Periods, y = mean_distance_travelled, group = TravelModes, color = TravelModes)) +
-                                   geom_line() + geom_point() + theme_minimal())
+                                   geom_line() + geom_point() + theme_minimal()+
+                                   labs(caption = "CBS dataset 84710"))
   
   # Idea 6
   data_85055 <- data85055 %>%
