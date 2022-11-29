@@ -59,25 +59,12 @@ dataImport <- cbs_get_data(
               "GM1900", "GM0093", "GM1730", "GM0737", "GM0047", "GM0048",
               "GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098", 
               "GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056"),
-  select = c("Periods", "Regions", "DistanceToGPPractice_1", "DistanceToGPPost_5", 
-             "DistanceToPharmacy_6", "DistanceToHospital_7", "DistanceToHospital_11", 
-             "DistanceToHealthCentre_15", "DistanceToLargeSupermarket_20", 
-             "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", 
-             "DistanceToCafeEtc_32", "DistanceToCafeteriaEtc_36", 
-             "DistanceToRestaurant_40", "DistanceToHotelEtc_44", 
-             "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", 
-             "DistanceToSchool_56", "DistanceToSchool_60", "DistanceToSchool_64", 
-             "DistanceToSchool_68", "DistanceToPublicGreenTotal_87", 
-             "DistanceToPark_88", "DistanceToRecreationalTerrain_89", 
-             "DistanceToForest_90", "DistanceToOpenNatTerrainTotal_91", 
-             "DistanceToOpenDryNaturalTerrain_92", "DistanceToOpenWetNaturalTerrain_93", 
-             "DistanceToSemiPublicGreenTotal_94", "DistanceToSportsArea_95", 
-             "DistanceToRecreationalArea_97", "DistanceToCemetery_98", 
-             "DistanceToRecreationalInlandWaters_99", "DistanceToTrainStationsAllTypes_101", 
-             "DistanceToImportantTransferStation_102", "DistanceToLibrary_103", 
-             "DistanceToSwimmingPool_104", "DistanceToMuseum_106", 
-             "TotalDistanceToPerformingArts_110", "DistanceToPopMusicVenue_114", 
-             "DistanceToCinema_115")
+  select = c("Periods", "Regions", "DistanceToGPPractice_1", "DistanceToGPPost_5", "DistanceToPharmacy_6", "DistanceToHospital_11", 
+             "DistanceToLargeSupermarket_20", "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", "DistanceToCafeEtc_32", 
+             "DistanceToRestaurant_40", "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", "DistanceToSchool_60", "DistanceToSchool_64", 
+             "DistanceToPublicGreenTotal_87", "DistanceToSemiPublicGreenTotal_94", "DistanceToSportsArea_95", "DistanceToRecreationalArea_97", 
+             "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103"
+            )
 )
 
 data80305 <- dataImport
