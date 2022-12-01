@@ -37,7 +37,7 @@ data84709$Persoonskenmerken <- tempPersoonskenmerken84709$Title[match(data84709$
 data84709 <- data84709 %>% filter(RegioS %in% c("Groningen (PV)", "Fryslân (PV)", "Drenthe (PV)", "Noord-Nederland (LD)"))
 
 
-
+###MapData##########################################################
 ### Dataset 80305ENG ###
 # this dataset is combined with the map shape file to colour the interactive map
 metadata80305 <- cbs_get_meta("80305ENG") 
@@ -63,25 +63,43 @@ dataImport <- cbs_get_data(
              "DistanceToPharmacy_6", "DistanceToHospital_11", "DistanceToLargeSupermarket_20", 
              "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", "DistanceToCafeEtc_32", 
              "DistanceToRestaurant_40", "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", 
-             "DistanceToSchool_60", "DistanceToSchool_64", "DistanceToPublicGreenTotal_87", 
-             "DistanceToSemiPublicGreenTotal_94", "DistanceToSportsArea_95", "DistanceToRecreationalArea_97", 
-             "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103")
+             "DistanceToSchool_60", "DistanceToSchool_64", "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103"
+            )
 )
 
 data80305 <- dataImport
+
 #####Data Prep#####
 
 tempPeriods80305 <- metadata80305$Periods
 tempRegion80305 <- metadata80305$Regions
 
-
 data80305$Periods <- tempPeriods80305$Title[match(data80305$Periods, tempPeriods80305$Key)]
 data80305$Municipality <- tempRegion80305$Title[match(data80305$Regions, tempRegion80305$Key)]
 
 #####Shapefile Import######
-#Shapefile Import, now new and improved!
-#Aestetic issue: The island boundaries are gone. very sad.
-municipalBoundaries <- st_read("https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied")
+#Shapefile Import through API call
+municipalBoundaries_unfiltered <- st_read(
+  "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied"
+)
+
+#Reducing and filtering the imported data for efficiency 
+municipalBoundaries <- municipalBoundaries_unfiltered %>%
+  filter(ligtInProvincieCode %in% c("20", "21", "22")) %>%
+  select(-id, -code)
+
+####Provincial Boundaries Calculation####
+#This is to combine the polygons per province into a small table
+#First have to create a subset into the different provinces
+provinces <- municipalBoundaries %>%
+  group_split(ligtInProvincieNaam)
+
+#combining the municipality polygons by the province and renaming the column
+provincialBoundaries <- data.frame(c("Drenthe","Friesland","Groningen"), 
+                                   c(st_combine(provinces[[1]]),
+                                     st_combine(provinces[[2]]),
+                                     st_combine(provinces[[3]]))) %>%
+  rename(provinces = c..Drenthe....Friesland....Groningen..)
 
 #####Joining Data#########
 #Joining Shapefile by Municipality  
@@ -92,7 +110,6 @@ data80305 <- municipalBoundaries %>%
 
 
 ###DataIdea1##########################################################
-#Data in the same form as the data above, for Idea 1
 
 #It gives an error, but the data seems to be complete, so no clue why.
 metadata84710 <- cbs_get_meta("84710ENG") 
