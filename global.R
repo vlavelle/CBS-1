@@ -6,6 +6,7 @@ library(cbsodataR)
 library(ggplot2)
 library(forcats)
 library(ggiraph)
+library(plotly)
 
 # set wd to the file location where you have downloaded the global, server and UI files
 setwd("~/R/CBS Project/Dashboard1/")
@@ -153,23 +154,7 @@ data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionC
 
 metadata85055 <- cbs_get_meta("85055ENG")
 
-data85055 <- cbs_get_data(id = "85055ENG", 
-                          TripCharacteristics = c("2030851", "2030871", 
-                          "2030891", "2030911", "2030931", "2030950", "2031000",
-                          "2031090", "2031100", "2031110", "2031120", "2031130", 
-                          "2031140", "2031150", "2031160", "2031170", "2031180", 
-                          "2031190", "2031200", "2031210", "2031220", "2031230", 
-                          "2031240", "2031250", "2031260", "2031270", "2820701", 
-                          "2820702", "2820704", "2820705", "2820706","A025261", 
-                          "A025262", "A025263", "A025264", "A025265", "A025266", 
-                          "A025267", "A025268"), 
-                          Population = "A048710", 
-                          TravelPurposes = c("2030170","2030190","2030200",
-                                             "2030210","2030220","2030230",
-                                             "2030240","2030250","2820740","T001080"),
-                          Margins = "MW00000", 
-                          RegionCharacteristics = c("PV20    ", "PV21    ", 
-                                                    "PV22    ", "LD01    "))
+data85055 <- cbs_get_data(id = "85055ENG", TripCharacteristics = c("2030851", "2030871", "2030891", "2030911", "2030931", "2030950", "2031000", "2031090", "2031100", "2031110", "2031120", "2031130", "2031140", "2031150", "2031160", "2031170", "2031180", "2031190", "2031200", "2031210", "2031220", "2031230", "2031240", "2031250", "2031260", "2031270", "2820701", "2820702", "2820704", "2820705", "2820706","A025261", "A025262", "A025263", "A025264", "A025265", "A025266", "A025267", "A025268"), Population = "A048710", TravelPurposes = c("2030170","2030190","2030200","2030210","2030220","2030230","2030240","2030250","2820740","T001080"), Margins = "MW00000", RegionCharacteristics = c("PV20    ", "PV21    ", "PV22    ", "LD01    "))
 
 
 #####Data Prep Idea 6#####
@@ -188,50 +173,20 @@ data85055$TripCharacteristics <-
                                             temp_TripCharacteristics85055$Key)]
 data85055$TravelPurposes <- temp_TravelPurposes85055$Title[match(data85055$TravelPurposes, temp_TravelPurposes85055$Key)]
 data85055$Population <- temp_Population85055$Title[match(data85055$Population, temp_Population85055$Key)]
-
-departure_data <-
-  data85055 %>% filter(
-    TripCharacteristics %in% c(
-      "Departure time: 00:00 to 06:59 AM",
-      "Departure time: 07:00 to 08:59 AM",
-      "Departure time: 09:00 to 11:59 AM",
-      "Departure time: 12:00 to 03:59 PM",
-      "Departure time: 04:00 to 05:59 PM",
-      "Departure time: 06:00 to 11:59 PM"
-    )
-  ) %>% 
-  mutate(
-    TripCharacteristics = replace(
-      TripCharacteristics,
-      TripCharacteristics == "Departure time: 00:00 to 06:59 AM",
-      "00:00 to 06:59 AM"
-    ),
-    TripCharacteristics = replace(
-      TripCharacteristics,
-      TripCharacteristics == "Departure time: 07:00 to 08:59 AM",
-      "07:00 to 08:59 AM"
-    ),
-    TripCharacteristics = replace(
-      TripCharacteristics,
-      TripCharacteristics == "Departure time: 09:00 to 11:59 AM",
-      "09:00 to 11:59 AM"
-    ),
-    TripCharacteristics = replace(
-      TripCharacteristics,
-      TripCharacteristics == "Departure time: 12:00 to 03:59 PM",
-      "12:00 to 03:59 PM"
-    ),
-    TripCharacteristics = replace(
-      TripCharacteristics,
-      TripCharacteristics == "Departure time: 04:00 to 05:59 PM",
-      "04:00 to 05:59 PM"
-    ),
-    TripCharacteristics = replace(
-      TripCharacteristics,
-      TripCharacteristics == "Departure time: 06:00 to 11:59 PM",
-      "06:00 to 11:59 PM"
-    )
+data85055 <- data85055 %>% mutate(
+  Timeframe = case_when(
+    grepl("Distance:", data85055$TripCharacteristics) ~ "Distance",
+    grepl("Time travelled:", data85055$TripCharacteristics) ~ "Time travelled",
+    grepl("Trip in", data85055$TripCharacteristics) ~ "Month",
+    grepl("Departure time:", data85055$TripCharacteristics) ~ "Departure time",
+    grepl("day", data85055$TripCharacteristics) ~ "Day of the week"
   )
+) %>% select(TripCharacteristics, Timeframe, TravelPurposes, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
+
+data85055$TripCharacteristics <- sub('Departure time: ', '', data85055$TripCharacteristics)
+data85055$TripCharacteristics <- sub('Trip in ', '', data85055$TripCharacteristics)
+
+
 
 # want to do similar to above for dataset 85056 for modes of travel at different times
 metadata85056 <- cbs_get_meta("85056ENG")
@@ -247,7 +202,7 @@ data85056 <- cbs_get_data(id = "85056ENG",
                                                   "A025267", "A025268"), 
                           Population = "A048710", 
                           ModesOfTravel = c("T001093","A048583","A048584","A018981","A018982",               
-                                          "A018984","A018985","A018986"),
+                                            "A018984","A018985","A018986"),
                           Margins = "MW00000", 
                           RegionCharacteristics = c("PV20    ", "PV21    ", 
                                                     "PV22    ", "LD01    "))
@@ -258,7 +213,7 @@ temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics
 temp_ModesOfTravel85056 <- metadata85056$ModesOfTravel
 temp_Population85056 <- metadata85056$Population
 
-#Matching and replacing Keys for Keys
+# Matching and replacing Keys for Keys
 data85056$RegionCharacteristics <- temp_Region85056$Title[match(data85056$RegionCharacteristics, temp_Region85056$Key)]
 data85056$Periods <- temp_Periods85056$Title[match(data85056$Periods, temp_Periods85056$Key)]
 data85056$TripCharacteristics <-
@@ -267,9 +222,16 @@ data85056$TripCharacteristics <-
 data85056$ModesOfTravel <- temp_ModesOfTravel85056$Title[match(data85056$ModesOfTravel, temp_ModesOfTravel85056$Key)]
 data85056$Population <- temp_Population85056$Title[match(data85056$Population, temp_Population85056$Key)]
 
-data85056$TripCharacteristics
+# Data filtering + manipulating
+data85056 <- data85056 %>% mutate(
+  Timeframe = case_when(
+    grepl("Distance:", data85056$TripCharacteristics) ~ "Distance",
+    grepl("Time travelled:", data85056$TripCharacteristics) ~ "Time travelled",
+    grepl("Trip in", data85056$TripCharacteristics) ~ "Month",
+    grepl("Departure time:", data85056$TripCharacteristics) ~ "Departure time",
+    grepl("day", data85056$TripCharacteristics) ~ "Day of the week"
+  )) %>% filter(TripCharacteristics %in% c("Sunday", "Monday", "Tuesday","Wednesday","Thursday", "Friday", "Saturday", "Trip in January", "Trip in February", "Trip in March", "Trip in April","Trip in May","Trip in June", "Trip in July", "Trip in August", "Trip in September", "Trip in October","Trip in November", "Trip in December", "Departure time: 00:00 to 06:59 AM", "Departure time: 07:00 to 08:59 AM", "Departure time: 09:00 to 11:59 AM","Departure time: 12:00 to 03:59 PM", "Departure time: 04:00 to 05:59 PM","Departure time: 06:00 to 11:59 PM" )) %>% 
+  select(TripCharacteristics, Timeframe, ModesOfTravel, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)
+data85056$TripCharacteristics <- sub('Departure time: ', '', data85056$TripCharacteristics)
+data85056$TripCharacteristics <- sub('Trip in ', '', data85056$TripCharacteristics)
 
-# will finalize graph for this data this weekend but it will be either a bar or line
-# graph using the departure time(interactivity is hour/day/month) 
-# to compare when different travel modes are used
-# to maybe see if buses are used more at midday or evening, for example

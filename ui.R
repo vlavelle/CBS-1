@@ -61,18 +61,18 @@ shinyUI(fluidPage(
                ),
                mainPanel(plotOutput("lineplottravelmodes"))
              )),
-    tabPanel("Time frame data",
+    tabPanel("Timeframe data: Travel Purpose",
              sidebarLayout(
                sidebarPanel(
                  selectInput(
                    inputId = "Periods",
                    label = "Select Year",
-                   choices = unique(departure_data$Periods),
+                   choices = unique(data85055$Periods),
                    multiple = FALSE,
                    selected = "2021"
                  ),
                  selectInput(inputId = "TravelPurposes",label = "Pick Purpose of Travel",
-                             choices = unique(departure_data$TravelPurposes),
+                             choices = unique(data85055$TravelPurposes),
                              multiple = FALSE,
                              selected = "Total"
                  ),
@@ -81,7 +81,29 @@ shinyUI(fluidPage(
                               choiceValues = c("Month", "Departure time", "Day of the week")
                  )
                ),
-               mainPanel(plotOutput("timeframedataplot"))
+               mainPanel(plotlyOutput("timeframedataplot"))
+             )),
+    tabPanel("Timeframe data: Travel Mode",
+             sidebarLayout(
+               sidebarPanel(
+                 selectInput(
+                   inputId = "Periods",
+                   label = "Select Year",
+                   choices = unique(data85056$Periods),
+                   multiple = FALSE,
+                   selected = "2021"
+                 ),
+                 selectInput(inputId = "ModesOfTravel",label = "Pick Mode of Travel",
+                             choices = unique(data85056$ModesOfTravel),
+                             multiple = FALSE,
+                             selected = "Total"
+                 ),
+                 radioButtons("Timeframe", "Pick a timeframe",
+                              choiceNames = unique(data85056$Timeframe),
+                              choiceValues = unique(data85056$Timeframe)
+                 )
+               ),
+               mainPanel(plotlyOutput("secondtimeframedataplot"))
              )),
     
     "Maps", # second subtitle

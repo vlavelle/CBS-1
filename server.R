@@ -174,35 +174,66 @@ shinyServer(function(input, output) {
   
   # Idea 6
   
-  data85055_1 <- data85055 %>% mutate(
-    Timeframe = case_when(
-      grepl("Distance:", data85055$TripCharacteristics) ~ "Distance",
-      grepl("Time travelled:", data85055$TripCharacteristics) ~ "Time travelled",
-      grepl("Trip in", data85055$TripCharacteristics) ~ "Month",
-      grepl("Departure time:", data85055$TripCharacteristics) ~ "Departure time",
-      grepl("day", data85055$TripCharacteristics) ~ "Day of the week"
+ 
+  data_85055 <- reactive(data85055 %>% filter(TravelPurposes == input$TravelPurposes) %>% 
+                           filter(Periods == input$Periods) %>% 
+                           filter(Timeframe == input$Timeframe))
+  
+  output$timeframedataplot <- renderPlotly({data85055plot <- ggplot(
+    data_85055(),
+    aes(
+      x =  TripCharacteristics,
+      y = AverageDistanceTravelledPerTrip_1,
+      group = interaction(RegionCharacteristics, TravelPurposes),
+      colour = RegionCharacteristics
     )
-  ) %>% select(TripCharacteristics, Timeframe, TravelPurposes, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
-  data_85055_1 <- reactive(data85055_1 %>% filter(TravelPurposes == input$TravelPurposes) %>% 
-                          filter(Periods == input$Periods) %>% 
-                          filter(Timeframe == input$Timeframe))
+  ) +
+    geom_line() +
+    geom_point() +
+    theme_minimal() +
+    theme(axis.text.x.bottom = element_text(angle = 90, hjust = 1),
+          legend.position = "bottom") +
+    labs(
+      x = "Time frame",
+      y = "Average Distance Travelled Per Trip",
+      caption = "CBS 85055",
+      colour = "Region:"
+    )
+  data85055plotly <- ggplotly(data85055plot)
+  data85055plotly})
   
-  output$timeframedataplot <- renderPlot(ggplot(data_85055_1(), 
-                                                aes(x =  TripCharacteristics, 
-                                                    y = AverageDistanceTravelledPerTrip_1, 
-                                                    group = interaction(RegionCharacteristics, TravelPurposes), 
-                                                    colour = RegionCharacteristics)) +
-                                           geom_line() +
-                                           geom_point() +
-                                           theme_minimal() +
-                                           theme(axis.text.x.bottom = element_text(angle = 45, hjust = 1),
-                                                 legend.position = "bottom") +
-                                           labs(x = "Time frame", 
-                                                y = "Average Distance Travelled Per Trip", 
-                                                caption = "CBS 85055", 
-                                                colour = "Region:")
+  data_85056 <- reactive(
+    data85056 %>% filter(ModesOfTravel == input$ModesOfTravel) %>%
+      filter(Periods == input$Periods) %>%
+      filter(Timeframe == input$Timeframe))
+  
+  
+  output$secondtimeframedataplot <- renderPlotly({data85056plot <- ggplot(
+    data_85056(),
+    aes(
+      x =  TripCharacteristics,
+      y = AverageDistanceTravelledPerTrip_1,
+      group = interaction(RegionCharacteristics, ModesOfTravel),
+      colour = RegionCharacteristics
+    )
+  ) +
+    geom_line() +
+    geom_point() +
+    theme_minimal() +
+    theme(
+      axis.text.x.bottom = element_text(angle = 45, hjust = 1),
+      legend.position = "bottom"
+    ) +
+    labs(
+      x = "Time frame",
+      y = "Average Distance Travelled Per Trip",
+      caption = "CBS 85055",
+      colour = "Region:"
+    )
+  data85056plotly <- ggplotly(data85056plot)
+  data85056plotly
+  }
   )
-  
 })
 
 
