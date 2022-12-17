@@ -113,7 +113,8 @@ shinyUI(fluidPage(
         selectInput(
           inputId = "mapvariable", # for server side interactivity
           label = "Average Distance to...", # text displayed 
-          choices = c( # input to choose from
+          choices = c( # input to choose from  
+            # this can likely be summarized now that the data has been filtered
             "GP practice" = "DistanceToGPPractice_1",
             "GP post" = "DistanceToGPPost_5",
             "Pharmacy" = "DistanceToPharmacy_6",
@@ -140,6 +141,10 @@ shinyUI(fluidPage(
           plotOutput("mapplot2")
         )))
     )),
+    "Mobility",
+    "Proximity",
+    "Infrastructure",
+    "Green Mobility",
     
   )
 ))
