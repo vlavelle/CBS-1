@@ -206,6 +206,11 @@ data85056 <- cbs_get_data(id = "85056ENG",
                           Margins = "MW00000", 
                           RegionCharacteristics = c("PV20    ", "PV21    ", 
                                                     "PV22    ", "LD01    "))
+temp_Region85056 <- metadata85056$RegionCharacteristics
+temp_Periods85056 <- metadata85056$Periods
+temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics
+temp_ModesOfTravel85056 <- metadata85056$ModesOfTravel
+temp_Population85056 <- metadata85056$Population
 
 data85056$RegionCharacteristics <- temp_Region85056$Title[match(data85056$RegionCharacteristics, temp_Region85056$Key)]
 data85056$Periods <- temp_Periods85056$Title[match(data85056$Periods, temp_Periods85056$Key)]
