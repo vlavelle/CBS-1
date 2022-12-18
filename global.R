@@ -207,13 +207,6 @@ data85056 <- cbs_get_data(id = "85056ENG",
                           RegionCharacteristics = c("PV20    ", "PV21    ", 
                                                     "PV22    ", "LD01    "))
 
-temp_Region85056 <- metadata85056$RegionCharacteristics
-temp_Periods85056 <- metadata85056$Periods
-temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics
-temp_ModesOfTravel85056 <- metadata85056$ModesOfTravel
-temp_Population85056 <- metadata85056$Population
-
-# Matching and replacing Keys for Keys
 data85056$RegionCharacteristics <- temp_Region85056$Title[match(data85056$RegionCharacteristics, temp_Region85056$Key)]
 data85056$Periods <- temp_Periods85056$Title[match(data85056$Periods, temp_Periods85056$Key)]
 data85056$TripCharacteristics <-
@@ -221,8 +214,6 @@ data85056$TripCharacteristics <-
                                             temp_TripCharacteristics85056$Key)]
 data85056$ModesOfTravel <- temp_ModesOfTravel85056$Title[match(data85056$ModesOfTravel, temp_ModesOfTravel85056$Key)]
 data85056$Population <- temp_Population85056$Title[match(data85056$Population, temp_Population85056$Key)]
-
-# Data filtering + manipulating
 data85056 <- data85056 %>% mutate(
   Timeframe = case_when(
     grepl("Distance:", data85056$TripCharacteristics) ~ "Distance",
@@ -230,8 +221,9 @@ data85056 <- data85056 %>% mutate(
     grepl("Trip in", data85056$TripCharacteristics) ~ "Month",
     grepl("Departure time:", data85056$TripCharacteristics) ~ "Departure time",
     grepl("day", data85056$TripCharacteristics) ~ "Day of the week"
-  )) %>% filter(TripCharacteristics %in% c("Sunday", "Monday", "Tuesday","Wednesday","Thursday", "Friday", "Saturday", "Trip in January", "Trip in February", "Trip in March", "Trip in April","Trip in May","Trip in June", "Trip in July", "Trip in August", "Trip in September", "Trip in October","Trip in November", "Trip in December", "Departure time: 00:00 to 06:59 AM", "Departure time: 07:00 to 08:59 AM", "Departure time: 09:00 to 11:59 AM","Departure time: 12:00 to 03:59 PM", "Departure time: 04:00 to 05:59 PM","Departure time: 06:00 to 11:59 PM" )) %>% 
-  select(TripCharacteristics, Timeframe, ModesOfTravel, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)
+  )
+) %>% select(TripCharacteristics, Timeframe, ModesOfTravel, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
+
 data85056$TripCharacteristics <- sub('Departure time: ', '', data85056$TripCharacteristics)
 data85056$TripCharacteristics <- sub('Trip in ', '', data85056$TripCharacteristics)
 

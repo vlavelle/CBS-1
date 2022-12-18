@@ -64,19 +64,21 @@ shinyUI(fluidPage(
     tabPanel("Timeframe data: Travel Purpose",
              sidebarLayout(
                sidebarPanel(
-                 selectInput(
-                   inputId = "Periods",
+                 sliderInput(
+                   inputId = "Periods1",
                    label = "Select Year",
-                   choices = unique(data85055$Periods),
-                   multiple = FALSE,
-                   selected = "2021"
+                   min = 2018,
+                   max = 2021,
+                   value = 2021,
+                   sep = "",
+                   ticks = FALSE
                  ),
                  selectInput(inputId = "TravelPurposes",label = "Pick Purpose of Travel",
                              choices = unique(data85055$TravelPurposes),
                              multiple = FALSE,
                              selected = "Total"
                  ),
-                 radioButtons("Timeframe", "Pick a timeframe",
+                 radioButtons("Timeframe1", "Pick a timeframe",
                               choiceNames = c("Month", "Departure time", "Day of the week"),
                               choiceValues = c("Month", "Departure time", "Day of the week")
                  )
@@ -86,21 +88,19 @@ shinyUI(fluidPage(
     tabPanel("Timeframe data: Travel Mode",
              sidebarLayout(
                sidebarPanel(
-                 selectInput(
-                   inputId = "Periods",
+                 sliderInput(
+                   inputId = "Periods2",
                    label = "Select Year",
-                   choices = unique(data85056$Periods),
-                   multiple = FALSE,
-                   selected = "2021"
+                   min = 2018, max = 2021, sep = "", value = 2021, ticks = FALSE
                  ),
                  selectInput(inputId = "ModesOfTravel",label = "Pick Mode of Travel",
                              choices = unique(data85056$ModesOfTravel),
                              multiple = FALSE,
                              selected = "Total"
                  ),
-                 radioButtons("Timeframe", "Pick a timeframe",
-                              choiceNames = unique(data85056$Timeframe),
-                              choiceValues = unique(data85056$Timeframe)
+                 radioButtons("Timeframe2", "Pick a timeframe",
+                              choiceNames = c("Month", "Departure time", "Day of the week"),
+                              choiceValues = c("Month", "Departure time", "Day of the week")
                  )
                ),
                mainPanel(plotlyOutput("secondtimeframedataplot"))

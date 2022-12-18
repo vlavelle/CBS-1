@@ -5,13 +5,6 @@ shinyServer(function(input, output) {
   data_84709 <- reactive(
     data84709 %>%
       filter(RegioS == input$RegioS))
-  
-
-  data_80305 <- reactive(
-    data80305 %>%
-      filter(Periods == input$periods)
-  )
-  
 
   output$plot <- renderPlot(
     ggplot(data84709, aes_string("Persoonskenmerken", input$variable, group = "RegioS", fill = "RegioS")) +
@@ -24,7 +17,10 @@ shinyServer(function(input, output) {
       geom_col(data = data_84709(), aes_string("Persoonskenmerken", input$variable, group = "RegioS", colour = "RegioS"))+
       theme_minimal() + labs(caption = "CBS dataset 84709"))
   
-  
+  data_80305 <- reactive(
+    data80305 %>%
+      filter(Periods == input$periods)
+  )
   ## Map data
   MapData1 <- reactive({mapData}) # all the data/municipal
   MapData2 <- provincialBoundaries # only provinical boundaries and names
@@ -57,7 +53,7 @@ shinyServer(function(input, output) {
       ) +
       labs(
         title = " ", 
-        caption = "Source: CBS Statistics Netherlands (80305ENG) and Dutch National Georegistry",
+        caption = "Source: CBS 80305ENG and Dutch National Georegistry",
         fill = "Average Distance in km") +
       scale_colour_manual( # this is the colours for the provincial boundaries
         values = c(
@@ -173,19 +169,19 @@ shinyServer(function(input, output) {
          colour = "Region:"))
   
   # Idea 6
-  
- 
   data_85055 <- reactive(data85055 %>% filter(TravelPurposes == input$TravelPurposes) %>% 
-                           filter(Periods == input$Periods) %>% 
-                           filter(Timeframe == input$Timeframe))
+                           filter(Periods == input$Periods1) %>% 
+                           filter(Timeframe == input$Timeframe1))
   
   output$timeframedataplot <- renderPlotly({data85055plot <- ggplot(
     data_85055(),
     aes(
-      x =  TripCharacteristics,
+      x =  factor(TripCharacteristics, levels = unique(TripCharacteristics)),
       y = AverageDistanceTravelledPerTrip_1,
       group = interaction(RegionCharacteristics, TravelPurposes),
-      colour = RegionCharacteristics
+      colour = RegionCharacteristics,
+      text = RegionCharacteristics,
+      text1 = TripCharacteristics
     )
   ) +
     geom_line() +
@@ -199,26 +195,28 @@ shinyServer(function(input, output) {
       caption = "CBS 85055",
       colour = "Region:"
     )
-  data85055plotly <- ggplotly(data85055plot)
-  data85055plotly})
+  data85055plotly <- ggplotly(data85055plot, tooltip = c("text", "y", "text1"))
+  data85055plotly
+  })
   
   data_85056 <- reactive(
     data85056 %>% filter(ModesOfTravel == input$ModesOfTravel) %>%
-      filter(Periods == input$Periods) %>%
-      filter(Timeframe == input$Timeframe))
+      filter(Periods == input$Periods2) %>%
+      filter(Timeframe == input$Timeframe2))
   
   
   output$secondtimeframedataplot <- renderPlotly({data85056plot <- ggplot(
     data_85056(),
     aes(
-      x =  TripCharacteristics,
+      x =  factor(TripCharacteristics, levels = unique(TripCharacteristics)),
       y = AverageDistanceTravelledPerTrip_1,
       group = interaction(RegionCharacteristics, ModesOfTravel),
-      colour = RegionCharacteristics
-    )
+      colour = RegionCharacteristics,
+      text = RegionCharacteristics,
+      text1 = TripCharacteristics)
   ) +
-    geom_line() +
     geom_point() +
+    geom_line() +
     theme_minimal() +
     theme(
       axis.text.x.bottom = element_text(angle = 45, hjust = 1),
@@ -230,10 +228,12 @@ shinyServer(function(input, output) {
       caption = "CBS 85055",
       colour = "Region:"
     )
-  data85056plotly <- ggplotly(data85056plot)
+  data85056plotly <- ggplotly(data85056plot, tooltip = c("text", "y", "text1"))
   data85056plotly
   }
   )
-})
+  
+}
+)
 
 
