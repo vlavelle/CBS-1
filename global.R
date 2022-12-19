@@ -15,25 +15,47 @@ setwd("~/R/CBS Project/Dashboard1/")
 ### Idea 2 and 8
 
 
-data84709 <- cbs_get_data(id = "84709NED", Populatie = "A048710", Geslacht = "T001038", 
-             Vervoerwijzen = c("T001093", "A048583", "A048584", "A018981", 
-                               "A018984"), Marges = "MW00000", RegioS = c("NL01    ", "PV20    ", "PV21    ", "PV22    "), 
-             select = c("Populatie", "Geslacht", "Persoonskenmerken", 
-                        "Vervoerwijzen", "Marges", "Perioden", "RegioS", "Verplaatsingen_1", "Afstand_2", "Reisduur_3"))
 metadata84709 <- cbs_get_meta("84709NED")
-tempPerioden84709 <- metadata84709$Perioden
-tempVervoerwijzen84709 <- metadata84709$Vervoerwijzen
-tempRegioS84709 <- metadata84709$RegioS
-tempPersoonskenmerken84709 <- metadata84709$Persoonskenmerken
+datatemp <- cbs_get_data('84709NED', Persoonskenmerken = c( "T009002", "51511  ", "52020  ", "53105  ", "53500  ", "53705  ", "53850  ", "53925  ", "21600  ", "1012600", "2012655", "2012657","1014752", "1014753", "1014754", "1014755","1014756", "2030530", "2030540", "2030550","2018700", "2018740", "2018790", "2017560","2017565", "2012751", "2017572", "2820713", "2017576", "2017500", "A048766", "A048767","A048768", "A048769", "A048770"), Vervoerwijzen = c("T001093", "A048583", "A048584", "A018981", "A018982", "A018984", "A018985", "A018986"), RegioS = c("NL01    ","LD01    ","PV20    ","PV21    ", "PV22    "), Geslacht = "T001038", Marges = c("MW00000"), Populatie = c("A048710"), select = c("Persoonskenmerken", "RegioS", "Perioden", "Vervoerwijzen", "Verplaatsingen_1", "Afstand_2", "Reisduur_3"))
+
+data84709 <- datatemp
+temp_RegioS84709 <- metadata84709$RegioS # Perioden
+temp_Perioden84709 <- metadata84709$Perioden # RegioS
+temp_Persoonskenmerken84709 <- metadata84709$Persoonskenmerken # Persoonskenmerken
+temp_Vervoerwijzen84709 <- metadata84709$Vervoerwijzen
 
 
-data84709$Perioden <- tempPerioden84709$Title[match(data84709$Perioden, tempPerioden84709$Key)]
-data84709$Vervoerwijzen <- tempVervoerwijzen84709$Title[match(data84709$Vervoerwijzen, tempVervoerwijzen84709$Key)]
-data84709$RegioS <- tempRegioS84709$Title[match(data84709$RegioS, tempRegioS84709$Key)]
-data84709$Persoonskenmerken <- tempPersoonskenmerken84709$Title[match(data84709$Persoonskenmerken, tempPersoonskenmerken84709$Key)]
+#Matching and replacing Keys for Keys
+data84709$RegioS <- temp_RegioS84709$Title[match(data84709$RegioS, temp_RegioS84709$Key)]
 
-# filtering to only have info for North Netherlands
-data84709 <- data84709 %>% filter(RegioS %in% c("Groningen (PV)", "Fryslân (PV)", "Drenthe (PV)", "Noord-Nederland (LD)"))
+data84709$Perioden <- temp_Perioden84709$Title[match(data84709$Perioden, temp_Perioden84709$Key)]
+
+data84709$Persoonskenmerken <-
+  temp_Persoonskenmerken84709$Title[match(data84709$Persoonskenmerken,
+                                          temp_Persoonskenmerken84709$Key)]
+data84709$Vervoerwijzen <- temp_Vervoerwijzen84709$Title[match(data84709$Vervoerwijzen, temp_Vervoerwijzen84709$Key)]
+
+
+data84709 <- data84709 %>% mutate(Feature = case_when(
+  grepl("Totaal personen", data84709$Persoonskenmerken) ~ "All",
+  grepl("Leeftijd:", data84709$Persoonskenmerken) ~ "Age",
+  grepl("Migratieachtergrond:", data84709$Persoonskenmerken) ~ "Background",
+  grepl("Gestandaardiseerd inkomen:", data84709$Persoonskenmerken) ~ "Income",
+  grepl("OV-Studentenkaart:", data84709$Persoonskenmerken) ~ "Travel Product",
+  grepl("Onderwijsniveau:", data84709$Persoonskenmerken) ~ "Education",
+  grepl("Participatie:", data84709$Persoonskenmerken) ~ "Employment(??)",
+  grepl("Rijbewijs,", data84709$Persoonskenmerken) ~ "Driver's License",
+  grepl("Geen rijbewijs", data84709$Persoonskenmerken) ~ "Driver's License"
+) )
+# now it can be filtered on the column "Feature"
+unique(data84709$Persoonskenmerken)
+data84709$Persoonskenmerken <- sub('Leeftijd:', '', data84709$Persoonskenmerken)
+data84709$Persoonskenmerken <- sub('Migratieachtergrond:', '', data84709$Persoonskenmerken)
+data84709$Persoonskenmerken <- sub('Gestandaardiseerd inkomen:', '', data84709$Persoonskenmerken)
+data84709$Persoonskenmerken <- sub('OV-Studentenkaart: ', '', data84709$Persoonskenmerken)
+data84709$Persoonskenmerken <- sub('Onderwijsniveau: ', '', data84709$Persoonskenmerken)
+data84709$Persoonskenmerken <- sub('Participatie: ', '', data84709$Persoonskenmerken)
+
 
 
 
@@ -206,6 +228,7 @@ data85056 <- cbs_get_data(id = "85056ENG",
                           Margins = "MW00000", 
                           RegionCharacteristics = c("PV20    ", "PV21    ", 
                                                     "PV22    ", "LD01    "))
+
 temp_Region85056 <- metadata85056$RegionCharacteristics
 temp_Periods85056 <- metadata85056$Periods
 temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics

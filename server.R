@@ -2,20 +2,20 @@ source("global.R", local = TRUE)
 
 
 shinyServer(function(input, output) {
-  data_84709 <- reactive(
-    data84709 %>%
-      filter(RegioS == input$RegioS))
-
-  output$plot <- renderPlot(
-    ggplot(data84709, aes_string("Persoonskenmerken", input$variable, group = "RegioS", fill = "RegioS")) +
-      geom_col(data = data_84709(), aes_string("Persoonskenmerken", input$variable, group = "RegioS", colour = "RegioS"), size = 1.5) +
-      labs(fill = "RegioS", colour = "RegioS") +
-      theme_minimal() + labs(caption = "CBS dataset 84709"))
+  data_84709 <- reactive(data84709 %>% 
+                           filter(Perioden == input$Perioden_graph1) %>% 
+                           filter(Feature == input$Features) %>% 
+                           filter(Vervoerwijzen == input$Vervoerwijzen_graph1) )
   
-  output$plot2 <- renderPlot(
-    ggplot(data84709, aes_string("Persoonskenmerken", input$variable, group = "RegioS", fill = "RegioS"))+
-      geom_col(data = data_84709(), aes_string("Persoonskenmerken", input$variable, group = "RegioS", colour = "RegioS"))+
-      theme_minimal() + labs(caption = "CBS dataset 84709"))
+  output$Persoonskenmerken <- renderPlotly({
+    Persoonskenmerken_plot <- ggplot(data_84709(), 
+                                     aes(x = Persoonskenmerken, 
+                                         y = Verplaatsingen_1, 
+                                         fill = RegioS)) +
+      geom_col(position = position_dodge()) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 4))
+    ggplotly(Persoonskenmerken_plot)
+  })
   
   data_80305 <- reactive(
     data80305 %>%
@@ -233,5 +233,6 @@ shinyServer(function(input, output) {
   
 }
 )
+
 
 
