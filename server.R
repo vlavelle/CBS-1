@@ -187,8 +187,7 @@ shinyServer(function(input, output) {
     geom_line() +
     geom_point() +
     theme_minimal() +
-    theme(axis.text.x.bottom = element_text(angle = 90, hjust = 1),
-          legend.position = "bottom") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     labs(
       x = "Time frame",
       y = "Average Distance Travelled Per Trip",
@@ -219,8 +218,7 @@ shinyServer(function(input, output) {
     geom_line() +
     theme_minimal() +
     theme(
-      axis.text.x.bottom = element_text(angle = 45, hjust = 1),
-      legend.position = "bottom"
+      axis.text.x = element_text(angle = 45, hjust = 1)
     ) +
     labs(
       x = "Time frame",
