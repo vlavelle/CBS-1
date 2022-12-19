@@ -7,15 +7,17 @@ shinyServer(function(input, output) {
                            filter(Feature == input$Features) %>% 
                            filter(Vervoerwijzen == input$Vervoerwijzen_graph1) )
   
-  output$Persoonskenmerken <- renderPlotly({
-    Persoonskenmerken_plot <- ggplot(data_84709(), 
-                                     aes(x = Persoonskenmerken, 
-                                         y = Verplaatsingen_1, 
-                                         fill = RegioS)) +
-      geom_col(position = position_dodge()) +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 4))
-    ggplotly(Persoonskenmerken_plot)
-  })
+output$Persoonskenmerken <- renderPlotly({
+      Persoonskenmerken_plot <- ggplot(data_84709(), 
+                                       aes(x = Persoonskenmerken, 
+                                           y = Verplaatsingen_1, 
+                                           fill = RegioS,
+                                           text1 = Perioden,
+                                           text2 = Feature,
+                                           text3 = Vervoerwijzen)) +
+        geom_col(position = position_dodge()) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+      ggplotly(Persoonskenmerken_plot, tooltip = c("text1", "text2", "text3"))
   
   data_80305 <- reactive(
     data80305 %>%
