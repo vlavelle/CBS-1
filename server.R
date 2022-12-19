@@ -7,17 +7,18 @@ shinyServer(function(input, output) {
                            filter(Feature == input$Features) %>% 
                            filter(Vervoerwijzen == input$Vervoerwijzen_graph1) )
   
-output$Persoonskenmerken <- renderPlotly({
-      Persoonskenmerken_plot <- ggplot(data_84709(), 
-                                       aes(x = Persoonskenmerken, 
-                                           y = Verplaatsingen_1, 
-                                           fill = RegioS,
-                                           text1 = Perioden,
-                                           text2 = Feature,
-                                           text3 = Vervoerwijzen)) +
-        geom_col(position = position_dodge()) +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
-      ggplotly(Persoonskenmerken_plot, tooltip = c("text1", "text2", "text3"))
+  output$Persoonskenmerken <- renderPlotly({
+    Persoonskenmerken_plot <- ggplot(data_84709(), 
+                                     aes(x = Persoonskenmerken, 
+                                         y = Verplaatsingen_1, 
+                                         fill = RegioS,
+                                         text1 = Perioden,
+                                         text2 = Feature,
+                                         text3 = Vervoerwijzen)) +
+      geom_col(position = position_dodge()) +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+    ggplotly(Persoonskenmerken_plot, tooltip = c("text1", "text2", "text3"))
+  })
   
   data_80305 <- reactive(
     data80305 %>%
@@ -182,8 +183,9 @@ output$Persoonskenmerken <- renderPlotly({
       y = AverageDistanceTravelledPerTrip_1,
       group = interaction(RegionCharacteristics, TravelPurposes),
       colour = RegionCharacteristics,
-      text = RegionCharacteristics,
-      text1 = TripCharacteristics
+      text1 = RegionCharacteristics,
+      text2 = TripCharacteristics,
+      text3 = AverageDistanceTravelledPerTrip_1
     )
   ) +
     geom_line() +
@@ -196,7 +198,7 @@ output$Persoonskenmerken <- renderPlotly({
       caption = "CBS 85055",
       colour = "Region:"
     )
-  data85055plotly <- ggplotly(data85055plot, tooltip = c("text", "y", "text1"))
+  data85055plotly <- ggplotly(data85055plot, tooltip = c("text1", "text2", "text3"))
   data85055plotly
   })
   
@@ -213,8 +215,9 @@ output$Persoonskenmerken <- renderPlotly({
       y = AverageDistanceTravelledPerTrip_1,
       group = interaction(RegionCharacteristics, ModesOfTravel),
       colour = RegionCharacteristics,
-      text = RegionCharacteristics,
-      text1 = TripCharacteristics)
+      text1 = RegionCharacteristics,
+      text2 = TripCharacteristics,
+      text3 = AverageDistanceTravelledPerTrip_1)
   ) +
     geom_point() +
     geom_line() +
@@ -228,13 +231,16 @@ output$Persoonskenmerken <- renderPlotly({
       caption = "CBS 85055",
       colour = "Region:"
     )
-  data85056plotly <- ggplotly(data85056plot, tooltip = c("text", "y", "text1"))
+  data85056plotly <- ggplotly(data85056plot, tooltip = c("text1", "text2", "text3"))
   data85056plotly
   }
   )
   
 }
 )
+
+
+  
 
 
 

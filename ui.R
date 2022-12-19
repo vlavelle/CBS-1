@@ -74,7 +74,11 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                     sliderInput(
                                       inputId = "Periods2",
                                       label = "Select Year",
-                                      min = 2018, max = 2021, sep = "", value = 2021, ticks = FALSE
+                                      min = 2018, 
+                                      max = 2021, 
+                                      sep = "", 
+                                      value = 2021, 
+                                      ticks = FALSE
                                     ),
                                     selectInput(inputId = "ModesOfTravel",label = "Pick Mode of Travel",
                                                 choices = unique(data85056$ModesOfTravel),
@@ -118,6 +122,7 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                 ))
                      ))),
                    tabPanel("Green Mobility"),
+                   tabPanel("Traffic Intensity")
                    tabPanel("Proximity to Amenities", fluidPage(sidebarLayout(
                      sidebarPanel(
                        selectInput(
