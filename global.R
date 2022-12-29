@@ -11,9 +11,159 @@ library(plotly)
 # set wd to the file location where you have downloaded the global, server and UI files
 setwd("~/R/CBS Project/Dashboard1/")
 
-## Dataset 84709NED
-### Idea 2 and 8
+################################################################################
+#Overview by Tab
 
+####Mobility Indicators
+### Data 84710 
+# Motives & Modes per Region
+# Modes per Region (Both Plots)
+
+### Data 85055
+# Timeframe Data: Travel Purpose
+
+### Data 85056
+# Timeframe Data: Travel Mode
+
+### Data 84709
+#Personal Characteristics
+
+
+##### Green Mobility
+
+##### Traffic Intensity
+
+
+##### Proximity to Amenities
+### Data 80305
+# Map and Plot
+
+
+
+##### data84710 ################################################################
+# Motives & Modes per Region
+# Modes per Region (Both Plots)
+metadata84710 <- cbs_get_meta("84710ENG") 
+
+data84710 <- cbs_get_data(
+  id = "84710ENG",
+  Periods = has_substring("JJ"),
+  RegionCharacteristics = c("NL01    ", "LD01    ", "PV20    ",
+                            "PV21    ", "PV22    "),
+  select = c(
+    "TravelMotives",
+    "Population",
+    "TravelModes",
+    "RegionCharacteristics",
+    "Periods",
+    "Trips_4",
+    "DistanceTravelled_5"
+  )
+)
+
+
+tempPeriods84710 <- metadata84710$Periods
+tempMotives84710 <- metadata84710$TravelMotives
+tempModes84710 <- metadata84710$TravelModes
+tempRegion84710 <- metadata84710$RegionCharacteristics
+
+
+data84710$Periods <- tempPeriods84710$Title[match(data84710$Periods, tempPeriods84710$Key)]
+data84710$TravelMotives <- tempMotives84710$Title[match(data84710$TravelMotives, tempMotives84710$Key)]
+data84710$TravelModes <- tempModes84710$Title[match(data84710$TravelModes, tempModes84710$Key)]
+data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionCharacteristics, tempRegion84710$Key)]
+
+
+
+##### Data 85055ENG ############################################################
+# Timeframe Data: Travel Purpose
+# IDEA 6
+
+metadata85055 <- cbs_get_meta("85055ENG")
+
+data85055 <- cbs_get_data(id = "85055ENG", TripCharacteristics = c("2030851", "2030871", "2030891", "2030911", "2030931", "2030950", "2031000", "2031090", "2031100", "2031110", "2031120", "2031130", "2031140", "2031150", "2031160", "2031170", "2031180", "2031190", "2031200", "2031210", "2031220", "2031230", "2031240", "2031250", "2031260", "2031270", "2820701", "2820702", "2820704", "2820705", "2820706","A025261", "A025262", "A025263", "A025264", "A025265", "A025266", "A025267", "A025268"), Population = "A048710", TravelPurposes = c("2030170","2030190","2030200","2030210","2030220","2030230","2030240","2030250","2820740","T001080"), Margins = "MW00000", RegionCharacteristics = c("PV20    ", "PV21    ", "PV22    ", "LD01    "))
+
+
+##Data Prep Idea 6##
+#temp tables
+temp_Region85055 <- metadata85055$RegionCharacteristics
+temp_Periods85055 <- metadata85055$Periods
+temp_TripCharacteristics85055 <- metadata85055$TripCharacteristics
+temp_TravelPurposes85055 <- metadata85055$TravelPurposes
+temp_Population85055 <- metadata85055$Population
+
+#Matching and replacing Keys for Keys
+data85055$RegionCharacteristics <- temp_Region85055$Title[match(data85055$RegionCharacteristics, temp_Region85055$Key)]
+data85055$Periods <- temp_Periods85055$Title[match(data85055$Periods, temp_Periods85055$Key)]
+data85055$TripCharacteristics <- temp_TripCharacteristics85055$Title[match(data85055$TripCharacteristics, temp_TripCharacteristics85055$Key)]
+data85055$TravelPurposes <- temp_TravelPurposes85055$Title[match(data85055$TravelPurposes, temp_TravelPurposes85055$Key)]
+data85055$Population <- temp_Population85055$Title[match(data85055$Population, temp_Population85055$Key)]
+data85055 <- data85055 %>% mutate(
+  Timeframe = case_when(
+    grepl("Distance:", data85055$TripCharacteristics) ~ "Distance",
+    grepl("Time travelled:", data85055$TripCharacteristics) ~ "Time travelled",
+    grepl("Trip in", data85055$TripCharacteristics) ~ "Month",
+    grepl("Departure time:", data85055$TripCharacteristics) ~ "Departure time",
+    grepl("day", data85055$TripCharacteristics) ~ "Day of the week"
+  )
+) %>% select(TripCharacteristics, Timeframe, TravelPurposes, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
+
+data85055$TripCharacteristics <- sub('Departure time: ', '', data85055$TripCharacteristics)
+data85055$TripCharacteristics <- sub('Trip in ', '', data85055$TripCharacteristics)
+
+##### Data 85056ENG ############################################################
+# Timeframe Data: Travel Mode
+
+# want to do similar to above for dataset 85056 for modes of travel at different times
+metadata85056 <- cbs_get_meta("85056ENG")
+data85056 <- cbs_get_data(id = "85056ENG", 
+                          TripCharacteristics = c("2030851", "2030871", 
+                                                  "2030891", "2030911", "2030931", "2030950", "2031000",
+                                                  "2031090", "2031100", "2031110", "2031120", "2031130", 
+                                                  "2031140", "2031150", "2031160", "2031170", "2031180", 
+                                                  "2031190", "2031200", "2031210", "2031220", "2031230", 
+                                                  "2031240", "2031250", "2031260", "2031270", "2820701", 
+                                                  "2820702", "2820704", "2820705", "2820706","A025261", 
+                                                  "A025262", "A025263", "A025264", "A025265", "A025266", 
+                                                  "A025267", "A025268"), 
+                          Population = "A048710", 
+                          ModesOfTravel = c("T001093","A048583","A048584","A018981","A018982",               
+                                            "A018984","A018985","A018986"),
+                          Margins = "MW00000", 
+                          RegionCharacteristics = c("PV20    ", "PV21    ", 
+                                                    "PV22    ", "LD01    "))
+
+temp_Region85056 <- metadata85056$RegionCharacteristics
+temp_Periods85056 <- metadata85056$Periods
+temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics
+temp_ModesOfTravel85056 <- metadata85056$ModesOfTravel
+temp_Population85056 <- metadata85056$Population
+
+data85056$RegionCharacteristics <- temp_Region85056$Title[match(data85056$RegionCharacteristics, temp_Region85056$Key)]
+data85056$Periods <- temp_Periods85056$Title[match(data85056$Periods, temp_Periods85056$Key)]
+data85056$TripCharacteristics <-
+  temp_TripCharacteristics85056$Title[match(data85056$TripCharacteristics,
+                                            temp_TripCharacteristics85056$Key)]
+data85056$ModesOfTravel <- temp_ModesOfTravel85056$Title[match(data85056$ModesOfTravel, temp_ModesOfTravel85056$Key)]
+data85056$Population <- temp_Population85056$Title[match(data85056$Population, temp_Population85056$Key)]
+
+data85056 <- data85056 %>% mutate(
+  Timeframe = case_when(
+    grepl("Distance:", data85056$TripCharacteristics) ~ "Distance",
+    grepl("Time travelled:", data85056$TripCharacteristics) ~ "Time travelled",
+    grepl("Trip in", data85056$TripCharacteristics) ~ "Month",
+    grepl("Departure time:", data85056$TripCharacteristics) ~ "Departure time",
+    grepl("day", data85056$TripCharacteristics) ~ "Day of the week"
+  )
+) %>% select(TripCharacteristics, Timeframe, ModesOfTravel, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
+
+data85056$TripCharacteristics <- sub('Departure time: ', '', data85056$TripCharacteristics)
+data85056$TripCharacteristics <- sub('Trip in ', '', data85056$TripCharacteristics)
+
+
+##### Data 84709NED ############################################################
+# Personal Characteristics
+# Idea 2 and 8
 
 metadata84709 <- cbs_get_meta("84709NED")
 datatemp <- cbs_get_data('84709NED', Persoonskenmerken = c( "T009002", "51511  ", "52020  ", "53105  ", "53500  ", "53705  ", "53850  ", "53925  ", "21600  ", "1012600", "2012655", "2012657","1014752", "1014753", "1014754", "1014755","1014756", "2030530", "2030540", "2030550","2018700", "2018740", "2018790", "2017560","2017565", "2012751", "2017572", "2820713", "2017576", "2017500", "A048766", "A048767","A048768", "A048769", "A048770"), Vervoerwijzen = c("T001093", "A048583", "A048584", "A018981", "A018982", "A018984", "A018985", "A018986"), RegioS = c("NL01    ","LD01    ","PV20    ","PV21    ", "PV22    "), Geslacht = "T001038", Marges = c("MW00000"), Populatie = c("A048710"), select = c("Persoonskenmerken", "RegioS", "Perioden", "Vervoerwijzen", "Verplaatsingen_1", "Afstand_2", "Reisduur_3"))
@@ -27,12 +177,8 @@ temp_Vervoerwijzen84709 <- metadata84709$Vervoerwijzen
 
 #Matching and replacing Keys for Keys
 data84709$RegioS <- temp_RegioS84709$Title[match(data84709$RegioS, temp_RegioS84709$Key)]
-
 data84709$Perioden <- temp_Perioden84709$Title[match(data84709$Perioden, temp_Perioden84709$Key)]
-
-data84709$Persoonskenmerken <-
-  temp_Persoonskenmerken84709$Title[match(data84709$Persoonskenmerken,
-                                          temp_Persoonskenmerken84709$Key)]
+data84709$Persoonskenmerken <- temp_Persoonskenmerken84709$Title[match(data84709$Persoonskenmerken, temp_Persoonskenmerken84709$Key)]
 data84709$Vervoerwijzen <- temp_Vervoerwijzen84709$Title[match(data84709$Vervoerwijzen, temp_Vervoerwijzen84709$Key)]
 
 
@@ -57,9 +203,9 @@ data84709$Persoonskenmerken <- sub('Onderwijsniveau: ', '', data84709$Persoonske
 data84709$Persoonskenmerken <- sub('Participatie: ', '', data84709$Persoonskenmerken)
 
 
+##### Data 80305 and Shapefile Import ##########################################
+#For Proximity to Amenties Tab
 
-
-# Data for Map 
 # metadata
 metadata80305 <- cbs_get_meta("80305ENG") 
 # data from CBS
@@ -115,10 +261,8 @@ provinces <- municipalBoundaries %>%
 
 #combining the municipality polygons by the province and renaming the column
 provincialBoundaries <- data.frame(c("Drenthe","Friesland","Groningen"), 
-                                   c(st_union(provinces[[1]]),
-                                     st_union(provinces[[2]]),
-                                     st_union(provinces[[3]]))) %>%
-  rename(provinces = c..Drenthe....Friesland....Groningen..)
+                                   c(st_union(provinces), 
+                                     renmae(provinces = c..Drenthe....Friesland....Groningen..)))
 
 
 # Joining Data
@@ -135,123 +279,3 @@ mapData <- municipalBoundaries %>%
       DistanceToSchool_64 + DistanceToTrainStationsAllTypes_101
   ) / 15
   ) 
-
-
-
-#### IDEA 1 ####
-
-metadata84710 <- cbs_get_meta("84710ENG") 
-
-data84710 <- cbs_get_data(
-  id = "84710ENG",
-  Periods = has_substring("JJ"),
-  RegionCharacteristics = c("NL01    ", "LD01    ", "PV20    ",
-                            "PV21    ", "PV22    "),
-  select = c(
-    "TravelMotives",
-    "Population",
-    "TravelModes",
-    "RegionCharacteristics",
-    "Periods",
-    "Trips_4",
-    "DistanceTravelled_5"
-  )
-)
-
-
-tempPeriods84710 <- metadata84710$Periods
-tempMotives84710 <- metadata84710$TravelMotives
-tempModes84710 <- metadata84710$TravelModes
-tempRegion84710 <- metadata84710$RegionCharacteristics
-
-
-data84710$Periods <- tempPeriods84710$Title[match(data84710$Periods, tempPeriods84710$Key)]
-data84710$TravelMotives <- tempMotives84710$Title[match(data84710$TravelMotives, tempMotives84710$Key)]
-data84710$TravelModes <- tempModes84710$Title[match(data84710$TravelModes, tempModes84710$Key)]
-data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionCharacteristics, tempRegion84710$Key)]
-
-
-#### dataset 85055ENG
-#### IDEA 6
-
-metadata85055 <- cbs_get_meta("85055ENG")
-
-data85055 <- cbs_get_data(id = "85055ENG", TripCharacteristics = c("2030851", "2030871", "2030891", "2030911", "2030931", "2030950", "2031000", "2031090", "2031100", "2031110", "2031120", "2031130", "2031140", "2031150", "2031160", "2031170", "2031180", "2031190", "2031200", "2031210", "2031220", "2031230", "2031240", "2031250", "2031260", "2031270", "2820701", "2820702", "2820704", "2820705", "2820706","A025261", "A025262", "A025263", "A025264", "A025265", "A025266", "A025267", "A025268"), Population = "A048710", TravelPurposes = c("2030170","2030190","2030200","2030210","2030220","2030230","2030240","2030250","2820740","T001080"), Margins = "MW00000", RegionCharacteristics = c("PV20    ", "PV21    ", "PV22    ", "LD01    "))
-
-
-#####Data Prep Idea 6#####
-#temp tables
-temp_Region85055 <- metadata85055$RegionCharacteristics
-temp_Periods85055 <- metadata85055$Periods
-temp_TripCharacteristics85055 <- metadata85055$TripCharacteristics
-temp_TravelPurposes85055 <- metadata85055$TravelPurposes
-temp_Population85055 <- metadata85055$Population
-
-#Matching and replacing Keys for Keys
-data85055$RegionCharacteristics <- temp_Region85055$Title[match(data85055$RegionCharacteristics, temp_Region85055$Key)]
-data85055$Periods <- temp_Periods85055$Title[match(data85055$Periods, temp_Periods85055$Key)]
-data85055$TripCharacteristics <-
-  temp_TripCharacteristics85055$Title[match(data85055$TripCharacteristics,
-                                            temp_TripCharacteristics85055$Key)]
-data85055$TravelPurposes <- temp_TravelPurposes85055$Title[match(data85055$TravelPurposes, temp_TravelPurposes85055$Key)]
-data85055$Population <- temp_Population85055$Title[match(data85055$Population, temp_Population85055$Key)]
-data85055 <- data85055 %>% mutate(
-  Timeframe = case_when(
-    grepl("Distance:", data85055$TripCharacteristics) ~ "Distance",
-    grepl("Time travelled:", data85055$TripCharacteristics) ~ "Time travelled",
-    grepl("Trip in", data85055$TripCharacteristics) ~ "Month",
-    grepl("Departure time:", data85055$TripCharacteristics) ~ "Departure time",
-    grepl("day", data85055$TripCharacteristics) ~ "Day of the week"
-  )
-) %>% select(TripCharacteristics, Timeframe, TravelPurposes, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
-
-data85055$TripCharacteristics <- sub('Departure time: ', '', data85055$TripCharacteristics)
-data85055$TripCharacteristics <- sub('Trip in ', '', data85055$TripCharacteristics)
-
-
-
-# want to do similar to above for dataset 85056 for modes of travel at different times
-metadata85056 <- cbs_get_meta("85056ENG")
-data85056 <- cbs_get_data(id = "85056ENG", 
-                          TripCharacteristics = c("2030851", "2030871", 
-                                                  "2030891", "2030911", "2030931", "2030950", "2031000",
-                                                  "2031090", "2031100", "2031110", "2031120", "2031130", 
-                                                  "2031140", "2031150", "2031160", "2031170", "2031180", 
-                                                  "2031190", "2031200", "2031210", "2031220", "2031230", 
-                                                  "2031240", "2031250", "2031260", "2031270", "2820701", 
-                                                  "2820702", "2820704", "2820705", "2820706","A025261", 
-                                                  "A025262", "A025263", "A025264", "A025265", "A025266", 
-                                                  "A025267", "A025268"), 
-                          Population = "A048710", 
-                          ModesOfTravel = c("T001093","A048583","A048584","A018981","A018982",               
-                                            "A018984","A018985","A018986"),
-                          Margins = "MW00000", 
-                          RegionCharacteristics = c("PV20    ", "PV21    ", 
-                                                    "PV22    ", "LD01    "))
-
-temp_Region85056 <- metadata85056$RegionCharacteristics
-temp_Periods85056 <- metadata85056$Periods
-temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics
-temp_ModesOfTravel85056 <- metadata85056$ModesOfTravel
-temp_Population85056 <- metadata85056$Population
-
-data85056$RegionCharacteristics <- temp_Region85056$Title[match(data85056$RegionCharacteristics, temp_Region85056$Key)]
-data85056$Periods <- temp_Periods85056$Title[match(data85056$Periods, temp_Periods85056$Key)]
-data85056$TripCharacteristics <-
-  temp_TripCharacteristics85056$Title[match(data85056$TripCharacteristics,
-                                            temp_TripCharacteristics85056$Key)]
-data85056$ModesOfTravel <- temp_ModesOfTravel85056$Title[match(data85056$ModesOfTravel, temp_ModesOfTravel85056$Key)]
-data85056$Population <- temp_Population85056$Title[match(data85056$Population, temp_Population85056$Key)]
-data85056 <- data85056 %>% mutate(
-  Timeframe = case_when(
-    grepl("Distance:", data85056$TripCharacteristics) ~ "Distance",
-    grepl("Time travelled:", data85056$TripCharacteristics) ~ "Time travelled",
-    grepl("Trip in", data85056$TripCharacteristics) ~ "Month",
-    grepl("Departure time:", data85056$TripCharacteristics) ~ "Departure time",
-    grepl("day", data85056$TripCharacteristics) ~ "Day of the week"
-  )
-) %>% select(TripCharacteristics, Timeframe, ModesOfTravel, RegionCharacteristics, Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2)  
-
-data85056$TripCharacteristics <- sub('Departure time: ', '', data85056$TripCharacteristics)
-data85056$TripCharacteristics <- sub('Trip in ', '', data85056$TripCharacteristics)
-
