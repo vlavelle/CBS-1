@@ -33,6 +33,12 @@ source("global.R", local = TRUE)
 
 shinyServer(function(input, output) {
 
+# define a vector for the colours for the Region (colourblind safe)
+# Not yet implemented
+  regioncolours <- c("The Netherlands"="#332288", "Northern Netherlands"="#88CCEE", 
+              "Groningen"="#CC6677", "Drenthe"="#DDCC77", "Friesland"="#44AA99")
+  
+
 
 #Data - Not sure where the plot for this one is
   data_80305 <- reactive(
@@ -40,7 +46,6 @@ shinyServer(function(input, output) {
       filter(Periods == input$periods)
     )
   
-
 ###### Mobility Indicators Tab
 ### Modes per Region
 # Data
@@ -50,7 +55,7 @@ shinyServer(function(input, output) {
       filter(Periods == "2021") %>%
       filter(TravelMotives == "Total") %>%
       filter(TravelModes != "Total")
-    )
+  )
   
 #Plot
   output$plotidea1 <- renderPlot(
@@ -60,8 +65,8 @@ shinyServer(function(input, output) {
         x = TravelModes, 
         y = Trips_4, 
         fill = TravelModes
-        )
-      ) +
+      )
+    ) +
       geom_col() +
       theme_minimal() +
       labs(
@@ -69,8 +74,8 @@ shinyServer(function(input, output) {
         x = "Travel Mode",
         y = "Avg Trips per Person Per Year",
         caption = "Data Source: CBS 84710ENG"
-        )
-    )
+      )
+  )
   
 ### Motives & Modes per regions
 #Data 1
@@ -83,7 +88,7 @@ shinyServer(function(input, output) {
       mutate(mean_distance_travelled = mean(DistanceTravelled_5, na.rm = TRUE)) %>%
       select(TravelMotives, RegionCharacteristics, Periods, mean_distance_travelled) %>%
       distinct()
-    )
+  )
   
 #Plot 1
   output$lineplottravelmotives <- renderPlot(
@@ -94,17 +99,17 @@ shinyServer(function(input, output) {
         y = mean_distance_travelled,
         group = interaction(RegionCharacteristics, TravelMotives),
         colour = RegionCharacteristics
-        )
-      ) +
-    geom_line() +
-    geom_point() +
-    theme_minimal() +
-    labs(
-      caption = "CBS 84710",
-      colour = "Region:"
       )
-    )
-  
+    ) +
+      geom_line() +
+      geom_point() +
+      theme_minimal() +
+      labs(
+        caption = "Data Source: CBS 84710",
+        colour = "Region:"
+      )
+  )
+
 #Data 2
   data84710_2 <- reactive(
     data84710 %>% 
@@ -115,7 +120,7 @@ shinyServer(function(input, output) {
       mutate(mean_distance_travelled = mean(DistanceTravelled_5, na.rm = TRUE)) %>%
       select(TravelModes, RegionCharacteristics, Periods, mean_distance_travelled) %>%
       distinct()
-    )
+  )
   
 #Plot 2
   output$lineplottravelmodes <- renderPlot(ggplot(
@@ -130,7 +135,7 @@ shinyServer(function(input, output) {
     geom_line() +
     geom_point() +
     theme_minimal() +
-    labs(caption = "CBS 84710",
+    labs(caption = "Data Source: CBS 84710",
          colour = "Region:"))
   
 ###Timeframe Data: Travel Purpose
@@ -163,7 +168,7 @@ shinyServer(function(input, output) {
       labs(
         x = "Time frame",
         y = "Average Distance Travelled Per Trip",
-        caption = "CBS 85055",
+        caption = "Data Source: CBS 85055",
         colour = "Region:"
         )
 #Plotly
@@ -200,7 +205,7 @@ shinyServer(function(input, output) {
       labs(
         x = "Time frame",
         y = "Average Distance Travelled Per Trip",
-        caption = "CBS 85055",
+        caption = "Data Source: CBS 85055",
         colour = "Region:"
         )
   
@@ -233,7 +238,10 @@ shinyServer(function(input, output) {
       ) +
       geom_col(position = position_dodge()) +
       theme_minimal() +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) +
+      labs(
+        caption = "Data Source: CBS 84709",
+        colour = "Region:")
     
     ggplotly(Persoonskenmerken_plot, tooltip = c("text1", "text2", "text3"))
   })
@@ -332,7 +340,7 @@ shinyServer(function(input, output) {
         title = "Average distance by Province",
         x= "Provinces",
         y="Average Distance in km",
-        caption = "Source: CBS 80305ENG"
+        caption = "Data Source: CBS 80305ENG"
       ) +
       theme_minimal()
   }
