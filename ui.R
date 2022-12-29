@@ -1,5 +1,22 @@
 source("global.R")
 
+# Mobility Indicators
+#### Modes per Region
+#### Motives & Modes per Region
+#### Timeframe Data: Travel Purpose
+#### Timeframe Data: Travel Mode
+#### Personal Characteristics
+
+# Green Mobility
+
+# Traffic Intensity
+
+# Proximity to Amenities
+#### Map
+#### Plot
+
+#About us/ Data
+
 
 shinyUI(navbarPage("Mobility in the Northern Netherlands",
                    tabPanel("Mobility Indicators", fluidPage(
@@ -122,7 +139,7 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                 ))
                      ))),
                    tabPanel("Green Mobility"),
-                   tabPanel("Traffic Intensity")
+                   tabPanel("Traffic Intensity"),
                    tabPanel("Proximity to Amenities", fluidPage(sidebarLayout(
                      sidebarPanel(
                        selectInput(
@@ -151,10 +168,9 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                        ) 
                      ),
                      mainPanel(fluidRow(
-                       verticalLayout(
-                         girafeOutput("map"),  # girafe is the tooltip package
-                         plotOutput("mapplot2")
-                       )))))),
+                       column(6, girafeOutput("map")),  # first output will occupy half of the row
+                       column(6, plotOutput("mapplot2"))  # second output will occupy the other half of the row
+                     ))))),
                    navbarMenu("About us/data",
                               tabPanel("Datasets origin and details"),
                               tabPanel("Creators"))
