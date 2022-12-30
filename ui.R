@@ -29,10 +29,10 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                     selectInput(inputId = "region", #for server side
                                                 label = "Select region", # text displayed 
                                                 choices = unique(data84710$RegionCharacteristics), # input to choose from
-                                                selected = "Noord-Nederland (LD)") # define default
+                                                selected = "Northern Netherlands") # define default
                                   ),
                                   mainPanel(
-                                    plotOutput("plotidea1")
+                                    plotlyOutput("plotidea1")
                                   )
                                 )),
                        tabPanel("Motives & Modes per regions", # title of tab
@@ -46,7 +46,7 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                       selected = "Total"
                                     )
                                   ),
-                                  mainPanel(plotOutput("lineplottravelmotives"))
+                                  mainPanel(plotlyOutput("lineplottravelmotives"))
                                 ),
                                 sidebarLayout(
                                   sidebarPanel(
@@ -58,7 +58,7 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                       selected = "Total"
                                     )
                                   ),
-                                  mainPanel(plotOutput("lineplottravelmodes"))
+                                  mainPanel(plotlyOutput("lineplottravelmodes"))
                                 )),
                        tabPanel("Timeframe data: Travel Purpose",
                                 plotlyOutput("timeframedataplot"),
@@ -75,7 +75,8 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                            ticks = FALSE
                                          )),
                                   column(3,
-                                         selectInput(inputId = "TravelPurposes",label = "Pick Purpose of Travel",
+                                         selectInput(inputId = "TravelPurposes",
+                                                     label = "Pick Purpose of Travel",
                                                      choices = unique(data85055$TravelPurposes),
                                                      multiple = FALSE,
                                                      selected = "Total"
@@ -167,10 +168,12 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                          selected = "Large Supermarket"
                        ) 
                      ),
-                     mainPanel(fluidRow(
-                       column(6, girafeOutput("map")),  # first output will occupy half of the row
-                       column(6, plotOutput("mapplot2"))  # second output will occupy the other half of the row
-                     ))))),
+                     mainPanel(
+                       fluidRow(
+                         column(6, div(style = "height: 50vh;", girafeOutput("map", height = "100%"))),
+                         column(6, div(style = "height: 50vh;", plotOutput("mapplot", height = "100%")))
+                       )
+                     )))),
                    navbarMenu("About us/data",
                               tabPanel("Datasets origin and details"),
                               tabPanel("Creators"))
