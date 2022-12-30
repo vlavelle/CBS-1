@@ -50,14 +50,17 @@ data84710 <- cbs_get_data(
   Periods = has_substring("JJ"),
   RegionCharacteristics = c("NL01    ", "LD01    ", "PV20    ",
                             "PV21    ", "PV22    "),
+  Population = "A048710", #6 and older
+  Margins = "MW00000", #pure value, no confidence interval values
   select = c(
     "TravelMotives",
-    "Population",
     "TravelModes",
     "RegionCharacteristics",
     "Periods",
-    "Trips_4",
-    "DistanceTravelled_5"
+    "Trips_1", #daily data
+    "DistanceTravelled_2", #daily data
+    "Trips_4", #yearly data
+    "DistanceTravelled_5" #yearly data
   )
 )
 
@@ -71,8 +74,14 @@ tempRegion84710 <- metadata84710$RegionCharacteristics
 data84710$Periods <- tempPeriods84710$Title[match(data84710$Periods, tempPeriods84710$Key)]
 data84710$TravelMotives <- tempMotives84710$Title[match(data84710$TravelMotives, tempMotives84710$Key)]
 data84710$TravelModes <- tempModes84710$Title[match(data84710$TravelModes, tempModes84710$Key)]
-data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionCharacteristics, tempRegion84710$Key)]
 
+#This is the fixed one, for testing purposes it is 2 right now
+data84710$RegionCharacteristics <- recode(data84710$RegionCharacteristics, 
+                                          "NL01    " = "The Netherlands",
+                                          "LD01    " = "Northern Netherlands",
+                                          "PV20    " = "Groningen",
+                                          "PV21    " = "Friesland",
+                                          "PV22    " = "Drenthe")
 
 
 ##### Data 85055ENG ############################################################
@@ -81,7 +90,26 @@ data84710$RegionCharacteristics <- tempRegion84710$Title[match(data84710$RegionC
 
 metadata85055 <- cbs_get_meta("85055ENG")
 
-data85055 <- cbs_get_data(id = "85055ENG", TripCharacteristics = c("2030851", "2030871", "2030891", "2030911", "2030931", "2030950", "2031000", "2031090", "2031100", "2031110", "2031120", "2031130", "2031140", "2031150", "2031160", "2031170", "2031180", "2031190", "2031200", "2031210", "2031220", "2031230", "2031240", "2031250", "2031260", "2031270", "2820701", "2820702", "2820704", "2820705", "2820706","A025261", "A025262", "A025263", "A025264", "A025265", "A025266", "A025267", "A025268"), Population = "A048710", TravelPurposes = c("2030170","2030190","2030200","2030210","2030220","2030230","2030240","2030250","2820740","T001080"), Margins = "MW00000", RegionCharacteristics = c("PV20    ", "PV21    ", "PV22    ", "LD01    "))
+data85055 <- cbs_get_data(
+  id = "85055ENG", 
+  TripCharacteristics = c(
+    "2030851", "2030871", "2030891", "2030911", "2030931", "2030950", "2031000", 
+    "2031090", "2031100", "2031110", "2031120", "2031130", "2031140", "2031150", 
+    "2031160", "2031170", "2031180", "2031190", "2031200", "2031210", "2031220", 
+    "2031230", "2031240", "2031250", "2031260", "2031270", "2820701", "2820702", 
+    "2820704", "2820705", "2820706","A025261", "A025262", "A025263", "A025264", 
+    "A025265", "A025266", "A025267", "A025268"
+    ), 
+  Population = "A048710", 
+  TravelPurposes = c(
+    "2030170","2030190","2030200","2030210","2030220","2030230","2030240",
+    "2030250","2820740","T001080"
+    ), 
+  Margins = "MW00000", 
+  RegionCharacteristics = c(
+    "PV20    ", "PV21    ", "PV22    ", "LD01    "
+    )
+  )
 
 
 ##Data Prep Idea 6##
@@ -92,8 +120,13 @@ temp_TripCharacteristics85055 <- metadata85055$TripCharacteristics
 temp_TravelPurposes85055 <- metadata85055$TravelPurposes
 temp_Population85055 <- metadata85055$Population
 
+#Fixing Region names manually
+data85055$RegionCharacteristics <- recode(data85055$RegionCharacteristics,
+                                          "LD01    " = "Northern Netherlands",
+                                          "PV20    " = "Groningen",
+                                          "PV21    " = "Friesland",
+                                          "PV22    " = "Drenthe")
 #Matching and replacing Keys for Keys
-data85055$RegionCharacteristics <- temp_Region85055$Title[match(data85055$RegionCharacteristics, temp_Region85055$Key)]
 data85055$Periods <- temp_Periods85055$Title[match(data85055$Periods, temp_Periods85055$Key)]
 data85055$TripCharacteristics <- temp_TripCharacteristics85055$Title[match(data85055$TripCharacteristics, temp_TripCharacteristics85055$Key)]
 data85055$TravelPurposes <- temp_TravelPurposes85055$Title[match(data85055$TravelPurposes, temp_TravelPurposes85055$Key)]
@@ -139,14 +172,19 @@ temp_TripCharacteristics85056 <- metadata85056$TripCharacteristics
 temp_ModesOfTravel85056 <- metadata85056$ModesOfTravel
 temp_Population85056 <- metadata85056$Population
 
-data85056$RegionCharacteristics <- temp_Region85056$Title[match(data85056$RegionCharacteristics, temp_Region85056$Key)]
+#Fixing Region names manually
+data85056$RegionCharacteristics <- recode(data85056$RegionCharacteristics,
+                                          "LD01    " = "Northern Netherlands",
+                                          "PV20    " = "Groningen",
+                                          "PV21    " = "Friesland",
+                                          "PV22    " = "Drenthe")
+#Matching and replacing Keys for Keys
 data85056$Periods <- temp_Periods85056$Title[match(data85056$Periods, temp_Periods85056$Key)]
-data85056$TripCharacteristics <-
-  temp_TripCharacteristics85056$Title[match(data85056$TripCharacteristics,
-                                            temp_TripCharacteristics85056$Key)]
+data85056$TripCharacteristics <- temp_TripCharacteristics85056$Title[match(data85056$TripCharacteristics, temp_TripCharacteristics85056$Key)]
 data85056$ModesOfTravel <- temp_ModesOfTravel85056$Title[match(data85056$ModesOfTravel, temp_ModesOfTravel85056$Key)]
 data85056$Population <- temp_Population85056$Title[match(data85056$Population, temp_Population85056$Key)]
 
+#mutation for aliasing
 data85056 <- data85056 %>% mutate(
   Timeframe = case_when(
     grepl("Distance:", data85056$TripCharacteristics) ~ "Distance",
@@ -236,12 +274,26 @@ data80305 <- cbs_get_data(
 # Data Prep
 tempPeriods <- metadata80305$Periods
 tempRegion <- metadata80305$Regions
-data80305$Periods <- tempPeriods$Title[
-  match(data80305$Periods, tempPeriods$Key)]
+data80305$Periods <- tempPeriods$Title[match(data80305$Periods, tempPeriods$Key)]
 
 #New Column "Municipality" made, "Region" is kept to match with shapefile
-data80305$Municipality <- tempRegion$Title[
-  match(data80305$Regions, tempRegion$Key)]
+#fixing region names
+data80305$Municipality <- tempRegion$Title[match(data80305$Regions, tempRegion$Key)]
+data80305$Municipality<- recode(data80305$Municipality,
+                                "Groningen (PV)" = "Groningen ", #extra space because city/province issue
+                                "Fryslân (PV)" = "Friesland",
+                                "Drenthe (PV)" = "Drenthe")
+
+data80305%>%
+  mutate(Avg15 = (
+    DistanceToGPPractice_1 + DistanceToGPPost_5 +
+      DistanceToPharmacy_6 + DistanceToHospital_11 +
+      DistanceToLargeSupermarket_20 + DistanceToShopForOtherDailyFood_24 + 
+      DistanceToDepartmentStore_28 + DistanceToCafeEtc_32 +
+      DistanceToRestaurant_40 + DistanceToDaycareCentres_48 + 
+      DistanceToOutOfSchoolCare_52 + DistanceToSchool_60 + 
+      DistanceToSchool_64 + DistanceToTrainStationsAllTypes_101
+  ) / 15) 
 
 #Shapefile Import through API call from PDOK
 municipalBoundaries_unfiltered <- st_read(
@@ -261,21 +313,11 @@ provinces <- municipalBoundaries %>%
 
 #combining the municipality polygons by the province and renaming the column
 provincialBoundaries <- data.frame(c("Drenthe","Friesland","Groningen"), 
-                                   c(st_union(provinces), 
-                                     renmae(provinces = c..Drenthe....Friesland....Groningen..)))
-
-
+                                   c(st_union(provinces[[1]]),
+                                     st_union(provinces[[2]]),
+                                     st_union(provinces[[3]]))) %>%
+  rename(provinces = c..Drenthe....Friesland....Groningen..)
 # Joining Data
 # Joining Municipal Shapefile by Municipality  and calculating a new column
 mapData <- municipalBoundaries %>%
-  left_join(data80305, by = c(identificatie="Regions")) %>%
-  mutate(Avg15 = (
-    DistanceToGPPractice_1 + DistanceToGPPost_5 +
-      DistanceToPharmacy_6 + DistanceToHospital_11 +
-      DistanceToLargeSupermarket_20 + DistanceToShopForOtherDailyFood_24 + 
-      DistanceToDepartmentStore_28 + DistanceToCafeEtc_32 +
-      DistanceToRestaurant_40 + DistanceToDaycareCentres_48 + 
-      DistanceToOutOfSchoolCare_52 + DistanceToSchool_60 + 
-      DistanceToSchool_64 + DistanceToTrainStationsAllTypes_101
-  ) / 15
-  ) 
+  left_join(data80305, by = c(identificatie="Regions")) 
