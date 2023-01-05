@@ -361,4 +361,45 @@ shinyServer(function(input, output) {
       scale_fill_manual(values = regioncolours_prox) + #for unified colours
       theme_minimal()
   })
+  
+  # Driving license
+  dataDrivingLicense1 <- reactive(
+    data83488%>%
+      filter(AgeDrivingLicenseHolder == input$LicenseHolderAge) %>% 
+      filter(CategoryDrivingLicence == input$LicenseCategory) %>%
+      group_by(Periods, Region)
+  )
+  
+  output$DrivingLicense1 <- renderPlotly({
+    DrivingLicense1 <- ggplot(dataDrivingLicense1(), 
+                              aes(x= Periods, 
+                                  y = PeopleWithADrivingLicence_1, 
+                                  group = interaction(Region, AgeDrivingLicenseHolder),
+                                  colour = Region)) + 
+      geom_point() +
+      geom_line(aes(group = interaction(Region, AgeDrivingLicenseHolder))
+      ) + 
+      theme_minimal() +
+      labs(caption = "CBS 83488",
+           x = "Years",
+           y = "Number of people with driver's licenses")
+    ggplotly(DrivingLicense1)
+    
+  })
+  
+  dataDrivingLicense2 <- reactive(data83488 %>% 
+                                    filter(Periods == input$PeriodsLicense) %>% 
+                                    filter(CategoryDrivingLicence == input$LicenseCategory) %>% 
+                                    filter(AgeDrivingLicenseHolder != "Total"))
+  
+  output$DrivingLicense2 <- renderPlotly({
+    DrivingLicense2 <- ggplot(dataDrivingLicense2(), aes(x= AgeDrivingLicenseHolder, y = PeopleWithADrivingLicence_1, fill = Region )) + 
+      geom_col(position = position_dodge()) +
+      ylab("People with a driving license") + 
+      xlab("Periods") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    ggplotly(DrivingLicense2)
+  }  
+  )
 })
