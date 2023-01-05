@@ -321,3 +321,23 @@ provincialBoundaries <- data.frame(c("Drenthe","Friesland","Groningen"),
 # Joining Municipal Shapefile by Municipality  and calculating a new column
 mapData <- municipalBoundaries %>%
   left_join(data80305, by = c(identificatie="Regions")) 
+
+
+## Drivers License:
+data83488 <- cbs_get_data('83488ENG', Region = c("PV20  ","PV21  ", "PV22  "))
+metadata83488 <- cbs_get_meta("83488ENG")
+
+
+# Dataprep drivers license  
+tempCategoryDrivingLicense83488 <- metadata83488$CategoryDrivingLicence
+tempAgeDrivingLicenseHolder83488 <- metadata83488$AgeDrivingLicenseHolder
+tempRegion83488 <- metadata83488$Region
+tempPeriods83488 <- metadata83488$Periods
+
+data83488$CategoryDrivingLicence <- tempCategoryDrivingLicense83488$Title[match(data83488$CategoryDrivingLicence, tempCategoryDrivingLicense83488$Key)]
+
+data83488$AgeDrivingLicenseHolder <- tempAgeDrivingLicenseHolder83488$Title[match(data83488$AgeDrivingLicenseHolder, tempAgeDrivingLicenseHolder83488$Key)]
+data83488$Region <- tempRegion83488$Title[match(data83488$Region, tempRegion83488$Key)]
+data83488$Periods <- tempPeriods83488$Title[match(data83488$Periods, tempPeriods83488$Key)]
+
+
