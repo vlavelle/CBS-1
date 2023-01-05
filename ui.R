@@ -137,7 +137,35 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                   mainPanel(
                                     plotlyOutput("Persoonskenmerken")
                                   )
+                                )),
+                       tabPanel("Driving licenses",
+                                sidebarLayout(
+                                  sidebarPanel(
+                                    selectInput(inputId = "LicenseHolderAge",
+                                                label = "LicenseHolderAge",
+                                                choices = unique(data83488$AgeDrivingLicenseHolder), # What to do here, because you use a different column right?
+                                                multiple = FALSE,
+                                                selected = "Total"),
+                                    
+                                    selectInput(inputId = "LicenseCategory",
+                                                label = "LicenseCategory",
+                                                choices = unique(data83488$CategoryDrivingLicence), # What to do here, because you use a different column right?
+                                                multiple = FALSE,
+                                                selected = "Total"),
+                                    sliderInput(inputId = "PeriodsLicense",
+                                                label = "PeriodsLicense",
+                                                min = 2014, # check the min/max values
+                                                max = 2022, 
+                                                value = 2022,
+                                                sep = "",
+                                                ticks = TRUE)
+                                    
+                                  ),
+                                  mainPanel(
+                                    plotlyOutput("DrivingLicense1"),plotlyOutput("DrivingLicense2")
+                                  )
                                 ))
+                       
                      ))),
                    tabPanel("Green Mobility"),
                    tabPanel("Traffic Intensity"),
