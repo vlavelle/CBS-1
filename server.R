@@ -32,24 +32,24 @@ source("global.R", local = TRUE)
 
 
 shinyServer(function(input, output) {
-
-# define a vector for the colours for the Region (colourblind safe)
-# Not yet implemented
+  
+  # define a vector for the colours for the Region (colourblind safe)
+  # Not yet implemented
   regioncolours <- c("The Netherlands"="#E7298A", "Northern Netherlands"="#7570B3", 
-              "Groningen"="#1B9E77", "Drenthe"="#D95F02", "Friesland"="#E6AB02")
+                     "Groningen"="#1B9E77", "Drenthe"="#D95F02", "Friesland"="#E6AB02")
   regioncolours_prox <- c("Groningen "="#1B9E77", "Drenthe"="#D95F02", "Friesland"="#E6AB02")
   
-
-
-#Data - Not sure where the plot for this one is
+  
+  
+  #Data - Not sure where the plot for this one is
   data_80305 <- reactive({
     data80305 %>%
       filter(Periods == input$periods)
-    })
+  })
   
-###### Mobility Indicators Tab
-### Modes per Region
-# Data
+  ###### Mobility Indicators Tab
+  ### Modes per Region
+  # Data
   data_84710 <- reactive({
     data84710 %>%
       filter(RegionCharacteristics == input$region) %>%
@@ -63,7 +63,7 @@ shinyServer(function(input, output) {
              Trips_4)
   })
   
-#Plot 1
+  #Plot 1
   output$plotidea1 <- renderPlotly({
     modesperregionplot <- ggplot(
       data = data_84710(), 
@@ -87,10 +87,10 @@ shinyServer(function(input, output) {
     modesperregionplotly
   })
   
-
   
-### Motives & Modes per regions
-#Data 1
+  
+  ### Motives & Modes per regions
+  #Data 1
   data84710_1 <- reactive({
     data84710 %>% 
       filter(TravelModes == "Total") %>%
@@ -102,8 +102,8 @@ shinyServer(function(input, output) {
       distinct()
   })
   
-#Plot 1
-
+  #Plot 1
+  
   output$lineplottravelmotives <- renderPlotly({
     lineplot_1 <- ggplot(
       data = data84710_1(), 
@@ -126,8 +126,8 @@ shinyServer(function(input, output) {
     lineplotly_1 <- ggplotly(lineplot_1, tooltip = c("text1"))
     lineplotly_1
   })
-
-#Data 2
+  
+  #Data 2
   data84710_2 <- reactive({
     data84710 %>% 
       filter(TravelMotives == "Total") %>%
@@ -139,7 +139,7 @@ shinyServer(function(input, output) {
       distinct()
   })
   
-#Plot 2
+  #Plot 2
   output$lineplottravelmodes <- renderPlotly({
     lineplot_2 <- ggplot(
       data84710_2(),
@@ -150,29 +150,29 @@ shinyServer(function(input, output) {
         colour = RegionCharacteristics
       )
     ) +
-    geom_line() +
-    geom_point() +
-    scale_colour_manual(values = regioncolours) + #for unified colours
-    theme_minimal() +
-    labs(
-      y = "Mean Distance Travelled",
-      caption = "Data Source: CBS 84710",
-      colour = "Region:")
+      geom_line() +
+      geom_point() +
+      scale_colour_manual(values = regioncolours) + #for unified colours
+      theme_minimal() +
+      labs(
+        y = "Mean Distance Travelled",
+        caption = "Data Source: CBS 84710",
+        colour = "Region:")
     
     lineplotly_2 <- ggplotly(lineplot_2, tooltip = c("text1"))
     lineplotly_2
-    })
+  })
   
-###Timeframe Data: Travel Purpose
-#Data
+  ###Timeframe Data: Travel Purpose
+  #Data
   data_85055 <- reactive({
     data85055 %>% 
       filter(TravelPurposes == input$TravelPurposes) %>% 
       filter(Periods == input$Periods1) %>% 
       filter(Timeframe == input$Timeframe1)
-    })
+  })
   
-#Plot
+  #Plot
   output$timeframedataplot <- renderPlotly({
     data85055plot <- ggplot(
       data_85055(),
@@ -184,8 +184,8 @@ shinyServer(function(input, output) {
         text1 = RegionCharacteristics,
         text2 = TripCharacteristics,
         text3 = AverageDistanceTravelledPerTrip_1
-        )
-      ) +
+      )
+    ) +
       geom_line() +
       geom_point() +
       scale_colour_manual(values = regioncolours) + #for unified colours
@@ -196,22 +196,22 @@ shinyServer(function(input, output) {
         y = "Average Distance Travelled Per Trip",
         caption = "Data Source: CBS 85055",
         colour = "Region:"
-        )
-#Plotly
-  data85055plotly <- ggplotly(data85055plot, tooltip = c("text1", "text2", "text3"))
-  data85055plotly
+      )
+    #Plotly
+    data85055plotly <- ggplotly(data85055plot, tooltip = c("text1", "text2", "text3"))
+    data85055plotly
   })
-
-###Timeframe Data: Travel Mode
-#Data
+  
+  ###Timeframe Data: Travel Mode
+  #Data
   data_85056 <- reactive({
     data85056 %>% 
       filter(ModesOfTravel == input$ModesOfTravel) %>%
       filter(Periods == input$Periods2) %>%
       filter(Timeframe == input$Timeframe2)
-    })
+  })
   
-#Plot
+  #Plot
   output$secondtimeframedataplot <- renderPlotly({
     data85056plot <- ggplot(
       data_85056(),
@@ -223,7 +223,7 @@ shinyServer(function(input, output) {
         text1 = RegionCharacteristics,
         text2 = TripCharacteristics,
         text3 = AverageDistanceTravelledPerTrip_1)
-      ) +
+    ) +
       geom_point() + 
       geom_line() +
       scale_colour_manual(values = regioncolours) + #for unified colours
@@ -234,24 +234,24 @@ shinyServer(function(input, output) {
         y = "Average Distance Travelled Per Trip",
         caption = "Data Source: CBS 85055",
         colour = "Region:"
-        )
-  
-  #Plotly
-  data85056plotly <- ggplotly(data85056plot, tooltip = c("text1", "text2", "text3"))
-  data85056plotly
+      )
+    
+    #Plotly
+    data85056plotly <- ggplotly(data85056plot, tooltip = c("text1", "text2", "text3"))
+    data85056plotly
   }
   )
   
-###Personal Characteristics
-#Data
+  ###Personal Characteristics
+  #Data
   data_84709 <- reactive({
     data84709 %>%
       filter(Perioden == input$Perioden_graph1) %>% 
       filter(Feature == input$Features) %>% 
       filter(Vervoerwijzen == input$Vervoerwijzen_graph1) 
-    })
+  })
   
-#Plot
+  #Plot
   output$Persoonskenmerken <- renderPlotly({
     Persoonskenmerken_plot <- ggplot(
       data_84709(),
@@ -262,7 +262,7 @@ shinyServer(function(input, output) {
         text1 = Perioden,
         text2 = Feature,
         text3 = Vervoerwijzen)
-      ) +
+    ) +
       geom_col(position = position_dodge()) +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) +
@@ -273,28 +273,28 @@ shinyServer(function(input, output) {
     ggplotly(Persoonskenmerken_plot, tooltip = c("text1", "text2", "text3"))
   })
   
-#####Green Mobility Tab 
-#Data
+  #####Green Mobility Tab 
+  #Data
   
-#Plot
+  #Plot
   
   
-###Traffic Intensity Tab
-#Data
+  ###Traffic Intensity Tab
+  #Data
   
-#Plot
+  #Plot
   
-
-#####Proximity to Amenities Tab 
-#Data
+  
+  #####Proximity to Amenities Tab 
+  #Data
   MapData1 <- reactive({mapData}) # all the data/municipal
   MapData2 <- provincialBoundaries # only provinical boundaries and names
   PlotData <- reactive({
     data80305 %>% 
       filter(Regions == c("PV20  " ,"PV21  ", "PV22  "))
-    })
+  })
   
-#Map
+  #Map
   output$map <- renderGirafe({ # map is made first, then called within girafe function to create the output
     map <- ggplot() +
       geom_sf_interactive(  # This is the Municipal polygons
@@ -342,13 +342,13 @@ shinyServer(function(input, output) {
     girafe(ggobj = map)  
   })
   
-#Plot
+  #Plot
   output$mapplot <- renderPlot({ 
     PlotData()  %>%
       ggplot(aes(
         x = Municipality, 
         fill = Municipality)
-        )+
+      )+
       geom_col(aes_string(y = input$mapvariable),
                width = 0.5,
                show.legend = FALSE) +
@@ -402,4 +402,62 @@ shinyServer(function(input, output) {
     ggplotly(DrivingLicense2)
   }  
   )
+  
+  # Traffic Intensity
+  data_83712 <- reactive(data83712 %>% 
+                           filter(Years == input$Years_traffic))
+  
+  output$traffic_barplot <- renderPlotly({
+    trafficintensity <- ggplot(data_83712(), 
+                               aes(x = provinces, 
+                                   y = VerkeersintensiteitenRijkswegen_1, 
+                                   fill = provinces)) +
+      geom_bar(stat = "identity") +
+      theme_minimal() +
+      theme(legend.position = "none") +
+      labs(x = "Province",
+           y = "Hourly Average Number of Cars on Highways", 
+           caption = "source: CBS 83712")
+      ylim(0, 1270)
+    
+    ggplotly(trafficintensity)
+  })
+  
+  # Length of highways
+  Highway <- mapDatarijbanen$Weglengte_1
+  Region <- mapDatarijbanen$naam
+  data70806 <- data70806 %>% filter(SoortRijbanen == "Totale weglengte") # option for interactivity
+  
+  output$highways <- renderPlotly({
+    maprijbaan <- ggplot(mapDatarijbanen, aes(
+    fill = Highway,
+    text = Region)) +
+    geom_sf(            # This is the Municipal polygons
+      data = mapDatarijbanen,
+      aes_string(
+        geometry = "geometry")
+    ) +
+    scale_fill_gradient( # This is for the map colours.
+      low = "white", 
+      high = "red",
+      lim = c(0, 1400)
+    )  +
+    labs(
+      title = "Lengte ", 
+      caption = "Source: CBS Statistics Netherlands () and Dutch National Georegistry") +
+    scale_colour_manual( # this is the colours for the provincial boundaries
+      values = c(
+        "grey20","grey20", "grey20"
+      )
+    ) + 
+    theme_void() + 
+    theme(legend.title = element_blank(),
+          legend.key.width = unit(
+            2, "cm"      # this might have to be adjusted to work  with the rest.
+          ),
+          legend.position = "bottom"
+    ) 
+  ggplotly(maprijbaan) %>% style(hoveron = c("text"))
+  })
+  
 })

@@ -99,17 +99,17 @@ data85055 <- cbs_get_data(
     "2031230", "2031240", "2031250", "2031260", "2031270", "2820701", "2820702", 
     "2820704", "2820705", "2820706","A025261", "A025262", "A025263", "A025264", 
     "A025265", "A025266", "A025267", "A025268"
-    ), 
+  ), 
   Population = "A048710", 
   TravelPurposes = c(
     "2030170","2030190","2030200","2030210","2030220","2030230","2030240",
     "2030250","2820740","T001080"
-    ), 
+  ), 
   Margins = "MW00000", 
   RegionCharacteristics = c(
     "PV20    ", "PV21    ", "PV22    ", "LD01    "
-    )
   )
+)
 
 
 ##Data Prep Idea 6##
@@ -340,4 +340,38 @@ data83488$AgeDrivingLicenseHolder <- tempAgeDrivingLicenseHolder83488$Title[matc
 data83488$Region <- tempRegion83488$Title[match(data83488$Region, tempRegion83488$Key)]
 data83488$Periods <- tempPeriods83488$Title[match(data83488$Periods, tempPeriods83488$Key)]
 
+# Traffic Intensity
+data83712 <- cbs_get_data("83712NED", RegioS = c("PV20", "PV21", "PV22"), Perioden = has_substring("JJ")) 
 
+metadata83712 <- cbs_get_meta("83712NED") 
+
+tempRegioS83712 <- metadata83712$RegioS
+tempPerioden83712 <- metadata83712$Perioden
+
+data83712$RegioS <- tempRegioS83712$Title[match(data83712$RegioS, tempRegioS83712$Key)]
+data83712$Perioden <- tempPerioden83712$Title[match(data83712$Perioden, tempPerioden83712$Key)]
+
+colnames(data83712)[1] = "provinces"
+colnames(data83712)[2] = "Years"
+
+data83712$provinces <- gsub(" (PV)", "", data83712$provinces, fixed = TRUE)
+data83712$provinces <- gsub("Fryslân", "Friesland", data83712$provinces, fixed = TRUE)
+
+
+# Lengte van rijkswegen
+
+data70806 <- cbs_get_data("70806NED", SoortRijbanen = c("T001491", "A047342", "A047344", "A047345", "A047346", "A047348", "A047349", "A047350", "A047352", "A047354", "A047355", "A047356", "A047357", "A047358", "A047360", "A047362", "A047363", "A047364", "A047365", "A047366"), Perioden = c("2021JJ00"), RegioS = c("GM1680", "GM0059", "GM0060","GM0003", "GM0106", "GM0005", "GM0007","GM0063", "GM0055", "GM0009", "GM0064", "GM1681", "GM0109", "GM0065", "GM1891", "GM0010", "GM0058", "GM1979", "GM1651", "GM0114", "GM1722","GM0070", "GM1921", "GM1940", "GM0653", "GM0014", "GM0015", "GM0017", "GM0072", "GM0074", "GM1966", "GM0118", "GM0018",  "GM0079", "GM0022", "GM0080", "GM0081", "GM0082", "GM0140", "GM0024", "GM1663", "GM0025", "GM0083", "GM1908", "GM1987", "GM0119", "GM1731", "GM1952", "GM0104", "GM1970", "GM1699","GM1895", "GM0085", "GM0086", "GM0765", "GM1661", "GM0039","GM0088", "GM0051", "GM0040", "GM0090", "GM0091", "GM0037","GM1900", "GM0093", "GM1730", "GM0737", "GM0047", "GM0048","GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098","GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056"))
+metadata70806 <- cbs_get_meta("70806NED")
+
+
+tempPerioden70806<- metadata70806$Perioden
+tempSoortrijbanen70806 <- metadata70806$SoortRijbanen
+
+data70806$Perioden <- tempPerioden70806$Title[match(data70806$Perioden, tempPerioden70806$Key)]
+data70806$SoortRijbanen <- tempSoortrijbanen70806$Title[match(data70806$SoortRijbanen, tempSoortrijbanen70806$Key)]
+
+colnames(data70806)[1] <- "identificatie"
+
+
+mapDatarijbanen <- municipalBoundaries %>%
+  left_join(data70806, municipalBoundaries, by = "identificatie") 

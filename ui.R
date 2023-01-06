@@ -168,7 +168,28 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                        
                      ))),
                    tabPanel("Green Mobility"),
-                   tabPanel("Traffic Intensity"),
+                   tabPanel("Traffic Intensity", fluidPage(
+                     navlistPanel(
+                       id = "tabset",
+                       "Traffic/Infrastructure",
+                       tabPanel("Traffic Intensity",
+                              sidebarLayout(
+                                sidebarPanel(
+                                  selectInput("Years_traffic", "Year", 
+                                   choices = unique(data83712$Years), multiple = FALSE)
+                                  ),
+                                mainPanel(plotlyOutput("traffic_barplot"))
+                   )
+                   ),
+                      tabPanel("Length of Highways",
+                            sidebarLayout(
+                              sidebarPanel(
+                              ),
+                              mainPanel(plotlyOutput("highways"))
+                            )
+                   ),
+                   ))
+                   ),
                    tabPanel("Proximity to Amenities", fluidPage(sidebarLayout(
                      sidebarPanel(
                        selectInput(
