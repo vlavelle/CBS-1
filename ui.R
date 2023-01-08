@@ -87,57 +87,57 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                                       choiceValues = c("Month", "Departure time", "Day of the week")
                                          )))),
                        tabPanel("Timeframe data: Travel Mode",
-                                sidebarLayout(
-                                  sidebarPanel(
-                                    sliderInput(
-                                      inputId = "Periods2",
-                                      label = "Select Year",
-                                      min = 2018, 
-                                      max = 2021, 
-                                      sep = "", 
-                                      value = 2021, 
-                                      ticks = FALSE
-                                    ),
-                                    selectInput(inputId = "ModesOfTravel",label = "Pick Mode of Travel",
-                                                choices = unique(data85056$ModesOfTravel),
-                                                multiple = FALSE,
-                                                selected = "Total"
-                                    ),
-                                    radioButtons("Timeframe2", "Pick a timeframe",
-                                                 choiceNames = c("Month", "Departure time", "Day of the week"),
-                                                 choiceValues = c("Month", "Departure time", "Day of the week")
-                                    )
-                                  ),
-                                  mainPanel(plotlyOutput("secondtimeframedataplot"))
-                                )),
-                       
+                                plotlyOutput("secondtimeframedataplot"),
+                                hr(),
+                                fluidRow(
+                                  column(3,
+                                         sliderInput(
+                                           inputId = "Periods2",
+                                           label = "Select Year",
+                                           min = 2018, 
+                                           max = 2021, 
+                                           sep = "", 
+                                           value = 2021, 
+                                           ticks = FALSE
+                                         )),
+                                  column(3,
+                                         selectInput(inputId = "ModesOfTravel",label = "Pick Mode of Travel",
+                                                     choices = unique(data85056$ModesOfTravel),
+                                                     multiple = FALSE,
+                                                     selected = "Total"
+                                         )),
+                                  column(3,
+                                         radioButtons("Timeframe2", "Pick a timeframe",
+                                                      choiceNames = c("Month", "Departure time", "Day of the week"),
+                                                      choiceValues = c("Month", "Departure time", "Day of the week")
+                                         )))),         
                        tabPanel("Personal Characteristics", # title of tab
-                                sidebarLayout(
-                                  sidebarPanel(
-                                    sliderInput(inputId = "Perioden_graph1", 
-                                                label = "Years",
-                                                min = 2018, 
-                                                max = 2021, 
-                                                ticks = FALSE, 
-                                                value = 2021, 
-                                                sep =""),
-                                    selectInput(inputId = "Features", 
-                                                label = "Feature", 
-                                                choices = unique(data84709$Feature),
-                                                multiple = FALSE, 
-                                                selected = "All"),
-                                    selectInput(inputId = "Vervoerwijzen_graph1", 
-                                                label = "Vervoerwijzen",
-                                                choices = unique(data84709$Vervoerwijzen), 
-                                                multiple = FALSE, 
-                                                selected = "Totaal")
-                                  ),
-                                  
-                                  
-                                  mainPanel(
-                                    plotlyOutput("Persoonskenmerken")
-                                  )
-                                )),
+                                plotlyOutput("Persoonskenmerken"),
+                                hr(),
+                                fluidRow(
+                                  column(3,
+                                         sliderInput(inputId = "Perioden_graph1", 
+                                                     label = "Years",
+                                                     min = 2018, 
+                                                     max = 2021, 
+                                                     ticks = FALSE, 
+                                                     value = 2021, 
+                                                     sep =""
+                                         )),
+                                  column(3,
+                                         selectInput(inputId = "Features", 
+                                                     label = "Feature", 
+                                                     choices = unique(data84709$Feature),
+                                                     multiple = FALSE, 
+                                                     selected = "All"
+                                         )),
+                                  column(3,
+                                         selectInput(inputId = "Vervoerwijzen_graph1", 
+                                                     label = "Vervoerwijzen",
+                                                     choices = unique(data84709$Vervoerwijzen), 
+                                                     multiple = FALSE, 
+                                                     selected = "Totaal"
+                                         )))),
                        tabPanel("Driving licenses",
                                 sidebarLayout(
                                   sidebarPanel(
