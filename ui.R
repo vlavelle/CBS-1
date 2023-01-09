@@ -23,47 +23,26 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                      navlistPanel(
                        id = "tabset",
                        "Ideas", # subtitle of overall dashboard
-                       tabPanel("Modes per regions", # title of tab
-                                sidebarLayout(
-                                  sidebarPanel(
-                                    selectInput(inputId = "region", #for server side
-                                                label = "Select region", # text displayed 
-                                                choices = unique(data84710$RegionCharacteristics), # input to choose from
-                                                selected = "Northern Netherlands") # define default
-                                  ),
-                                  mainPanel(
-                                    plotlyOutput("plotidea1")
-                                  )
-                                )),
-                       tabPanel("Motives & Modes per regions", # title of tab
-                                sidebarLayout(
-                                  sidebarPanel(
-                                    selectInput(
-                                      inputId = "TravelMotives",
-                                      label = "Select Reason for Travel",
-                                      choices = unique(data84710$TravelMotives),
-                                      multiple = FALSE,
-                                      selected = "Total"
-                                    )
-                                  ),
-                                  mainPanel(plotlyOutput("lineplottravelmotives"))
-                                ),
-                                sidebarLayout(
-                                  sidebarPanel(
-                                    selectInput(
-                                      inputId = "TravelModes",
-                                      label = "Select Mode of Travel",
-                                      choices = unique(data84710$TravelModes),
-                                      multiple = FALSE,
-                                      selected = "Total"
-                                    )
-                                  ),
-                                  mainPanel(plotlyOutput("lineplottravelmodes"))
-                                )),
-                       tabPanel("Timeframe data: Travel Purpose",
-                                plotlyOutput("timeframedataplot"),
+                       tabPanel("Travel Purpose",
+                                plotlyOutput("lineplottravelmotives"),
+                                fluidRow(
+                                  column(3,
+                                         selectInput(
+                                           inputId = "TravelMotives",
+                                           label = "Select Purpose for Travel",
+                                           choices = unique(data84710$TravelMotives),
+                                           multiple = FALSE,
+                                           selected = "Total"
+                                         ))),
                                 hr(),
                                 fluidRow(
+                                  column(3,
+                                         selectInput(inputId = "TravelPurposes",
+                                                     label = "Select Purpose of Travel",
+                                                     choices = unique(data85055$TravelPurposes),
+                                                     multiple = FALSE,
+                                                     selected = "Total"
+                                         )),
                                   column(3,
                                          selectInput(
                                            inputId = "Periods1",
@@ -73,21 +52,31 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                            multiple = FALSE
                                          )),
                                   column(3,
-                                         selectInput(inputId = "TravelPurposes",
-                                                     label = "Pick Purpose of Travel",
-                                                     choices = unique(data85055$TravelPurposes),
-                                                     multiple = FALSE,
-                                                     selected = "Total"
-                                         )),
-                                  column(3,
                                          radioButtons("Timeframe1", "Pick a timeframe",
                                                       choiceNames = c("Month", "Departure time", "Day of the week"),
                                                       choiceValues = c("Month", "Departure time", "Day of the week")
-                                         )))),
-                       tabPanel("Timeframe data: Travel Mode",
-                                plotlyOutput("secondtimeframedataplot"),
+                                         ))),
+                                plotlyOutput("timeframedataplot")),
+                       tabPanel("Travel Mode",
+                                plotlyOutput("lineplottravelmodes"),
+                                fluidRow(
+                                  column(3,
+                                         selectInput(
+                                           inputId = "TravelModes",
+                                           label = "Select Mode of Travel",
+                                           choices = unique(data84710$TravelModes),
+                                           multiple = FALSE,
+                                           selected = "Total"
+                                         ))),
                                 hr(),
                                 fluidRow(
+                                  column(3,
+                                         selectInput(inputId = "ModesOfTravel",
+                                                     label = "Select Mode of Travel",
+                                                     choices = unique(data85056$ModesOfTravel),
+                                                     multiple = FALSE,
+                                                     selected = "Total"
+                                         )),
                                   column(3,
                                          selectInput(
                                            inputId = "Periods2",
@@ -97,17 +86,37 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                            multiple = FALSE
                                          )),
                                   column(3,
-                                         selectInput(inputId = "ModesOfTravel",
-                                                     label = "Pick Mode of Travel",
-                                                     choices = unique(data85056$ModesOfTravel),
-                                                     multiple = FALSE,
-                                                     selected = "Total"
-                                         )),
-                                  column(3,
                                          radioButtons("Timeframe2", "Pick a timeframe",
                                                       choiceNames = c("Month", "Departure time", "Day of the week"),
                                                       choiceValues = c("Month", "Departure time", "Day of the week")
-                                         )))),         
+                                         ))),
+                                plotlyOutput("secondtimeframedataplot")
+                       ),
+                       tabPanel("Driving licenses",
+                                plotlyOutput("DrivingLicense1"),
+                                hr(),
+                                fluidRow(
+                                  column(3,
+                                         selectInput(inputId = "PeriodsLicense",
+                                                     label = "Year", 
+                                                     choices = unique(data83488$Periods),
+                                                     selected = "2022",
+                                                     multiple = FALSE)),
+                                  column(3,
+                                         selectInput(inputId = "LicenseHolderAge",
+                                                     label = "License Holder Age",
+                                                     choices = unique(data83488$AgeDrivingLicenseHolder), # What to do here, because you use a different column right?
+                                                     multiple = FALSE,
+                                                     selected = "Total"
+                                         )),
+                                  column(6,
+                                         selectInput(inputId = "LicenseCategory",
+                                                     label = "License Category",
+                                                     choices = unique(data83488$CategoryDrivingLicence), # What to do here, because you use a different column right?
+                                                     multiple = FALSE,
+                                                     selected = "Total"
+                                         ))),
+                                plotlyOutput("DrivingLicense2")),
                        tabPanel("Personal Characteristics", # title of tab
                                 plotlyOutput("Persoonskenmerken"),
                                 hr(),
@@ -133,38 +142,28 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                                      multiple = FALSE, 
                                                      selected = "Totaal"
                                          )))),
-                       tabPanel("Driving licenses",
-                                sidebarLayout(
-                                  sidebarPanel(
-                                    selectInput(inputId = "LicenseHolderAge",
-                                                label = "License Holder Age",
-                                                choices = unique(data83488$AgeDrivingLicenseHolder), # What to do here, because you use a different column right?
-                                                multiple = FALSE,
-                                                selected = "Total"),
-                                    
-                                    selectInput(inputId = "LicenseCategory",
-                                                label = "License Category",
-                                                choices = unique(data83488$CategoryDrivingLicence), # What to do here, because you use a different column right?
-                                                multiple = FALSE,
-                                                selected = "Total"),
-                                    selectInput(inputId = "PeriodsLicense",
-                                                label = "Year", 
-                                                choices = unique(data83488$Periods),
-                                                selected = "2022",
-                                                multiple = FALSE)
-                                    
-                                  ),
-                                  mainPanel(
-                                    plotlyOutput("DrivingLicense1"),plotlyOutput("DrivingLicense2")
-                                  )
-                                ))
-                       
+                       tabPanel("do we want this one??",
+                                plotlyOutput("plotidea1"),
+                                hr(),
+                                fluidRow(
+                                  column(3,
+                                         selectInput(inputId = "region", #for server side
+                                                     label = "Select region", # text displayed 
+                                                     choices = unique(data84710$RegionCharacteristics), # input to choose from
+                                                     selected = "Northern Netherlands") # define default
+                                  )))
                      ))),
                    tabPanel("Green Mobility"),
                    tabPanel("Traffic Intensity", fluidPage(
                      navlistPanel(
                        id = "tabset",
                        "Traffic/Infrastructure",
+                       tabPanel("Length of Highways",
+                                sidebarLayout(
+                                  sidebarPanel(
+                                  ),
+                                  mainPanel(plotlyOutput("highways"))
+                                )),
                        tabPanel("Traffic Intensity",
                                 sidebarLayout(
                                   sidebarPanel(
@@ -173,15 +172,7 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                                 multiple = FALSE)
                                   ),
                                   mainPanel(plotlyOutput("traffic_barplot"))
-                                )
-                       ),
-                       tabPanel("Length of Highways",
-                                sidebarLayout(
-                                  sidebarPanel(
-                                  ),
-                                  mainPanel(plotlyOutput("highways"))
-                                )
-                       ),
+                                ))
                      ))
                    ),
                    tabPanel("Proximity to Amenities", fluidPage(sidebarLayout(
