@@ -65,14 +65,12 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                 hr(),
                                 fluidRow(
                                   column(3,
-                                         sliderInput(
+                                         selectInput(
                                            inputId = "Periods1",
                                            label = "Select Year",
-                                           min = 2018,
-                                           max = 2021,
-                                           value = 2021,
-                                           sep = "",
-                                           ticks = FALSE
+                                           choices = unique(data85055$Periods),
+                                           selected = "2021",
+                                           multiple = FALSE
                                          )),
                                   column(3,
                                          selectInput(inputId = "TravelPurposes",
@@ -91,17 +89,16 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                 hr(),
                                 fluidRow(
                                   column(3,
-                                         sliderInput(
+                                         selectInput(
                                            inputId = "Periods2",
                                            label = "Select Year",
-                                           min = 2018, 
-                                           max = 2021, 
-                                           sep = "", 
-                                           value = 2021, 
-                                           ticks = FALSE
+                                           choices = unique(data85056$Periods),
+                                           selected = "2021", 
+                                           multiple = FALSE
                                          )),
                                   column(3,
-                                         selectInput(inputId = "ModesOfTravel",label = "Pick Mode of Travel",
+                                         selectInput(inputId = "ModesOfTravel",
+                                                     label = "Pick Mode of Travel",
                                                      choices = unique(data85056$ModesOfTravel),
                                                      multiple = FALSE,
                                                      selected = "Total"
@@ -116,13 +113,11 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                 hr(),
                                 fluidRow(
                                   column(3,
-                                         sliderInput(inputId = "Perioden_graph1", 
+                                         selectInput(inputId = "Perioden_graph1", 
                                                      label = "Years",
-                                                     min = 2018, 
-                                                     max = 2021, 
-                                                     ticks = FALSE, 
-                                                     value = 2021, 
-                                                     sep =""
+                                                     choices = unique(data84709$Perioden),
+                                                     multiple = FALSE, 
+                                                     selected = "2021"
                                          )),
                                   column(3,
                                          selectInput(inputId = "Features", 
@@ -142,23 +137,21 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                                 sidebarLayout(
                                   sidebarPanel(
                                     selectInput(inputId = "LicenseHolderAge",
-                                                label = "LicenseHolderAge",
+                                                label = "License Holder Age",
                                                 choices = unique(data83488$AgeDrivingLicenseHolder), # What to do here, because you use a different column right?
                                                 multiple = FALSE,
                                                 selected = "Total"),
                                     
                                     selectInput(inputId = "LicenseCategory",
-                                                label = "LicenseCategory",
+                                                label = "License Category",
                                                 choices = unique(data83488$CategoryDrivingLicence), # What to do here, because you use a different column right?
                                                 multiple = FALSE,
                                                 selected = "Total"),
-                                    sliderInput(inputId = "PeriodsLicense",
-                                                label = "PeriodsLicense",
-                                                min = 2014, # check the min/max values
-                                                max = 2022, 
-                                                value = 2022,
-                                                sep = "",
-                                                ticks = TRUE)
+                                    selectInput(inputId = "PeriodsLicense",
+                                                label = "Year", 
+                                                choices = unique(data83488$Periods),
+                                                selected = "2022",
+                                                multiple = FALSE)
                                     
                                   ),
                                   mainPanel(
@@ -173,22 +166,23 @@ shinyUI(navbarPage("Mobility in the Northern Netherlands",
                        id = "tabset",
                        "Traffic/Infrastructure",
                        tabPanel("Traffic Intensity",
-                              sidebarLayout(
-                                sidebarPanel(
-                                  selectInput("Years_traffic", "Year", 
-                                   choices = unique(data83712$Years), multiple = FALSE)
+                                sidebarLayout(
+                                  sidebarPanel(
+                                    selectInput("Years_traffic", "Year", 
+                                                choices = unique(data83712$Years), 
+                                                multiple = FALSE)
                                   ),
-                                mainPanel(plotlyOutput("traffic_barplot"))
-                   )
-                   ),
-                      tabPanel("Length of Highways",
-                            sidebarLayout(
-                              sidebarPanel(
-                              ),
-                              mainPanel(plotlyOutput("highways"))
-                            )
-                   ),
-                   ))
+                                  mainPanel(plotlyOutput("traffic_barplot"))
+                                )
+                       ),
+                       tabPanel("Length of Highways",
+                                sidebarLayout(
+                                  sidebarPanel(
+                                  ),
+                                  mainPanel(plotlyOutput("highways"))
+                                )
+                       ),
+                     ))
                    ),
                    tabPanel("Proximity to Amenities", fluidPage(sidebarLayout(
                      sidebarPanel(
