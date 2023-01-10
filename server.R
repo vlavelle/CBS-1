@@ -410,7 +410,7 @@ shinyServer(function(input, output) {
   output$traffic_barplot <- renderPlotly({
     trafficintensity <- ggplot(data_83712(), 
                                aes(x = provinces, 
-                                   y = VerkeersintensiteitenRijkswegen_1, 
+                                   y = log(VerkeersintensiteitenRijkswegen_1), 
                                    fill = provinces)) +
       geom_bar(stat = "identity") +
       theme_minimal() +
@@ -460,4 +460,50 @@ shinyServer(function(input, output) {
   ggplotly(maprijbaan) %>% style(hoveron = c("text"))
   })
   
+  ## VEHICLES
+  
+  data_vehicles <- reactive(
+    datacombined %>%
+      filter(Region == input$Region_combined) %>% 
+      filter(Vehicles %in% c(input$Vehicles_combined))
+  )
+  data_vehicles_2 <- reactive(
+    datacombined%>%
+      filter(Years == input$Years_combined) %>%
+      filter(Vehicles %in% c(input$Vehicles_combined))
+  )
+  
+  output$plotidea12 <- renderPlotly({
+    plot12 <- ggplot(data_vehicles(), aes(x = Years, 
+                                          y = Count, 
+                                          group = Vehicles, 
+                                          colour = factor(Vehicles))) +
+      geom_line() +
+      geom_point() +
+      ylim(0,50000) +
+      xlim(2018, 2021) +
+      scale_x_discrete('Years', breaks = factor(2018:2022), drop = FALSE) +
+      ylab("Number of vehicles") + 
+      xlab("Years") +
+      theme_minimal()
+    ggplotly(plot12)
+  })
+  output$plotidea12.1 <- renderPlotly({
+    plot12.1 <- ggplot(data_vehicles(), aes(x= Years, y = Count, fill = Vehicles)) + 
+      geom_col() +
+      ylab("Number of vehicles") + # Specific Region
+      xlab("Years") +
+      theme_minimal()
+    ggplotly(plot12.1)
+  })
+  output$plotidea12.2 <- renderPlotly({
+    plot12.2 <- ggplot(data_vehicles_2(), aes(x= Region, y = Count, fill = Vehicles)) + 
+      geom_col() +
+      ylab("Number of vehicles") + # Specific Region
+      xlab("Years") +
+      theme_minimal()
+    ggplotly(plot12.2)
+  })
+  
 })
+

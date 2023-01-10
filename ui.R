@@ -64,8 +64,8 @@ shinyUI(navbarPage(
                   column(
                     3,
                     radioButtons("Timeframe1", "Pick a timeframe",
-                      choiceNames = c("Month", "Departure time", "Day of the week"),
-                      choiceValues = c("Month", "Departure time", "Day of the week")
+                                 choiceNames = c("Month", "Departure time", "Day of the week"),
+                                 choiceValues = c("Month", "Departure time", "Day of the week")
                     )
                   )
                 )
@@ -123,8 +123,8 @@ shinyUI(navbarPage(
                 column(
                   3,
                   radioButtons("Timeframe2", "Pick a timeframe",
-                    choiceNames = c("Month", "Departure time", "Day of the week"),
-                    choiceValues = c("Month", "Departure time", "Day of the week")
+                               choiceNames = c("Month", "Departure time", "Day of the week"),
+                               choiceValues = c("Month", "Departure time", "Day of the week")
                   )
                 )
               )
@@ -233,7 +233,49 @@ shinyUI(navbarPage(
   tabPanel(
     "Green Mobility",
     h3("Indicators of 'Green Mobility' Across Different Regions Within the Northern Netherlands"),
-    hr()
+    hr(),
+    fluidPage(tabPanel(
+      "Vehicle Types",
+      h4("Types of Vehicles"),
+      h5("some accompanying text about dataset(s)"),
+      hr(),
+      fluidRow(
+        column(
+          3,
+          selectInput(
+            inputId = "Region_combined",
+            label = "Region",
+            choices = unique(datacombined$Region), # What to do here, because you use a different column right?
+            multiple = FALSE,
+            selected = "Groningen"
+          )
+        ),
+        column(
+          3,
+          selectInput(
+            inputId = "Vehicles_combined",
+            label = "Vehicles",
+            choices = unique(datacombined$Vehicles), # What to do here, because you use a different column right?
+            multiple = TRUE,
+            selected = "Van"
+          )
+        ),
+        column(
+          6,
+          selectInput(
+            inputId = "Years_combined",
+            label = "Years_combined",
+            choices = unique(datacombined$Years), # What to do here, because you use a different column right?
+            multiple = FALSE,
+            selected = "2021"
+          )
+        )
+      ),
+      plotlyOutput("plotidea12"), 
+      plotlyOutput("plotidea12.1"),
+      plotlyOutput("plotidea12.2")
+      
+    ))
   ),
   tabPanel(
     "Traffic/Infrastructure",
@@ -249,8 +291,8 @@ shinyUI(navbarPage(
           column(
             3,
             selectInput("Years_traffic", "Year",
-              choices = unique(data83712$Years),
-              multiple = FALSE
+                        choices = unique(data83712$Years),
+                        multiple = FALSE
             )
           )
         )

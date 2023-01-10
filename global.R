@@ -375,3 +375,179 @@ colnames(data70806)[1] <- "identificatie"
 
 mapDatarijbanen <- municipalBoundaries %>%
   left_join(data70806, municipalBoundaries, by = "identificatie") 
+
+
+## GREEN MOBILITY
+elektrische_personenauto_provincie_2_ <- read_excel("elektrische_personenauto_provincie (2).xlsx", 
+                                                    sheet = "Tabel 1")
+data_elek_2 <- elektrische_personenauto_provincie_2_ %>%
+  filter(Regio== "Friesland"|Regio== "Groningen"|Regio== "Drenthe")
+colnames(data_elek_2)[2] = "Years"
+colnames(data_elek_2)[3] = "Count"
+colnames(data_elek_2)[1] = "Region"
+
+data_elek_2 <- data_elek_2 %>%
+  mutate(Vehicles = "Electric Vehicle")
+
+data_elek_2 <- data_elek_2[c("Region", "Years", "Vehicles", "Count")]
+data_elek_2 <- mutate(data_elek_2, across(everything(), as.factor))
+data_elek_2$Count <- as.numeric(as.character(data_elek_2$Count))
+
+
+
+## Voertuigen 1 
+data85239 <- cbs_get_data("85239NED") 
+
+#####Data Prep Idea 1#####
+
+metadata85239 <- cbs_get_meta("85239NED")
+
+tempVoertuigtype85239 <- metadata85239$Voertuigtype
+tempBouwjaren85239 <- metadata85239$Bouwjaren
+tempPerioden85239 <- metadata85239$Perioden
+
+#Then, Replace Keys, by matching keys of temp table and imported table
+
+data85239$Voertuigtype <- tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
+data85239$Bouwjaren <- tempBouwjaren85239$Title[match(data85239$Bouwjaren, tempBouwjaren85239$Key)]
+data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
+data85239 <- data85239 %>%  filter(Bouwjaren == "Totaal alle bouwjaren")
+
+dataGroningen <- data85239 %>%
+  select(Perioden, Bouwjaren, Voertuigtype, Groningen_2) %>% 
+  mutate(Region = "Groningen") %>% 
+  rename(Count = Groningen_2)
+
+dataFriesland <- data85239 %>%
+  select(Perioden, Bouwjaren, Voertuigtype, Fryslan_3) %>% mutate(Region = "Friesland") %>% rename(Count = Fryslan_3)
+dataDrenthe <- data85239 %>% select(Perioden, Bouwjaren, Voertuigtype,Drenthe_4) %>% mutate(Region = "Drenthe") %>% rename(Count = Drenthe_4)
+
+#Dataprep for combined lineplot
+data85239new <- bind_rows(dataGroningen, dataFriesland, dataDrenthe)
+data85239new <- data85239new %>% group_by(Perioden, Voertuigtype) %>% select(Perioden, Voertuigtype, Count, Region)
+
+datafiltervoertuig <- data85239new %>%
+  filter(Voertuigtype == "Totaal bedrijfsvoertuigen")
+colnames(data85239new)[1] = "Years"
+colnames(data85239new)[2] = "Vehicles"
+
+data85239new <- data85239new[c("Region", "Years", "Vehicles", "Count")]
+
+
+
+# VOERTUIGEN 2 SHINY
+metadata85240 <- cbs_get_meta("85240NED")
+data85240 <- cbs_get_data("85240NED") 
+data85240 <- data85240 %>%
+  filter(Provincie == "PV20  "| Provincie == "PV21  "| Provincie == "PV22  ") %>%
+  filter(TenaamstellingEnLeeftijdParticulier == "T001191") %>%
+  filter(Bouwjaar == "T001378")
+
+tempPerioden85240 <- metadata85240$Perioden
+tempProvincie85240 <- metadata85240$Provincie
+data85240$Perioden <- tempPerioden85240$Title[match(data85240$Perioden, tempPerioden85240$Key)]
+data85240$Provincie <- tempProvincie85240$Title[match(data85240$Provincie, tempProvincie85240$Key)]
+
+dataVoertuigenmetbromfietskenteken <- data85240 %>%
+  select(Perioden, Bouwjaar, Provincie, VoertuigenMetBromfietskenteken_1) %>% 
+  mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>% 
+  rename(Count = VoertuigenMetBromfietskenteken_1)
+
+dataSnorfiets <- data85240 %>%
+  select(Perioden, Bouwjaar, Provincie, Snorfiets_2) %>% 
+  mutate(Voertuigtype = "Snorfiets") %>% 
+  rename(Count = Snorfiets_2)
+
+dataBrommobiel <- data85240 %>%
+  select(Perioden, Bouwjaar, Provincie, Bromfiets_3) %>% 
+  mutate(Voertuigtype = "Bromfiets") %>% 
+  rename(Count = Bromfiets_3)
+
+dataElektrischebrommobiel <- data85240 %>%
+  select(Perioden, Bouwjaar, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>% 
+  mutate(Voertuigtype = "Overige voertuigen met bromfietskenteken") %>% 
+  rename(Count = OverigeVoertuigenMetBromfietskenteken_5)
+
+
+#Dataprep for combined lineplot
+data85240new <- bind_rows(dataVoertuigenmetbromfietskenteken, dataSnorfiets, dataBrommobiel, dataElektrischebrommobiel)
+data85240new <- data85240new %>% group_by(Perioden, Voertuigtype) %>% select(Perioden, Provincie, Count, Voertuigtype)
+
+colnames(data85240new)[1] = "Years"
+colnames(data85240new)[2] = "Region"
+colnames(data85240new)[4] = "Vehicles"
+
+data85240new <- data85240new[c("Region", "Years", "Vehicles", "Count")]
+data85240new <- data85240new %>%
+  mutate(Region = case_when(
+    Region == "Groningen (PV)"~ "Groningen",
+    Region == "Drenthe (PV)"~ "Drenthe",
+    Region == "Fryslân (PV)"~ "Friesland"))
+
+
+
+# Voertuigen 3
+data85237 <- cbs_get_data("85237NED") 
+
+
+metadata85237 <- cbs_get_meta("85237NED")
+
+tempPerioden85237 <- metadata85237$Perioden
+tempBouwjaar85237 <- metadata85237$Bouwjaar
+tempBrandstofsoort85237 <- metadata85237$Brandstofsoort
+
+#Then, Replace Keys, by matching keys of temp table and imported table
+data85237$Perioden <- tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
+data85237$Bouwjaar <- tempBouwjaar85237$Title[match(data85237$Bouwjaar, tempBouwjaar85237$Key)]
+
+
+data85237 <- data85237 %>%
+  filter(Bouwjaar == "Totaal alle bouwjaren") %>% 
+  select(Perioden, TotaalNederland_1, Groningen_2, Fryslan_3, Drenthe_4)
+
+dataGroningen1 <- data85237 %>%
+  select(Perioden, Groningen_2) %>%
+  mutate(Region = "Groningen") %>%
+  rename(Count = Groningen_2)
+
+dataFriesland1 <- data85237 %>%
+  select(Perioden, Fryslan_3) %>%
+  mutate(Region = "Friesland") %>%
+  rename(Count = Fryslan_3)
+
+dataDrenthe1 <- data85237 %>%
+  select(Perioden, Drenthe_4) %>%
+  mutate(Region = "Drenthe") %>%
+  rename(Count = Drenthe_4)
+
+data85237new <- bind_rows(dataGroningen1, dataFriesland1, dataDrenthe1)
+data85237new <- data85237new %>% 
+  group_by(Perioden) %>% 
+  select(Perioden, Count, Region)
+
+data85237new <- data85237new %>%
+  mutate(Vehicles = "Normal car")
+
+colnames(data85237new)[1] = "Years"
+
+#Dataprep for combined lineplot
+datacombined <- bind_rows(data_elek_2 , data85240new, data85239new, data85237new)
+
+
+datacombined <- datacombined %>%
+  mutate(Vehicles = case_when(
+    Vehicles == "Voertuig met bromfietskenteken" ~ "All mopeds",
+    Vehicles == "Snorfiets" ~ "Moped(25km/h)",
+    Vehicles == "Bromfiets" ~ "Moped(45km/h)",
+    Vehicles == "Overige voertuigen met bromfietskenteken" ~ "Remaining mopeds",
+    Vehicles == "Totaal bedrijfsvoertuigen" ~ "All vehicles",
+    Vehicles == "Bestelauto" ~ "Van",
+    Vehicles == "Vrachtauto (excl. trekker voor oplegger)" ~ "Truck",
+    Vehicles == "Trekker voor oplegger" ~ "Tractor",
+    Vehicles == "Speciaal voertuig" ~ "Special vehicle",
+    Vehicles == "Bus" ~ "Bus",
+    Vehicles == "Aanhangwagen" ~ "Trailer",
+    Vehicles == "Oplegger" ~ "Semi trailer", 
+    Vehicles == "Electric Vehicle" ~ "Electric vehicle",
+    Vehicles == "Normal car" ~ "Normal car")) %>% 
+  group_by(Region)
