@@ -505,5 +505,30 @@ shinyServer(function(input, output) {
     ggplotly(plot12.2)
   })
   
+  ## FUEL TYPE
+  dataFueltypes2 <- reactive(
+    datafueltypes1 %>%
+      filter(Fueltype == input$Fueltype)
+  )
+  dataFueltypes3 <- reactive(
+    datafueltypes1 %>%
+      filter(Vehicletype == input$Vehicletype)
+  )
+  
+  output$plotidea13 <- renderPlotly({
+    plot1 <- ggplot(dataFueltypes2(), aes(x = Years, y = Count, colour = factor(Vehicletype), group = Vehicletype)) + # Possible to use different Y-indicators?
+      geom_point() + 
+      geom_line() + 
+      ylab("Different vehicles used in Nothern Netherlands")
+    ggplotly(plot1)}
+  )
+  output$plotidea13.1 <- renderPlotly({
+    plot2 <- ggplot(dataFueltypes3(), aes(x= Years, y = Count, colour = factor(Fueltype), group = Fueltype)) + 
+      geom_point() + 
+      geom_line() +
+      ylab("Different vehicles used in the Nothern Netherlands")
+    ggplotly(plot2)}
+  )
+  
 })
 

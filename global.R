@@ -7,6 +7,7 @@ library(ggplot2)
 library(forcats)
 library(ggiraph)
 library(plotly)
+library(readxl)
 
 # set wd to the file location where you have downloaded the global, server and UI files
 setwd("~/R/CBS Project/Dashboard1/")
@@ -540,7 +541,7 @@ datacombined <- datacombined %>%
     Vehicles == "Snorfiets" ~ "Moped(25km/h)",
     Vehicles == "Bromfiets" ~ "Moped(45km/h)",
     Vehicles == "Overige voertuigen met bromfietskenteken" ~ "Remaining mopeds",
-    Vehicles == "Totaal bedrijfsvoertuigen" ~ "All vehicles",
+    Vehicles == "Totaal bedrijfsvoertuigen" ~ "All commercial vehicles",
     Vehicles == "Bestelauto" ~ "Van",
     Vehicles == "Vrachtauto (excl. trekker voor oplegger)" ~ "Truck",
     Vehicles == "Trekker voor oplegger" ~ "Tractor",
@@ -551,3 +552,107 @@ datacombined <- datacombined %>%
     Vehicles == "Electric Vehicle" ~ "Electric vehicle",
     Vehicles == "Normal car" ~ "Normal car")) %>% 
   group_by(Region)
+
+
+## FUEL TYPES
+data85239 <- cbs_get_data("85239NED") 
+
+
+#####Data Prep Idea 1#####
+
+metadata85239 <- cbs_get_meta("85239NED")
+
+tempVoertuigtype85239 <- metadata85239$Voertuigtype
+tempBouwjaren85239 <- metadata85239$Bouwjaren
+tempPerioden85239 <- metadata85239$Perioden
+
+#Then, Replace Keys, by matching keys of temp table and imported table
+data85239$Voertuigtype <- tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
+data85239$Bouwjaren <- tempBouwjaren85239$Title[match(data85239$Bouwjaren, tempBouwjaren85239$Key)]
+data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
+
+data85239 <- data85239 %>%  filter(Bouwjaren == "Totaal alle bouwjaren")
+
+
+
+dataFueltypeCommercial <- data85239 %>%
+  select(Voertuigtype, Perioden, Benzine_15, Diesel_16, LPG_17, Elektriciteit_18, CNG_19, GeenOverigeOnbekendeBrandstof_20, Totaal_21)
+
+colnames(dataFueltypeCommercial)[8] = "OverigOnbekend_20"
+
+# All normal Vehicles
+data85237 <- cbs_get_data("85237NED") 
+
+#####Data Prep Idea 1#####
+
+metadata85237 <- cbs_get_meta("85237NED")
+
+tempPerioden85237 <- metadata85237$Perioden
+tempBouwjaar85237 <- metadata85237$Bouwjaar
+
+
+#Then, Replace Keys, by matching keys of temp table and imported table
+data85237$Perioden <- tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
+data85237$Bouwjaar <- tempBouwjaar85237$Title[match(data85237$Bouwjaar, tempBouwjaar85237$Key)]
+
+data85237 <- data85237 %>%
+  filter(Bouwjaar == "Totaal alle bouwjaren")
+
+dataFueltypeNormal <- data85237 %>%
+  select(Bouwjaar, Perioden, Benzine_15, Diesel_16, LPG_17, Elektriciteit_18, CNG_19, OverigOnbekend_20, Totaal_21)
+
+dataFueltypeNormal <- dataFueltypeNormal %>%
+  mutate(Voertuigtype = "Personal vehicle")
+
+dataFueltypeNormal <- dataFueltypeNormal[c("Voertuigtype", "Perioden", "Benzine_15", "Diesel_16", "LPG_17", "Elektriciteit_18", "CNG_19", "OverigOnbekend_20", "Totaal_21")]
+
+
+dataFueltypes <- bind_rows(dataFueltypeNormal, dataFueltypeCommercial)
+colnames(dataFueltypes)[1] = "Vehicletype"
+colnames(dataFueltypes)[2] = "Years"
+
+
+
+dataBenzine <- dataFueltypes %>%
+  select(Vehicletype, Years, Benzine_15) %>% 
+  mutate(Fueltype = "Benzine") %>% 
+  rename(Count = Benzine_15)
+
+dataDiesel <- dataFueltypes %>%
+  select(Vehicletype, Years, Diesel_16) %>% 
+  mutate(Fueltype = "Diesel") %>% 
+  rename(Count = Diesel_16)
+
+dataLPG <- dataFueltypes %>%
+  select(Vehicletype, Years, LPG_17) %>% 
+  mutate(Fueltype = "LPG") %>% 
+  rename(Count = LPG_17)
+
+dataElektriciteit <- dataFueltypes %>%
+  select(Vehicletype, Years, Elektriciteit_18) %>% 
+  mutate(Fueltype = "Elektriciteit") %>% 
+  rename(Count = Elektriciteit_18)
+
+dataCNG <- dataFueltypes %>%
+  select(Vehicletype, Years, CNG_19) %>% 
+  mutate(Fueltype = "CNG") %>% 
+  rename(Count = CNG_19)
+
+dataOnbekend <- dataFueltypes %>%
+  select(Vehicletype, Years, OverigOnbekend_20) %>% 
+  mutate(Fueltype = "Unknown") %>% 
+  rename(Count = OverigOnbekend_20)
+
+datafueltypes1 <- bind_rows(dataBenzine, dataDiesel, dataLPG, dataElektriciteit, dataCNG, dataOnbekend)
+
+datafueltypes1 <- datafueltypes1 %>%
+  mutate(Vehicletype = case_when(
+    Vehicletype == "Totaal bedrijfsvoertuigen" ~ "All commercial vehicles",
+    Vehicletype == "Bestelauto" ~ "Van",
+    Vehicletype == "Vrachtauto (excl. trekker voor oplegger)" ~ "Truck",
+    Vehicletype == "Trekker voor oplegger" ~ "Tractor",
+    Vehicletype == "Speciaal voertuig" ~ "Special vehicle",
+    Vehicletype == "Bus" ~ "Bus",
+    Vehicletype == "Aanhangwagen" ~ "Trailer",
+    Vehicletype == "Oplegger" ~ "Semi trailer", 
+    Vehicletype == "Personal vehicle" ~ "Personal vehicle"))

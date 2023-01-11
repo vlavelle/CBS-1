@@ -275,6 +275,24 @@ shinyUI(navbarPage(
       plotlyOutput("plotidea12.1"),
       plotlyOutput("plotidea12.2")
       
+    ), 
+    tabPanel("Fuel Types",
+      sidebarPanel(
+        selectInput(inputId = "Fueltype",
+                    label = "Fueltype",
+                    choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
+                    multiple = FALSE,
+                    selected = "Benzine"),
+      selectInput(inputId = "Vehicletype",
+                  label = "Vehicletype",
+                  choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
+                  multiple = FALSE,
+                  selected = "Van"),
+      
+    ), 
+    mainPanel(
+      plotlyOutput("plotidea13"), plotlyOutput("plotidea13.1")
+    ),
     ))
   ),
   tabPanel(
