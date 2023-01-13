@@ -322,7 +322,15 @@ shinyUI(navbarPage(
         7,
         h4("Length of Highways"),
         h5("some accompanying text about dataset(s)"),
-        plotlyOutput("highways")
+        plotlyOutput("highway_map"),
+        fluidRow(column(3, selectInput(inputId = "SoortRijbanen", # for server side interactivity
+                                        label = "Type of Highway", # text displayed 
+                                        choices = unique(data70806$SoortRijbanen),
+                                        selected = "Totale weglengte")),
+                 column(3, selectInput(inputId = "Years_highways",
+                                       label = "Year",
+                                       choices = unique(data70806$Perioden),
+                                       selected = "2021"))),
       )
     )),
     hr()

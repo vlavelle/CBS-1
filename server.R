@@ -424,40 +424,40 @@ shinyServer(function(input, output) {
   })
   
   # Length of highways
-  Highway <- mapDatarijbanen$Weglengte_1
-  Region <- mapDatarijbanen$naam
-  data70806 <- data70806 %>% filter(SoortRijbanen == "Totale weglengte") # option for interactivity
-  
-  output$highways <- renderPlotly({
-    maprijbaan <- ggplot(mapDatarijbanen, aes(
-    fill = Highway,
-    text = Region)) +
-    geom_sf(            # This is the Municipal polygons
-      data = mapDatarijbanen,
-      aes_string(
-        geometry = "geometry")
-    ) +
-    scale_fill_gradient( # This is for the map colours.
-      low = "white", 
-      high = "red",
-      lim = c(0, 1400)
-    )  +
-    labs(
-      title = "Lengte ", 
-      caption = "Source: CBS Statistics Netherlands () and Dutch National Georegistry") +
-    scale_colour_manual( # this is the colours for the provincial boundaries
-      values = c(
-        "grey20","grey20", "grey20"
-      )
-    ) + 
-    theme_void() + 
-    theme(legend.title = element_blank(),
-          legend.key.width = unit(
-            2, "cm"      # this might have to be adjusted to work  with the rest.
-          ),
-          legend.position = "bottom"
-    ) 
-  ggplotly(maprijbaan) %>% style(hoveron = c("text"))
+  # making data reactive by type of highway
+  mapData_rijbanen <- reactive({mapDatarijbanen %>% 
+                                 filter(Perioden == input$Years_highways) %>% 
+                                 mutate(col1.1 = paste0(naam, ": ", Weglengte_1)) %>% # creating text for hover
+                                 mutate(col1.2 = paste0("Province: ", ligtInProvincieNaam)) %>% # hover text
+                                 mutate(tooltip_text = paste(col1.1, col1.2, sep = "\n")) %>% # combined
+                                 filter(SoortRijbanen == input$SoortRijbanen)})
+                                 
+  # add input for years? 
+  output$highway_map <- renderPlotly({
+    plotted <- ggplot(mapData_rijbanen()) +
+      geom_sf(aes(fill = Weglengte_1, 
+                  colour = naam, 
+                  text = tooltip_text)) + # tooltip_text new custom column
+      guides(colour = "none") + 
+      scale_fill_gradient(name = "in km", 
+                          low = "white", # make an option somewhere for NA vals
+                          high = "red"
+      ) + 
+      theme_void() + 
+      theme(legend.position = "bottom") # plotly ignores this
+    
+    gg_1 <- ggplotly(plotted, tooltip = "text")
+    
+    gg_1 %>%
+      style(
+        hoveron = "text",
+        # override the color mapping
+        line.color = toRGB("gray40"),
+        # don't apply these style rules to the first trace, which is the background graticule/grid
+        traces = seq.int(2, length(gg_1$x$data))
+      ) 
+    # config(modeBarButtonsToRemove = c("comparedataonhover")) # check this
+    
   })
   
   ## VEHICLES

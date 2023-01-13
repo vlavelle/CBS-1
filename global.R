@@ -125,17 +125,17 @@ data85056 <- cbs_get_data(id = "85056ENG",
                             "2031270", "2820701", "2820702", "2820704", "2820705", 
                             "2820706", "A025261", "A025262", "A025263", "A025264", 
                             "A025265", "A025266", "A025267", "A025268"
-                            ), 
+                          ), 
                           Population = "A048710", 
                           ModesOfTravel = c(
                             "T001093","A048583","A048584","A018981","A018982",
                             "A018984","A018985","A018986"
-                            ),
+                          ),
                           Margins = "MW00000", 
                           RegionCharacteristics = c(
                             "PV20    ", "PV21    ", "PV22    ", "LD01    "
-                            )
                           )
+)
 
 ##Data Prep##
 #temp tables
@@ -168,7 +168,7 @@ data85056 <- data85056 %>%
   select(
     TripCharacteristics, Timeframe, ModesOfTravel, RegionCharacteristics, 
     Periods, AverageDistanceTravelledPerTrip_1, AverageTravelTimePerTrip_2
-    )  
+  )  
 
 data85056$TripCharacteristics <- sub('Departure time: ', '', data85056$TripCharacteristics)
 data85056$TripCharacteristics <- sub('Trip in ', '', data85056$TripCharacteristics)
@@ -184,7 +184,7 @@ datatemp <- cbs_get_data(
     "1014754", "1014755","1014756", "2030530", "2030540", "2030550","2018700", 
     "2018740", "2018790", "2017560","2017565", "2012751", "2017572", "2820713", 
     "2017576", "2017500", "A048766", "A048767","A048768", "A048769", "A048770"
-    ), 
+  ), 
   Vervoerwijzen = c(
     "T001093", "A048583", "A048584", "A018981", "A018982", "A018984", "A018985", "A018986"), 
   RegioS = c("NL01    ","LD01    ","PV20    ","PV21    ", "PV22    "), 
@@ -194,8 +194,8 @@ datatemp <- cbs_get_data(
   select = c(
     "Persoonskenmerken", "RegioS", "Perioden", "Vervoerwijzen", 
     "Verplaatsingen_1", "Afstand_2", "Reisduur_3"
-    )
   )
+)
 
 ##Data Prep##
 #temp tables
@@ -210,13 +210,13 @@ data84709$Persoonskenmerken <- temp_Persoonskenmerken84709$Title[match(data84709
 data84709$Vervoerwijzen <- temp_Vervoerwijzen84709$Title[match(data84709$Vervoerwijzen, temp_Vervoerwijzen84709$Key)]
 #Fixing Region names manually
 data84709$RegioS <- recode(data84709$RegioS, 
-                                          "NL01    " = "The Netherlands",
-                                          "LD01    " = "Northern Netherlands",
-                                          "PV20    " = "Groningen",
-                                          "PV21    " = "Friesland",
-                                          "PV22    " = "Drenthe")
+                           "NL01    " = "The Netherlands",
+                           "LD01    " = "Northern Netherlands",
+                           "PV20    " = "Groningen",
+                           "PV21    " = "Friesland",
+                           "PV22    " = "Drenthe")
 
-#mutation and aliasing
+#mutation and translating from Dutch
 data84709 <- data84709 %>% mutate(Feature = case_when(
   grepl("Totaal personen", data84709$Persoonskenmerken) ~ "All",
   grepl("Leeftijd:", data84709$Persoonskenmerken) ~ "Age",
@@ -229,7 +229,6 @@ data84709 <- data84709 %>% mutate(Feature = case_when(
   grepl("Geen rijbewijs", data84709$Persoonskenmerken) ~ "Driver's License"
 ) )
 # now it can be filtered on the column "Feature"
-unique(data84709$Persoonskenmerken)
 data84709$Persoonskenmerken <- sub('Leeftijd:', '', data84709$Persoonskenmerken)
 data84709$Persoonskenmerken <- sub('Migratieachtergrond:', '', data84709$Persoonskenmerken)
 data84709$Persoonskenmerken <- sub('Gestandaardiseerd inkomen:', '', data84709$Persoonskenmerken)
@@ -239,20 +238,21 @@ data84709$Persoonskenmerken <- sub('Participatie: ', '', data84709$Persoonskenme
 
 ##### Data 83488 - Drivers License #############################################
 ## Drivers License
-data83488 <- cbs_get_data('83488ENG', Region = c("PV20  ","PV21  ", "PV22  "))
+data83488 <- cbs_get_data('83488ENG', 
+                          Region = c("PV20  ","PV21  ", "PV22  "))
 metadata83488 <- cbs_get_meta("83488ENG")
 
-##Data Prep##
-#temp tables
+## Data Prep##
+# temp tables
 tempCategoryDrivingLicense83488 <- metadata83488$CategoryDrivingLicence
 tempAgeDrivingLicenseHolder83488 <- metadata83488$AgeDrivingLicenseHolder
 tempPeriods83488 <- metadata83488$Periods
 
-#Matching and replacing Keys for Keys
+# Matching and replacing Keys for Keys
 data83488$CategoryDrivingLicence <- tempCategoryDrivingLicense83488$Title[match(data83488$CategoryDrivingLicence, tempCategoryDrivingLicense83488$Key)]
 data83488$AgeDrivingLicenseHolder <- tempAgeDrivingLicenseHolder83488$Title[match(data83488$AgeDrivingLicenseHolder, tempAgeDrivingLicenseHolder83488$Key)]
 data83488$Periods <- tempPeriods83488$Title[match(data83488$Periods, tempPeriods83488$Key)]
-#Fixing Region names manually
+# Fixing Region names manually
 data83488$Region <- recode(data83488$Region,
                            "PV20  " = "Groningen",
                            "PV21  " = "Friesland",
@@ -263,7 +263,7 @@ data83488$Region <- recode(data83488$Region,
 
 ################ Green Mobility ################################################
 ##### Data from Excel ############################################################
-#data from excel
+# data from excel
 elektrische_personenauto_provincie_2_ <- read_excel("elektrische_personenauto_provincie (2).xlsx", 
                                                     sheet = "Tabel 1")
 data_elek_2 <- elektrische_personenauto_provincie_2_ %>%
@@ -285,18 +285,18 @@ metadata85239 <- cbs_get_meta("85239NED")
 data85239 <- cbs_get_data("85239NED") #Please filter the import!
 
 ##Data Prep##
-#temp tables
+# temp tables
 tempVoertuigtype85239 <- metadata85239$Voertuigtype
 tempBouwjaren85239 <- metadata85239$Bouwjaren
 tempPerioden85239 <- metadata85239$Perioden
 
-#Matching and replacing Keys for Keys
+# Matching and replacing Keys for Keys
 data85239$Voertuigtype <- tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
 data85239$Bouwjaren <- tempBouwjaren85239$Title[match(data85239$Bouwjaren, tempBouwjaren85239$Key)]
 data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
 data85239 <- data85239 %>%  filter(Bouwjaren == "Totaal alle bouwjaren")
 
-#Mutations
+# Mutations
 dataGroningen <- data85239 %>%
   select(Perioden, Bouwjaren, Voertuigtype, Groningen_2) %>% 
   mutate(Region = "Groningen") %>% 
@@ -330,17 +330,17 @@ data85239new <- data85239new[c("Region", "Years", "Vehicles", "Count")]
 metadata85240 <- cbs_get_meta("85240NED")
 data85240 <- cbs_get_data("85240NED") #Please filter the import!
 
-#Please filter the import!
+# Please filter the import!
 data85240 <- data85240 %>%
   filter(Provincie == "PV20  "| Provincie == "PV21  "| Provincie == "PV22  ") %>%
   filter(TenaamstellingEnLeeftijdParticulier == "T001191") %>%
   filter(Bouwjaar == "T001378")
 
-#Temp table
+# Temp table
 tempPerioden85240 <- metadata85240$Perioden
-#key matching
+# key matching
 data85240$Perioden <- tempPerioden85240$Title[match(data85240$Perioden, tempPerioden85240$Key)]
-#fixing Region names manually
+# fixing Region names manually
 data85240$Provincie <- recode(data85240$Provincie,
                               "PV20  " = "Groningen",
                               "PV21  " = "Friesland",
@@ -381,13 +381,13 @@ colnames(data85240new)[4] = "Vehicles"
 data85237 <- cbs_get_data("85237NED") #Please filter the import!
 metadata85237 <- cbs_get_meta("85237NED")
 
-##Data Prep##
-#temp tables
+## Data Prep##
+# temp tables
 tempPerioden85237 <- metadata85237$Perioden
 tempBouwjaar85237 <- metadata85237$Bouwjaar
 tempBrandstofsoort85237 <- metadata85237$Brandstofsoort
 
-#Then, Replace Keys, by matching keys of temp table and imported table
+# Then, Replace Keys, by matching keys of temp table and imported table
 data85237$Perioden <- tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
 data85237$Bouwjaar <- tempBouwjaar85237$Title[match(data85237$Bouwjaar, tempBouwjaar85237$Key)]
 
@@ -420,7 +420,7 @@ data85237new <- data85237new %>%
 
 colnames(data85237new)[1] = "Years"
 
-#Dataprep for combined lineplot
+# Dataprep for combined lineplot
 datacombined <- bind_rows(data_elek_2 , data85240new, data85239new, data85237new)
 
 datacombined <- datacombined %>%
@@ -444,14 +444,14 @@ datacombined <- datacombined %>%
 ##### Data 85239 - Fuel Types ##################################################
 ## FUEL TYPES
 data85239 <- cbs_get_data("85239NED")
-#Please filter the import!
+# Please filter the import!
 metadata85239 <- cbs_get_meta("85239NED")
 
 tempVoertuigtype85239 <- metadata85239$Voertuigtype
 tempBouwjaren85239 <- metadata85239$Bouwjaren
 tempPerioden85239 <- metadata85239$Perioden
 
-#Then, Replace Keys, by matching keys of temp table and imported table
+# Then, Replace Keys, by matching keys of temp table and imported table
 data85239$Voertuigtype <- tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
 data85239$Bouwjaren <- tempBouwjaren85239$Title[match(data85239$Bouwjaren, tempBouwjaren85239$Key)]
 data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
@@ -468,12 +468,12 @@ colnames(dataFueltypeCommercial)[8] = "OverigOnbekend_20"
 data85237 <- cbs_get_data("85237NED") 
 metadata85237 <- cbs_get_meta("85237NED")
 
-##Data Prep##
-#temp tables
+## Data Prep##
+# temp tables
 tempPerioden85237 <- metadata85237$Perioden
 tempBouwjaar85237 <- metadata85237$Bouwjaar
 
-#Then, Replace Keys, by matching keys of temp table and imported table
+# Then, Replace Keys, by matching keys of temp table and imported table
 data85237$Perioden <- tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
 data85237$Bouwjaar <- tempBouwjaar85237$Title[match(data85237$Bouwjaar, tempBouwjaar85237$Key)]
 
@@ -540,7 +540,7 @@ datafueltypes1 <- datafueltypes1 %>%
 
 ################ Proximity to Amenities ########################################
 ##### Data 80305 - Proximity to Amenities ######################################
-#Proximity to Amenities
+# Proximity to Amenities
 metadata80305 <- cbs_get_meta("80305ENG") 
 data80305 <- cbs_get_data(
   id = "80305ENG",
@@ -564,25 +564,25 @@ data80305 <- cbs_get_data(
              "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", "DistanceToCafeEtc_32", 
              "DistanceToRestaurant_40", "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", 
              "DistanceToSchool_60", "DistanceToSchool_64", "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103")
-) #the recreational, (semi)public green and sports one were NA for all regions
+) # the recreational, (semi)public green and sports one were NA for all regions
 
-##Data Prep##
-#temp tables
+## Data Prep##
+# temp tables
 tempPeriods <- metadata80305$Periods
 tempRegion <- metadata80305$Regions
 
 data80305$Periods <- tempPeriods$Title[match(data80305$Periods, tempPeriods$Key)]
 
-#New Column "Municipality" made, "Region" is kept to match with shapefile
-#fixing region names
+# New Column "Municipality" made, "Region" is kept to match with shapefile
+# fixing region names
 data80305$Municipality <- tempRegion$Title[match(data80305$Regions, tempRegion$Key)]
 data80305$Municipality<- recode(data80305$Municipality,
                                 "Groningen (PV)" = "Groningen ", #extra space because city/province issue
                                 "Fryslân (PV)" = "Friesland",
                                 "Drenthe (PV)" = "Drenthe")
 
-#Mutating an average indicator
-data80305%>%
+# Mutating an average indicator
+data80305 <- data80305 %>%
   mutate(Avg15 = (
     DistanceToGPPractice_1 + DistanceToGPPost_5 +
       DistanceToPharmacy_6 + DistanceToHospital_11 +
@@ -594,23 +594,23 @@ data80305%>%
   ) / 15) 
 
 ##### Shapefile Import #########################################################
-#Shapefile Import through API call from PDOK
+# Shapefile Import through API call from PDOK
 municipalBoundaries_unfiltered <- st_read(
   "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied"
 )
 
-#Reducing and filtering the imported data for efficiency 
+# Reducing and filtering the imported data for efficiency 
 municipalBoundaries <- municipalBoundaries_unfiltered %>%
   filter(ligtInProvincieCode %in% c("20", "21", "22")) %>%
   select(-id, -code)
 
 ## Provincial Boundaries Calculation
-#This is to combine the polygons per province into a small table
-#First have to create a subset into the different provinces
+# This is to combine the polygons per province into a small table
+# First have to create a subset into the different provinces
 provinces <- municipalBoundaries %>%
   group_split(ligtInProvincieNaam)
 
-#combining the municipality polygons by the province and renaming the column
+# combining the municipality polygons by the province and renaming the column
 provincialBoundaries <- data.frame(c("Drenthe","Friesland","Groningen"), 
                                    c(st_union(provinces[[1]]),
                                      st_union(provinces[[2]]),
@@ -626,44 +626,51 @@ mapData <- municipalBoundaries %>%
 ################ Traffic/Infrastructure ########################################
 ##### Data 70806 - Length of Highways ##########################################
 # Length of Highways
-metadata70806 <- cbs_get_meta("70806NED")
-data70806 <- cbs_get_data(
-  "70806NED", 
+datatemporary <- cbs_get_data(
+  "70806NED",
   SoortRijbanen = c(
-    "T001491", "A047342", "A047344", "A047345", "A047346", "A047348", "A047349",
-    "A047350", "A047352", "A047354", "A047355", "A047356", "A047357", "A047358", 
-    "A047360", "A047362", "A047363", "A047364", "A047365", "A047366"
-    ), 
-  Perioden = c("2021JJ00"), 
-  RegioS = c(
-    "GM1680", "GM0059", "GM0060","GM0003", "GM0106", "GM0005", "GM0007","GM0063", 
-    "GM0055", "GM0009", "GM0064", "GM1681", "GM0109", "GM0065", "GM1891", "GM0010", 
-    "GM0058", "GM1979", "GM1651", "GM0114", "GM1722","GM0070", "GM1921", "GM1940", 
-    "GM0653", "GM0014", "GM0015", "GM0017", "GM0072", "GM0074", "GM1966", "GM0118",
-    "GM0018",  "GM0079", "GM0022", "GM0080", "GM0081", "GM0082", "GM0140", "GM0024", 
-    "GM1663", "GM0025", "GM0083", "GM1908", "GM1987", "GM0119", "GM1731", "GM1952", 
-    "GM0104", "GM1970", "GM1699","GM1895", "GM0085", "GM0086", "GM0765", "GM1661",
-    "GM0039","GM0088", "GM0051", "GM0040", "GM0090", "GM0091", "GM0037","GM1900", 
-    "GM0093", "GM1730", "GM0737", "GM0047", "GM0048","GM0096", "GM1949", "GM1969", 
-    "GM1701", "GM1950", "GM0098","GM0052", "GM0053", "GM1690", "GM0710", "GM0683", 
-    "GM0056"
-    )
-  )
+    "T001491",
+    "A047342",
+    "A047344",
+    "A047345",
+    "A047346",
+    "A047348",
+    "A047349",
+    "A047350",
+    "A047352",
+    "A047354",
+    "A047355",
+    "A047356",
+    "A047357",
+    "A047358",
+    "A047360",
+    "A047362",
+    "A047363",
+    "A047364",
+    "A047365",
+    "A047366"
+  ),
+  Perioden = has_substring("JJ")
+)
+metadata70806 <- cbs_get_meta("70806NED")
+data70806 <- datatemporary
 
-##Data Prep##
-#temp tables
+data70806 <- data70806 %>% 
+  filter(RegioS %in% c("GM1680", "GM0059", "GM0060","GM0003", "GM0106", "GM0005", "GM0007","GM0063", "GM0055", "GM0009", "GM0064", "GM1681", "GM0109", "GM0065", "GM1891", "GM0010", "GM0058", "GM1979", "GM1651", "GM0114", "GM1722","GM0070", "GM1921", "GM1940", "GM0653", "GM0014", "GM0015", "GM0017", "GM0072", "GM0074", "GM1966", "GM0118", "GM0018",  "GM0079", "GM0022", "GM0080", "GM0081", "GM0082", "GM0140", "GM0024", "GM1663", "GM0025", "GM0083", "GM1908", "GM1987", "GM0119", "GM1731", "GM1952", "GM0104", "GM1970", "GM1699","GM1895", "GM0085", "GM0086", "GM0765", "GM1661", "GM0039","GM0088", "GM0051", "GM0040", "GM0090", "GM0091", "GM0037","GM1900", "GM0093", "GM1730", "GM0737", "GM0047", "GM0048","GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098","GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056")) 
+  # This filtering will be done in import
+  # Years may be added as interactivity
+
 tempPerioden70806<- metadata70806$Perioden
 tempSoortrijbanen70806 <- metadata70806$SoortRijbanen
 
-#Matching and replacing Keys for Keys
+
 data70806$Perioden <- tempPerioden70806$Title[match(data70806$Perioden, tempPerioden70806$Key)]
 data70806$SoortRijbanen <- tempSoortrijbanen70806$Title[match(data70806$SoortRijbanen, tempSoortrijbanen70806$Key)]
-
-#Mutation and aliasing
 colnames(data70806)[1] <- "identificatie"
 
 mapDatarijbanen <- municipalBoundaries %>%
   left_join(data70806, municipalBoundaries, by = "identificatie") 
+
 ##### Data 83712 - Traffic Intensity ###########################################
 # Traffic Intensity
 metadata83712 <- cbs_get_meta("83712NED") 
@@ -673,16 +680,16 @@ data83712 <- cbs_get_data(
   Perioden = has_substring("JJ")
 ) 
 
-##Data Prep##
-#temp tables
+## Data Prep##
+# temp tables
 tempRegioS83712 <- metadata83712$RegioS
 tempPerioden83712 <- metadata83712$Perioden
 
-#Matching and replacing Keys for Keys
+# Matching and replacing Keys for Keys
 data83712$RegioS <- tempRegioS83712$Title[match(data83712$RegioS, tempRegioS83712$Key)]
 data83712$Perioden <- tempPerioden83712$Title[match(data83712$Perioden, tempPerioden83712$Key)]
 
-#mutation and aliasing
+# mutation and aliasing
 colnames(data83712)[1] = "provinces"
 colnames(data83712)[2] = "Years"
 
