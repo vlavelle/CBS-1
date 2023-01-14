@@ -26,7 +26,7 @@ shinyUI(navbarPage(
                     3,
                     selectInput(
                       inputId = "TravelMotives",
-                      label = "Select Purpose for Travel",
+                      label = "Select Purpose of Travel",
                       choices = unique(data84710$TravelMotives),
                       multiple = FALSE,
                       selected = "Total"
@@ -64,8 +64,8 @@ shinyUI(navbarPage(
                   column(
                     3,
                     radioButtons("Timeframe1", "Pick a timeframe",
-                                 choiceNames = c("Month", "Departure time", "Day of the week"),
-                                 choiceValues = c("Month", "Departure time", "Day of the week")
+                                 choiceNames = c("Departure time", "Day of the week", "Month"),
+                                 choiceValues = c("Departure time", "Day of the week", "Month")
                     )
                   )
                 )
@@ -87,7 +87,7 @@ shinyUI(navbarPage(
                   3,
                   selectInput(
                     inputId = "TravelModes",
-                    label = "Select Mode of Travel",
+                    label = "Select a Mode of Travel",
                     choices = unique(data84710$TravelModes),
                     multiple = FALSE,
                     selected = "Total"
@@ -104,7 +104,7 @@ shinyUI(navbarPage(
                   3,
                   selectInput(
                     inputId = "ModesOfTravel",
-                    label = "Select Mode of Travel",
+                    label = "Select a Mode of Travel",
                     choices = unique(data85056$ModesOfTravel),
                     multiple = FALSE,
                     selected = "Total"
@@ -123,8 +123,8 @@ shinyUI(navbarPage(
                 column(
                   3,
                   radioButtons("Timeframe2", "Pick a timeframe",
-                               choiceNames = c("Month", "Departure time", "Day of the week"),
-                               choiceValues = c("Month", "Departure time", "Day of the week")
+                               choiceNames = c("Departure time", "Day of the week", "Month"),
+                               choiceValues = c("Departure time", "Day of the week", "Month")
                   )
                 )
               )
@@ -132,7 +132,7 @@ shinyUI(navbarPage(
           ),
         ),
         # tabPanel(
-        # "do we want this one??",
+############        # "do we want this one??",
         # plotlyOutput("plotidea1"),
         # hr(),
         # fluidRow(
@@ -178,7 +178,7 @@ shinyUI(navbarPage(
               3,
               selectInput(
                 inputId = "Vervoerwijzen_graph1",
-                label = "Vervoerwijzen",
+                label = "Mode of Transport",
                 choices = unique(data84709$Vervoerwijzen),
                 multiple = FALSE,
                 selected = "Totaal"
@@ -255,7 +255,7 @@ shinyUI(navbarPage(
           selectInput(
             inputId = "Vehicles_combined",
             label = "Vehicles",
-            choices = unique(datacombined$Vehicles), # What to do here, because you use a different column right?
+            choices = unique(datacombined$Vehicles), 
             multiple = TRUE,
             selected = "Van"
           )
@@ -264,8 +264,8 @@ shinyUI(navbarPage(
           6,
           selectInput(
             inputId = "Years_combined",
-            label = "Years_combined",
-            choices = unique(datacombined$Years), # What to do here, because you use a different column right?
+            label = "Year",
+            choices = unique(datacombined$Years), 
             multiple = FALSE,
             selected = "2021"
           )
@@ -279,12 +279,12 @@ shinyUI(navbarPage(
     tabPanel("Fuel Types",
       sidebarPanel(
         selectInput(inputId = "Fueltype",
-                    label = "Fueltype",
+                    label = "Fuel type",
                     choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
                     multiple = FALSE,
                     selected = "Benzine"),
       selectInput(inputId = "Vehicletype",
-                  label = "Vehicletype",
+                  label = "Vehicle type",
                   choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
                   multiple = FALSE,
                   selected = "Van"),
@@ -308,7 +308,8 @@ shinyUI(navbarPage(
         fluidRow(
           column(
             3,
-            selectInput("Years_traffic", "Year",
+            selectInput("Years_traffic", 
+                        "Year",
                         choices = unique(data83712$Years),
                         multiple = FALSE
             )
@@ -330,7 +331,7 @@ shinyUI(navbarPage(
                  column(3, selectInput(inputId = "Years_highways",
                                        label = "Year",
                                        choices = unique(data70806$Perioden),
-                                       selected = "2021"))),
+                                       selected = "2021")))
       )
     )),
     hr()
@@ -344,31 +345,14 @@ shinyUI(navbarPage(
         column(
           4,
           h5("some accompanying text about dataset(s)"),
-          plotOutput("mapplot"),
+          plotOutput("proximityplot"),
           fluidRow(
             column(
               12,
               selectInput(
-                inputId = "mapvariable",
-                label = "Average Distance to...",
-                choices = c(
-                  "GP practice" = "DistanceToGPPractice_1",
-                  "GP post" = "DistanceToGPPost_5",
-                  "Pharmacy" = "DistanceToPharmacy_6",
-                  "Hospital" = "DistanceToHospital_11",
-                  "Large Supermarket" = "DistanceToLargeSupermarket_20",
-                  "Shop for other daily food" = "DistanceToShopForOtherDailyFood_24",
-                  "Department Store" = "DistanceToDepartmentStore_28",
-                  "Cafe or similar" = "DistanceToCafeEtc_32",
-                  "Restaurant" = "DistanceToRestaurant_40",
-                  "Daycare Dentres" = "DistanceToDaycareCentres_48",
-                  "Out-of-school Care" = "DistanceToOutOfSchoolCare_52",
-                  "Primary school" = "DistanceToSchool_60",
-                  "Secondary school (all types)" = "DistanceToSchool_64",
-                  "Train Stations" = "DistanceToTrainStationsAllTypes_101",
-                  "Library" = "DistanceToLibrary_103",
-                  "Average of 15 indicators" = "Avg15"
-                ),
+                inputId = "proxmapvariable",
+                label = "Average Distance to:",
+                choices = unique(mapDataproximity$name),
                 selected = "Large Supermarket"
               )
             )
@@ -377,7 +361,7 @@ shinyUI(navbarPage(
         column(
           8,
           h5("some accompanying text about dataset(s)"),
-          girafeOutput("map")
+          plotlyOutput("proximity_map")
         )
       ),
       hr()

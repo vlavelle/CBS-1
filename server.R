@@ -287,70 +287,50 @@ shinyServer(function(input, output) {
   
   #####Proximity to Amenities Tab 
   #Data
-  MapData1 <- reactive({mapData}) # all the data/municipal
-  MapData2 <- provincialBoundaries # only provinical boundaries and names
-  PlotData <- reactive({
-    data80305 %>% 
-      filter(Regions == c("PV20  " ,"PV21  ", "PV22  "))
+  proximity_data <- reactive({mapDataproximity %>% 
+      mutate(column1.1 = paste0(naam, ": ", distances)) %>% 
+      mutate(column1.2 = paste0("Province: ", ligtInProvincieNaam)) %>% 
+      mutate(proximity_tooltip = paste(column1.1, column1.2, sep = "\n")) %>% 
+      filter(name == input$proxmapvariable) 
   })
-  
   #Map
-  output$map <- renderGirafe({ # map is made first, then called within girafe function to create the output
-    map <- ggplot() +
-      geom_sf_interactive(  # This is the Municipal polygons
-        data = MapData1(),
-        aes_string(
-          geometry = "geometry",
-          fill = input$mapvariable,
-          tooltip = "Municipality" # It only takes one argument, tried to glue, but aes_string is a pain.
-        )
-      ) +
+  output$proximity_map <- renderPlotly({ # map is made first, then called within girafe function to create the output
+    proximity_map_plot <- ggplot(proximity_data()) +
+      geom_sf(aes(fill = distances,
+                  colour = naam,
+                  text = proximity_tooltip)) +
+      guides(colour = "none") +
       scale_fill_gradient( # This is for the map colours.
         low = "#B3EFFF", 
         high = "#1C304A"
       ) +
-      geom_sf(            # This is the Provincial polygons
-        data = MapData2,  
-        aes(
-          color = provinces,
-          geometry = geometry
-        ),
-        alpha = 0,
-        size = 1.2,
-        show.legend = FALSE
-      ) +
-      labs(
-        title = " ", 
-        caption = "Source: CBS 80305ENG and Dutch National Georegistry",
-        fill = "Average Distance in km") +
-      scale_colour_manual( # this is the colours for the provincial boundaries
-        values = c(
-          "grey20","grey20", "grey20"
-        )
-      ) + 
       theme_void() + 
-      theme(
-        legend.title = element_text( 
-          size=10, 
-          face = "bold"),
-        legend.key.width = unit(
-          2, "cm"      # this might have to be adjusted to work  with the rest.
-        ),
-        legend.position = "bottom"
-      )
+      labs(fill = "in km")
+    gg_2 <- ggplotly(proximity_map_plot, tooltip = "text")
     
-    girafe(ggobj = map)  
+    gg_2 %>%
+      style(
+        hoveron = "text",
+        # override the color mapping
+        line.color = toRGB("gray40"),
+        # don't apply these style rules to the first trace, which is the background graticule/grid
+        traces = seq.int(2, length(gg_2$x$data))
+      ) 
+    # config(modeBarButtonsToRemove = c("comparedataonhover")) # check this
+    
+    
   })
   
-  #Plot
-  output$mapplot <- renderPlot({ 
-    PlotData()  %>%
-      ggplot(aes(
-        x = Municipality, 
-        fill = Municipality)
-      )+
-      geom_col(aes_string(y = input$mapvariable),
-               width = 0.5,
+  
+  # Plot
+  provincial_data <- reactive({longformdata80305 %>% 
+      filter(Regions %in% c("PV20  " ,"PV21  ", "PV22  ")) %>% 
+      filter(name == input$proxmapvariable)
+  })
+  output$proximityplot <- renderPlot({ 
+    
+    ggplot(provincial_data()) +
+      geom_col(aes(x = Municipality, y = distances, fill = Municipality), width = 0.5,
                show.legend = FALSE) +
       labs(
         title = "Average distance by Province",
@@ -359,6 +339,7 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 80305ENG"
       ) +
       scale_fill_manual(values = regioncolours_prox) + #for unified colours
+      # unified colours not working here
       theme_minimal()
   })
   
@@ -432,7 +413,7 @@ shinyServer(function(input, output) {
                                  mutate(tooltip_text = paste(col1.1, col1.2, sep = "\n")) %>% # combined
                                  filter(SoortRijbanen == input$SoortRijbanen)})
                                  
-  # add input for years? 
+
   output$highway_map <- renderPlotly({
     plotted <- ggplot(mapData_rijbanen()) +
       geom_sf(aes(fill = Weglengte_1, 
@@ -459,6 +440,19 @@ shinyServer(function(input, output) {
     # config(modeBarButtonsToRemove = c("comparedataonhover")) # check this
     
   })
+  
+  # # accompanying bar graph
+  # provincial_highways <- reactive(
+  #   data70806_2 %>%  
+  #   filter(SoortRijbanen == input$SoortRijbanen) %>% 
+  #   filter(Perioden == input$Years_highways)
+  # )
+  # 
+  # output$highway_bargraph <- renderPlotly({
+  #   ggplot(provincial_highways) +
+  #   geom_col(aes(x = RegioS, y = Weglengte_1)) + 
+  #   theme_minimal()
+  # })
   
   ## VEHICLES
   

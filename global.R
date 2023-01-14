@@ -566,67 +566,107 @@ data80305 <- cbs_get_data(
               "GM1900", "GM0093", "GM1730", "GM0737", "GM0047", "GM0048",
               "GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098", 
               "GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056"),
-  select = c("Periods", "Regions", "DistanceToGPPractice_1", "DistanceToGPPost_5", 
-             "DistanceToPharmacy_6", "DistanceToHospital_11", "DistanceToLargeSupermarket_20", 
-             "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", "DistanceToCafeEtc_32", 
-             "DistanceToRestaurant_40", "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", 
-             "DistanceToSchool_60", "DistanceToSchool_64", "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103")
+  select = c("Periods", "Regions", "DistanceToGPPractice_1", "DistanceToGPPost_5","DistanceToPharmacy_6", "DistanceToHospital_11", "DistanceToLargeSupermarket_20", "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", "DistanceToCafeEtc_32", "DistanceToRestaurant_40", "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", "DistanceToSchool_60", "DistanceToSchool_64", "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103")
 ) # the recreational, (semi)public green and sports one were NA for all regions
+
+data80305 <- data80305 %>%
+  mutate(
+    Avg15 = (
+      DistanceToGPPractice_1 + DistanceToGPPost_5 +
+        DistanceToPharmacy_6 + DistanceToHospital_11 +
+        DistanceToLargeSupermarket_20 + DistanceToShopForOtherDailyFood_24 +
+        DistanceToDepartmentStore_28 + DistanceToCafeEtc_32 +
+        DistanceToRestaurant_40 + DistanceToDaycareCentres_48 +
+        DistanceToOutOfSchoolCare_52 + DistanceToSchool_60 +
+        DistanceToSchool_64 + DistanceToTrainStationsAllTypes_101 + DistanceToLibrary_103
+    ) / 15
+  ) %>%
+  mutate(Avg15 = round(Avg15, 2))
+
+data80305 <-
+  data80305 %>% rename(
+    "GP Practice" = "DistanceToGPPractice_1",
+    "GP Post" = "DistanceToGPPost_5",
+    "Pharmacy" = "DistanceToPharmacy_6",
+    "Hospital" = "DistanceToHospital_11",
+    "Large Supermarket" = "DistanceToLargeSupermarket_20",
+    "Shop For Other Daily Food" = "DistanceToShopForOtherDailyFood_24",
+    "Department Store" = "DistanceToDepartmentStore_28",
+    "Cafe" = "DistanceToCafeEtc_32",
+    "Restaurant" = "DistanceToRestaurant_40",
+    "Daycare Centres" = "DistanceToDaycareCentres_48",
+    "Out Of School Care" = "DistanceToOutOfSchoolCare_52",
+    "School Type 1" = "DistanceToSchool_60",
+    "School Type 2" = "DistanceToSchool_64",
+    "Train Station" = "DistanceToTrainStationsAllTypes_101",
+    "Library" = "DistanceToLibrary_103",
+    "Average of 15 indicators" = "Avg15"
+  )
 
 ## Data Prep##
 # temp tables
 tempPeriods <- metadata80305$Periods
 tempRegion <- metadata80305$Regions
 
-data80305$Periods <- tempPeriods$Title[match(data80305$Periods, tempPeriods$Key)]
+data80305$Periods <-
+  tempPeriods$Title[match(data80305$Periods, tempPeriods$Key)]
 
 # New Column "Municipality" made, "Region" is kept to match with shapefile
 # fixing region names
-data80305$Municipality <- tempRegion$Title[match(data80305$Regions, tempRegion$Key)]
-data80305$Municipality<- recode(data80305$Municipality,
-                                "Groningen (PV)" = "Groningen ", #extra space because city/province issue
-                                "Fryslân (PV)" = "Friesland",
-                                "Drenthe (PV)" = "Drenthe")
+data80305$Municipality <-
+  tempRegion$Title[match(data80305$Regions, tempRegion$Key)]
+data80305$Municipality <- recode(
+  data80305$Municipality,
+  "Groningen (PV)" = "Groningen",
+  #extra space because city/province issue
+  "Fryslân (PV)" = "Friesland",
+  "Drenthe (PV)" = "Drenthe"
+)
 
-# Mutating an average indicator
-data80305 <- data80305 %>%
-  mutate(Avg15 = (
-    DistanceToGPPractice_1 + DistanceToGPPost_5 +
-      DistanceToPharmacy_6 + DistanceToHospital_11 +
-      DistanceToLargeSupermarket_20 + DistanceToShopForOtherDailyFood_24 + 
-      DistanceToDepartmentStore_28 + DistanceToCafeEtc_32 +
-      DistanceToRestaurant_40 + DistanceToDaycareCentres_48 + 
-      DistanceToOutOfSchoolCare_52 + DistanceToSchool_60 + 
-      DistanceToSchool_64 + DistanceToTrainStationsAllTypes_101
-  ) / 15) 
+
+
+
+longformdata80305 <-
+  pivot_longer(
+    data80305,
+    cols = c(
+      "GP Practice",
+      "GP Post",
+      "Pharmacy",
+      "Hospital",
+      "Large Supermarket",
+      "Shop For Other Daily Food",
+      "Department Store",
+      "Cafe",
+      "Restaurant",
+      "Daycare Centres",
+      "Out Of School Care",
+      "School Type 1",
+      "School Type 2",
+      "Train Station",
+      "Library",
+      "Average of 15 indicators"
+    ), 
+    values_to = "distances",
+    values_drop_na = FALSE
+  )
+
 
 ##### Shapefile Import #########################################################
 # Shapefile Import through API call from PDOK
 municipalBoundaries_unfiltered <- st_read(
   "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied"
 )
+municipalBoundaries_unfiltered$naam[municipalBoundaries_unfiltered$naam  == "Groningen"] <- "Groningen Municipality"
 
 # Reducing and filtering the imported data for efficiency 
 municipalBoundaries <- municipalBoundaries_unfiltered %>%
   filter(ligtInProvincieCode %in% c("20", "21", "22")) %>%
-  select(-id, -code)
+  select(-id, -code) 
 
-## Provincial Boundaries Calculation
-# This is to combine the polygons per province into a small table
-# First have to create a subset into the different provinces
-provinces <- municipalBoundaries %>%
-  group_split(ligtInProvincieNaam)
 
-# combining the municipality polygons by the province and renaming the column
-provincialBoundaries <- data.frame(c("Drenthe","Friesland","Groningen"), 
-                                   c(st_union(provinces[[1]]),
-                                     st_union(provinces[[2]]),
-                                     st_union(provinces[[3]]))) %>%
-  rename(provinces = c..Drenthe....Friesland....Groningen..)
-# Joining Data
-# Joining Municipal Shapefile by Municipality  and calculating a new column
-mapData <- municipalBoundaries %>%
-  left_join(data80305, by = c(identificatie="Regions")) 
+mapDataproximity <- municipalBoundaries %>%
+  left_join(longformdata80305, by = c(identificatie = "Regions"))
 
 
 
@@ -663,20 +703,55 @@ metadata70806 <- cbs_get_meta("70806NED")
 data70806 <- datatemporary
 
 data70806 <- data70806 %>% 
-  filter(RegioS %in% c("GM1680", "GM0059", "GM0060","GM0003", "GM0106", "GM0005", "GM0007","GM0063", "GM0055", "GM0009", "GM0064", "GM1681", "GM0109", "GM0065", "GM1891", "GM0010", "GM0058", "GM1979", "GM1651", "GM0114", "GM1722","GM0070", "GM1921", "GM1940", "GM0653", "GM0014", "GM0015", "GM0017", "GM0072", "GM0074", "GM1966", "GM0118", "GM0018",  "GM0079", "GM0022", "GM0080", "GM0081", "GM0082", "GM0140", "GM0024", "GM1663", "GM0025", "GM0083", "GM1908", "GM1987", "GM0119", "GM1731", "GM1952", "GM0104", "GM1970", "GM1699","GM1895", "GM0085", "GM0086", "GM0765", "GM1661", "GM0039","GM0088", "GM0051", "GM0040", "GM0090", "GM0091", "GM0037","GM1900", "GM0093", "GM1730", "GM0737", "GM0047", "GM0048","GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098","GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056")) 
+  filter(RegioS %in% c(
+                       "GM1680", "GM0059", "GM0060",
+                       "GM0003", "GM0106", "GM0005", 
+                       "GM0007","GM0063", "GM0055", 
+                       "GM0009", "GM0064", "GM1681", 
+                       "GM0109", "GM0065", "GM1891", 
+                       "GM0010", "GM0058", "GM1979", 
+                       "GM1651", "GM0114", "GM1722",
+                       "GM0070", "GM1921", "GM1940", 
+                       "GM0653", "GM0014", "GM0015", 
+                       "GM0017", "GM0072", "GM0074", 
+                       "GM1966", "GM0118", "GM0018",  
+                       "GM0079", "GM0022", "GM0080", 
+                       "GM0081", "GM0082", "GM0140", 
+                       "GM0024", "GM1663", "GM0025", 
+                       "GM0083", "GM1908", "GM1987", 
+                       "GM0119", "GM1731", "GM1952", 
+                       "GM0104", "GM1970", "GM1699",
+                       "GM1895", "GM0085", "GM0086", 
+                       "GM0765", "GM1661", "GM0039",
+                       "GM0088", "GM0051", "GM0040", 
+                       "GM0090", "GM0091", "GM0037",
+                       "GM1900", "GM0093", "GM1730", 
+                       "GM0737", "GM0047", "GM0048",
+                       "GM0096", "GM1949", "GM1969", 
+                       "GM1701", "GM1950", "GM0098",
+                       "GM0052", "GM0053", "GM1690", 
+                       "GM0710", "GM0683", "GM0056")) 
 # This filtering will be done in import
 # Years may be added as interactivity
 
+# data70806_2 <- data70806 %>% filter(RegioS %in% c("PV20  ", "PV21  ", "PV22  "))
 tempPerioden70806<- metadata70806$Perioden
 tempSoortrijbanen70806 <- metadata70806$SoortRijbanen
-
+tempRegioS70806 <- metadata70806$RegioS
 
 data70806$Perioden <- tempPerioden70806$Title[match(data70806$Perioden, tempPerioden70806$Key)]
 data70806$SoortRijbanen <- tempSoortrijbanen70806$Title[match(data70806$SoortRijbanen, tempSoortrijbanen70806$Key)]
 colnames(data70806)[1] <- "identificatie"
+# data70806_2$Perioden <- tempPerioden70806$Title[match(data70806_2$Perioden, tempPerioden70806$Key)]
+# data70806_2$SoortRijbanen <- tempSoortrijbanen70806$Title[match(data70806_2$SoortRijbanen, tempSoortrijbanen70806$Key)]
+# data70806_2$RegioS <- tempRegioS70806$Title[match(data70806_2$RegioS, tempRegioS70806$Key)]
+# data70806_2$RegioS <- gsub(" (PV)", "", data70806_2$RegioS, fixed = TRUE)
+
 
 mapDatarijbanen <- municipalBoundaries %>%
   left_join(data70806, municipalBoundaries, by = "identificatie") 
+
+
 
 ##### Data 83712 - Traffic Intensity ###########################################
 # Traffic Intensity
