@@ -268,11 +268,11 @@ elektrische_personenauto_provincie_2_ <- read_excel("elektrische_personenauto_pr
                                                     sheet = "Tabel 1")
 data_elek_2 <- elektrische_personenauto_provincie_2_ %>%
   filter(Regio== "Friesland"|Regio== "Groningen"|Regio== "Drenthe")
-colnames(data_elek_2)[2] = "Years"
+colnames(data_elek_2)[2] = "Years" #Changing colnames
 colnames(data_elek_2)[3] = "Count"
 colnames(data_elek_2)[1] = "Region"
 
-data_elek_2 <- data_elek_2 %>%
+data_elek_2 <- data_elek_2 %>% #Add extra column to dataframe
   mutate(Vehicles = "Electric Vehicle")
 
 data_elek_2 <- data_elek_2[c("Region", "Years", "Vehicles", "Count")]
@@ -297,6 +297,8 @@ data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPeri
 data85239 <- data85239 %>%  filter(Bouwjaren == "Totaal alle bouwjaren")
 
 # Mutations
+#Making different datasets to change regions from columns to rows
+
 dataGroningen <- data85239 %>%
   select(Perioden, Bouwjaren, Voertuigtype, Groningen_2) %>% 
   mutate(Region = "Groningen") %>% 
@@ -318,7 +320,7 @@ data85239new <- data85239new %>%
   group_by(Perioden, Voertuigtype) %>% 
   select(Perioden, Voertuigtype, Count, Region)
 
-datafiltervoertuig <- data85239new %>%
+datafiltervoertuig <- data85239new %>% # Change colnames
   filter(Voertuigtype == "Totaal bedrijfsvoertuigen")
 colnames(data85239new)[1] = "Years"
 colnames(data85239new)[2] = "Vehicles"
@@ -346,6 +348,8 @@ data85240$Provincie <- recode(data85240$Provincie,
                               "PV21  " = "Friesland",
                               "PV22  " = "Drenthe")
 
+#Making different datasets to change regions from columns to rows
+
 dataVoertuigenmetbromfietskenteken <- data85240 %>%
   select(Perioden, Bouwjaar, Provincie, VoertuigenMetBromfietskenteken_1) %>% 
   mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>% 
@@ -372,7 +376,7 @@ data85240new <- data85240new %>%
   group_by(Perioden, Voertuigtype) %>% 
   select(Perioden, Provincie, Count, Voertuigtype)
 
-colnames(data85240new)[1] = "Years"
+colnames(data85240new)[1] = "Years"  #Changing colnames
 colnames(data85240new)[2] = "Region"
 colnames(data85240new)[4] = "Vehicles"
 
@@ -395,6 +399,7 @@ data85237 <- data85237 %>%
   filter(Bouwjaar == "Totaal alle bouwjaren") %>% 
   select(Perioden, TotaalNederland_1, Groningen_2, Fryslan_3, Drenthe_4)
 
+#Making different datasets to change regions from columns to rows
 dataGroningen1 <- data85237 %>%
   select(Perioden, Groningen_2) %>%
   mutate(Region = "Groningen") %>%
@@ -422,6 +427,8 @@ colnames(data85237new)[1] = "Years"
 
 # Dataprep for combined lineplot
 datacombined <- bind_rows(data_elek_2 , data85240new, data85239new, data85237new)
+
+# Renaming Dutch to English
 
 datacombined <- datacombined %>%
   mutate(Vehicles = case_when(
@@ -657,8 +664,8 @@ data70806 <- datatemporary
 
 data70806 <- data70806 %>% 
   filter(RegioS %in% c("GM1680", "GM0059", "GM0060","GM0003", "GM0106", "GM0005", "GM0007","GM0063", "GM0055", "GM0009", "GM0064", "GM1681", "GM0109", "GM0065", "GM1891", "GM0010", "GM0058", "GM1979", "GM1651", "GM0114", "GM1722","GM0070", "GM1921", "GM1940", "GM0653", "GM0014", "GM0015", "GM0017", "GM0072", "GM0074", "GM1966", "GM0118", "GM0018",  "GM0079", "GM0022", "GM0080", "GM0081", "GM0082", "GM0140", "GM0024", "GM1663", "GM0025", "GM0083", "GM1908", "GM1987", "GM0119", "GM1731", "GM1952", "GM0104", "GM1970", "GM1699","GM1895", "GM0085", "GM0086", "GM0765", "GM1661", "GM0039","GM0088", "GM0051", "GM0040", "GM0090", "GM0091", "GM0037","GM1900", "GM0093", "GM1730", "GM0737", "GM0047", "GM0048","GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098","GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056")) 
-  # This filtering will be done in import
-  # Years may be added as interactivity
+# This filtering will be done in import
+# Years may be added as interactivity
 
 tempPerioden70806<- metadata70806$Perioden
 tempSoortrijbanen70806 <- metadata70806$SoortRijbanen
