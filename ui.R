@@ -36,7 +36,7 @@ shinyUI(navbarPage(
               )
             ),
             tabPanel(
-              "Regions in years: for a period, in a timeframe",
+              "Regions in years: different timeframes",
               fluidPage(
                 plotlyOutput("timeframedataplot"),
                 hr(),
@@ -63,9 +63,11 @@ shinyUI(navbarPage(
                   ),
                   column(
                     3,
-                    radioButtons("Timeframe1", "Pick a timeframe",
-                                 choiceNames = c("Departure time", "Day of the week", "Month"),
-                                 choiceValues = c("Departure time", "Day of the week", "Month")
+                    radioButtons(
+                      "Timeframe1",
+                      "Pick a timeframe",
+                      choiceNames = c("Departure time", "Day of the week", "Month"),
+                      choiceValues = c("Departure time", "Day of the week", "Month")
                     )
                   )
                 )
@@ -96,7 +98,7 @@ shinyUI(navbarPage(
               )
             ),
             tabPanel(
-              "Regions in years: for a period, in a timeframe",
+              "Regions in years: different timeframes",
               plotlyOutput("secondtimeframedataplot"),
               hr(),
               fluidRow(
@@ -122,9 +124,11 @@ shinyUI(navbarPage(
                 ),
                 column(
                   3,
-                  radioButtons("Timeframe2", "Pick a timeframe",
-                               choiceNames = c("Departure time", "Day of the week", "Month"),
-                               choiceValues = c("Departure time", "Day of the week", "Month")
+                  radioButtons(
+                    "Timeframe2",
+                    "Pick a timeframe",
+                    choiceNames = c("Departure time", "Day of the week", "Month"),
+                    choiceValues = c("Departure time", "Day of the week", "Month")
                   )
                 )
               )
@@ -304,17 +308,7 @@ shinyUI(navbarPage(
         4,
         h4("Traffic Intensity"),
         h5("some accompanying text about dataset(s)"),
-        plotlyOutput("traffic_barplot"),
-        fluidRow(
-          column(
-            3,
-            selectInput("Years_traffic", 
-                        "Year",
-                        choices = unique(data83712$Years),
-                        multiple = FALSE
-            )
-          )
-        )
+        plotlyOutput("traffic_intensity_plot")
       ),
       column(
         1
@@ -345,7 +339,7 @@ shinyUI(navbarPage(
         column(
           4,
           h5("some accompanying text about dataset(s)"),
-          plotOutput("proximityplot"),
+          plotlyOutput("proximityplot"),
           fluidRow(
             column(
               12,
