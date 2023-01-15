@@ -136,7 +136,7 @@ shinyUI(navbarPage(
           ),
         ),
         # tabPanel(
-############        # "do we want this one??",
+        ############        # "do we want this one??",
         # plotlyOutput("plotidea1"),
         # hr(),
         # fluidRow(
@@ -194,141 +194,160 @@ shinyUI(navbarPage(
           "Driving licenses",
           h4("Other Characteristics: Driving Licences"),
           h5("some accompanying text about dataset(s)"),
-          plotlyOutput("DrivingLicense1"),
-          hr(),
-          fluidRow(
-            column(
-              3,
-              selectInput(
-                inputId = "PeriodsLicense",
-                label = "Year",
-                choices = unique(data83488$Periods),
-                selected = "2022",
-                multiple = FALSE
-              )
-            ),
-            column(
-              3,
-              selectInput(
-                inputId = "LicenseHolderAge",
-                label = "License Holder Age",
-                choices = unique(data83488$AgeDrivingLicenseHolder),
-                multiple = FALSE,
-                selected = "Total"
-              )
-            ),
-            column(
-              6,
-              selectInput(
-                inputId = "LicenseCategory",
-                label = "License Category",
-                choices = unique(data83488$CategoryDrivingLicence),
-                multiple = FALSE,
-                selected = "Total"
-              )
-            )
-          ),
-          plotlyOutput("DrivingLicense2")
-        )
-      )
-    ),
-    hr()
-  ),
+          
+          tabsetPanel(
+            tabPanel(
+              "Regions in years",
+              plotlyOutput("DrivingLicense1"),
+              fluidRow(
+              column(
+                5,
+                selectInput(
+                  inputId = "LicenseCategory",
+                  label = "License Category",
+                  choices = unique(data83488$CategoryDrivingLicence),
+                  multiple = FALSE,
+                  selected = "Total"
+                )),
+              column(
+                  3,
+                  selectInput(
+                    inputId = "LicenseHolderAge",
+                    label = "License Holder Age",
+                    choices = unique(data83488$AgeDrivingLicenseHolder),
+                    multiple = FALSE,
+                    selected = "Total"
+                  )))),
+            tabPanel(
+              "Regions in years",
+              plotlyOutput("DrivingLicense2"),
+              fluidRow(
+                column(
+                  5,
+                  selectInput(
+                    inputId = "LicenseCategory2",
+                    label = "License Category",
+                    choices = unique(data83488$CategoryDrivingLicence),
+                    multiple = FALSE,
+                    selected = "Total"
+                  )),
+                column(
+                  4,
+                  selectInput(
+                    inputId = "PeriodsLicense",
+                    label = "Year",
+                    choices = unique(data83488$Periods),
+                    selected = "2022",
+                    multiple = FALSE
+                  ))))),
+    hr())))),
   tabPanel(
     "Green Mobility",
     h3("Indicators of 'Green Mobility' Across Different Regions Within the Northern Netherlands"),
     hr(),
-    fluidPage(tabPanel(
-      "Vehicle Types",
-      h4("Types of Vehicles"),
-      h5("some accompanying text about dataset(s)"),
-      hr(),
-      fluidRow(
-        column(
-          3,
-          selectInput(
-            inputId = "Region_combined",
-            label = "Region",
-            choices = unique(datacombined$Region), # What to do here, because you use a different column right?
-            multiple = FALSE,
-            selected = "Groningen"
+    fluidPage(
+      tabPanel(
+        "Vehicle Types",
+        h4("Types of Vehicles"),
+        h5("some accompanying text about dataset(s)"),
+        hr(),
+        fluidRow(
+          column(
+            3,
+            selectInput(
+              inputId = "Region_combined",
+              label = "Region",
+              choices = unique(datacombined$Region), # What to do here, because you use a different column right?
+              multiple = FALSE,
+              selected = "Groningen"
+            )
+          ),
+          column(
+            3,
+            selectInput(
+              inputId = "Vehicles_combined",
+              label = "Vehicles",
+              choices = unique(datacombined$Vehicles),
+              multiple = TRUE,
+              selected = "Van"
+            )
+          ),
+          column(
+            6,
+            selectInput(
+              inputId = "Years_combined",
+              label = "Year",
+              choices = unique(datacombined$Years),
+              multiple = FALSE,
+              selected = "2021"
+            )
           )
         ),
-        column(
-          3,
-          selectInput(
-            inputId = "Vehicles_combined",
-            label = "Vehicles",
-            choices = unique(datacombined$Vehicles), 
-            multiple = TRUE,
-            selected = "Van"
-          )
-        ),
-        column(
-          6,
-          selectInput(
-            inputId = "Years_combined",
-            label = "Year",
-            choices = unique(datacombined$Years), 
-            multiple = FALSE,
-            selected = "2021"
-          )
-        )
+        plotlyOutput("plotidea12"),
+        plotlyOutput("plotidea12.1"),
+        plotlyOutput("plotidea12.2")
       ),
-      plotlyOutput("plotidea12"), 
-      plotlyOutput("plotidea12.1"),
-      plotlyOutput("plotidea12.2")
-      
-    ), 
-    tabPanel("Fuel Types",
-      sidebarPanel(
-        selectInput(inputId = "Fueltype",
-                    label = "Fuel type",
-                    choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
-                    multiple = FALSE,
-                    selected = "Benzine"),
-      selectInput(inputId = "Vehicletype",
-                  label = "Vehicle type",
-                  choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
-                  multiple = FALSE,
-                  selected = "Van"),
-      
-    ), 
-    mainPanel(
-      plotlyOutput("plotidea13"), plotlyOutput("plotidea13.1")
-    ),
-    ))
+      tabPanel(
+        "Fuel Types",
+        sidebarPanel(
+          selectInput(
+            inputId = "Fueltype",
+            label = "Fuel type",
+            choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
+            multiple = FALSE,
+            selected = "Benzine"
+          ),
+          selectInput(
+            inputId = "Vehicletype",
+            label = "Vehicle type",
+            choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
+            multiple = FALSE,
+            selected = "Van"
+          ),
+        ),
+        mainPanel(
+          plotlyOutput("plotidea13"), plotlyOutput("plotidea13.1")
+        ),
+      )
+    )
   ),
   tabPanel(
     "Traffic/Infrastructure",
     h3("Traffic and Built Infrastructure Across Different Regions Within the Northern Netherlands"),
     hr(),
-    fluidPage(fluidRow(
-      column(
-        4,
-        h4("Traffic Intensity"),
-        h5("some accompanying text about dataset(s)"),
-        plotlyOutput("traffic_intensity_plot")
+    fluidPage(
+      navlistPanel(
+        widths = c(3, 9),
+        id = "tabset",
+        tabPanel(
+          "Traffic Intensity",
+          h4("Traffic Intensity"),
+          h5("some accompanying text about dataset(s)"),
+          plotlyOutput("traffic_intensity_plot")
+        ),
+        tabPanel(
+          "Length of Highways",
+          h4("Length of Highways"),
+          h5("some accompanying text about dataset(s)"),
+          plotlyOutput("highway_map"),
+          fluidRow(
+            column(3, selectInput(
+              inputId = "SoortRijbanen", # for server side interactivity
+              label = "Type of Highway", # text displayed
+              choices = unique(data70806$SoortRijbanen),
+              selected = "Totale weglengte"
+            )),
+            column(3, selectInput(
+              inputId = "Years_highways",
+              label = "Year",
+              choices = unique(data70806$Perioden),
+              selected = "2021"
+            ))
+          )
+        )
       ),
-      column(
-        1
-      ),
-      column(
-        7,
-        h4("Length of Highways"),
-        h5("some accompanying text about dataset(s)"),
-        plotlyOutput("highway_map"),
-        fluidRow(column(3, selectInput(inputId = "SoortRijbanen", # for server side interactivity
-                                        label = "Type of Highway", # text displayed 
-                                        choices = unique(data70806$SoortRijbanen),
-                                        selected = "Totale weglengte")),
-                 column(3, selectInput(inputId = "Years_highways",
-                                       label = "Year",
-                                       choices = unique(data70806$Perioden),
-                                       selected = "2021")))
-      )
-    )),
-    hr()
+      hr()
+    )
   ),
   tabPanel(
     "Proximity to Amenities",
