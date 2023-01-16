@@ -371,13 +371,13 @@ data85240$Provincie <- recode(data85240$Provincie,
 # Making different datasets to change regions from columns to rows
 
 dataVoertuigenmetbromfietskenteken <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, VoertuigenMetBromfietskenteken_1) %>%
-  mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>%
+  select(Perioden, Bouwjaar, Provincie, VoertuigenMetBromfietskenteken_1) %>% 
+  mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>% 
   rename(Count = VoertuigenMetBromfietskenteken_1)
 
 dataSnorfiets <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, Snorfiets_2) %>%
-  mutate(Voertuigtype = "Snorfiets") %>%
+  select(Perioden, Bouwjaar, Provincie, Snorfiets_2) %>% 
+  mutate(Voertuigtype = "Snorfiets") %>% 
   rename(Count = Snorfiets_2)
 
 dataBromfiets <- data85240 %>%
@@ -386,14 +386,9 @@ dataBromfiets <- data85240 %>%
   rename(Count = Bromfiets_3)
 
 dataBrommobiel <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, Bromfiets_3) %>%
-  mutate(Voertuigtype = "Bromfiets") %>%
-  rename(Count = Bromfiets_3)
-
-dataElektrischebrommobiel <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>%
-  mutate(Voertuigtype = "Overige voertuigen met bromfietskenteken") %>%
-  rename(Count = OverigeVoertuigenMetBromfietskenteken_5)
+  select(Perioden, Bouwjaar, Provincie, Brommobiel_4) %>% 
+  mutate(Voertuigtype = "Brommobiel") %>% 
+  rename(Count = Brommobiel_4)
 
 dataOverigebrommobiel<- data85240 %>%
   select(Perioden, Bouwjaar, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>% 
@@ -411,7 +406,8 @@ data85240new <-
     dataOverigebrommobiel
   )
 data85240new <-
-  data85240new %>% group_by(Perioden, Voertuigtype) %>% select(Perioden, Provincie, Count, Voertuigtype)
+  data85240new %>% 
+  group_by(Perioden, Voertuigtype) %>% select(Perioden, Provincie, Count, Voertuigtype)
 
 colnames(data85240new)[1] <- "Years" # Changing colnames
 colnames(data85240new)[2] <- "Region"
