@@ -246,71 +246,101 @@ shinyUI(navbarPage(
     h3("Indicators of 'Green Mobility' Across Different Regions Within the Northern Netherlands"),
     hr(),
     fluidPage(
-      tabPanel(
-        "Vehicle Types",
-        h4("Types of Vehicles"),
-        h5("some accompanying text about dataset(s)"),
-        hr(),
-        fluidRow(
-          column(
-            3,
-            selectInput(
-              inputId = "Region_combined",
-              label = "Region",
-              choices = unique(datacombined$Region), # What to do here, because you use a different column right?
-              multiple = FALSE,
-              selected = "Groningen"
-            )
-          ),
-          column(
-            3,
+      navlistPanel(
+        widths = c(3, 9),
+        id = "tabset",
+        tabPanel(
+          "Vehicles and regions",
+          h4("keep only one? on the first page from the tabset panel"),
+          h5("some accompanying text about dataset(s)"),
+          fluidRow(
+            column(
+              9,
             selectInput(
               inputId = "Vehicles_combined",
               label = "Vehicles",
               choices = unique(datacombined$Vehicles),
               multiple = TRUE,
               selected = "Van"
-            )
+            ))
           ),
-          column(
-            6,
-            selectInput(
-              inputId = "Years_combined",
-              label = "Year",
-              choices = unique(datacombined$Years),
-              multiple = FALSE,
-              selected = "2021"
-            )
-          )
-        ),
-        plotlyOutput("plotidea12"),
-        plotlyOutput("plotidea12.1"),
-        plotlyOutput("plotidea12.2")
-      ),
-      tabPanel(
-        "Fuel Types",
-        sidebarPanel(
-          selectInput(
-            inputId = "Fueltype",
-            label = "Fuel type",
-            choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
-            multiple = FALSE,
-            selected = "Benzine"
-          ),
-          selectInput(
-            inputId = "Vehicletype",
-            label = "Vehicle type",
-            choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
-            multiple = FALSE,
-            selected = "Van"
-          ),
-        ),
-        mainPanel(
-          plotlyOutput("plotidea13"), plotlyOutput("plotidea13.1")
-        ),
-      )
-    )
-  ),
+          tabsetPanel(
+            tabPanel(
+              "In selected region per years (keep only one of these?)",
+              fluidPage(
+                plotlyOutput("plotidea12"),
+                fluidRow(
+                  column(
+                    3,
+                    selectInput(
+                      inputId = "Region_combined",
+                      label = "Region",
+                      choices = unique(datacombined$Region), # What to do here, because you use a different column right?
+                      multiple = FALSE,
+                      selected = "Groningen"
+                    )
+                  )
+                  ),
+                plotlyOutput("plotidea12.1"),
+                hr()
+                )
+              ),
+            tabPanel(
+              "In selected year per each region",
+              fluidPage(
+                plotlyOutput("plotidea12.2"),
+                hr(),
+                fluidRow(
+                  column(
+                    6,
+                    selectInput(
+                      inputId = "Years_combined",
+                      label = "Year",
+                      choices = unique(datacombined$Years),
+                      multiple = FALSE,
+                      selected = "2021"
+                    )
+                    )
+                  )
+                )
+              )
+            )),
+        tabPanel(
+          "Vehicles and fuels",
+          h4("Vehicle (fuel) type used, given fuel (vehicle) type"),
+          h5("some accompanying text about dataset(s)"),
+          tabsetPanel(
+            tabPanel(
+              "Vehicle type used, given fuel type",
+              plotlyOutput("plotidea13"),
+              fluidRow(
+                column(
+                  3,
+                  selectInput(
+                    inputId = "Fueltype",
+                    label = "Fuel type",
+                    choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
+                    multiple = FALSE,
+                    selected = "Benzine"
+                  )
+                )),
+              hr()
+              ),
+            tabPanel(
+              "Fuel type used, given vehicle type",
+              plotlyOutput("plotidea13.1"),
+              fluidRow(
+                column(
+                  3,
+                  selectInput(
+                    inputId = "Vehicletype",
+                    label = "Vehicle type",
+                    choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
+                    multiple = FALSE,
+                    selected = "Van"
+                  )))),
+              hr())
+                )))),
   tabPanel(
     "Traffic/Infrastructure",
     h3("Traffic and Built Infrastructure Across Different Regions Within the Northern Netherlands"),
