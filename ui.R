@@ -251,7 +251,7 @@ shinyUI(navbarPage(
         id = "tabset",
         tabPanel(
           "Vehicles and regions",
-          h4("keep only one? on the first page from the tabset panel"),
+          h4("aaaaa"),
           h5("some accompanying text about dataset(s)"),
           fluidRow(
             column(
@@ -266,7 +266,7 @@ shinyUI(navbarPage(
           ),
           tabsetPanel(
             tabPanel(
-              "In selected region per years (keep only one of these?)",
+              "In selected region per years",
               fluidPage(
                 plotlyOutput("plotidea12"),
                 fluidRow(
@@ -281,7 +281,7 @@ shinyUI(navbarPage(
                     )
                   )
                   ),
-                plotlyOutput("plotidea12.1"),
+                #plotlyOutput("plotidea12.1"),
                 hr()
                 )
               ),
