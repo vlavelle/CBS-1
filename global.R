@@ -190,7 +190,7 @@ data85056$TripCharacteristics <- sub("Trip in ", "", data85056$TripCharacteristi
 ##### Data 84709 - Personal Characteristics ####################################
 # Personal Characteristics
 metadata84709 <- cbs_get_meta("84709NED")
-datatemp <- cbs_get_data(
+data84709 <- cbs_get_data(
   "84709NED",
   Persoonskenmerken = c(
     "T009002", "51511  ", "52020  ", "53105  ", "53500  ", "53705  ", "53850  ",
@@ -214,7 +214,7 @@ datatemp <- cbs_get_data(
 
 ## Data Prep##
 # temp tables
-data84709 <- datatemp
+
 temp_Perioden84709 <- metadata84709$Perioden # Perioden
 temp_Persoonskenmerken84709 <- metadata84709$Persoonskenmerken # Persoonskenmerken
 temp_Vervoerwijzen84709 <- metadata84709$Vervoerwijzen
@@ -240,10 +240,12 @@ data84709 <- data84709 %>% mutate(Feature = case_when(
   grepl("Gestandaardiseerd inkomen:", data84709$Persoonskenmerken) ~ "Income",
   grepl("OV-Studentenkaart:", data84709$Persoonskenmerken) ~ "Travel Product",
   grepl("Onderwijsniveau:", data84709$Persoonskenmerken) ~ "Education",
-  grepl("Participatie:", data84709$Persoonskenmerken) ~ "Employment(??)",
+  grepl("Participatie:", data84709$Persoonskenmerken) ~ "Employment Status",
   grepl("Rijbewijs,", data84709$Persoonskenmerken) ~ "Driver's License",
   grepl("Geen rijbewijs", data84709$Persoonskenmerken) ~ "Driver's License"
 ))
+
+
 # now it can be filtered on the column "Feature"
 data84709$Persoonskenmerken <- sub("Leeftijd:", "", data84709$Persoonskenmerken)
 data84709$Persoonskenmerken <- sub("Migratieachtergrond:", "", data84709$Persoonskenmerken)
@@ -251,6 +253,68 @@ data84709$Persoonskenmerken <- sub("Gestandaardiseerd inkomen:", "", data84709$P
 data84709$Persoonskenmerken <- sub("OV-Studentenkaart: ", "", data84709$Persoonskenmerken)
 data84709$Persoonskenmerken <- sub("Onderwijsniveau: ", "", data84709$Persoonskenmerken)
 data84709$Persoonskenmerken <- sub("Participatie: ", "", data84709$Persoonskenmerken)
+
+
+data84709 <- data84709 %>%
+  mutate(Personal_Characteristics = case_when(
+    Persoonskenmerken == "Totaal personen" ~ "All people",
+    Persoonskenmerken == " arbeidsongeschikt" ~ "Incapacitated",
+    Persoonskenmerken == "anders/overig" ~ "Other",
+    Persoonskenmerken == "gepensioneerd/VUT" ~ "Retired",
+    Persoonskenmerken == "Participatie:student/scholier" ~ "Student/Scholar",
+    Persoonskenmerken == "werkloos" ~ "Unemployed",
+    Persoonskenmerken == "werkzaam 30 uur pw of meer" ~ "Employed, working 30+ hours weekly",
+    Persoonskenmerken == "werkzaam: 12 tot 30 uur pw" ~ "Employed, working 12 to 30 hours weekly",
+    Persoonskenmerken == "6 tot 12 jaar" ~ "6 to 12 years",
+    Persoonskenmerken == " 12 tot 18 jaar" ~ "12 to 18 years",
+    Persoonskenmerken == " 18 tot 25 jaar" ~ "18 to 25 years",
+    Persoonskenmerken == " 25 tot 35 jaar" ~ "25 to 35 years",
+    Persoonskenmerken == " 35 tot 50 jaar" ~ "35 to 50 years",
+    Persoonskenmerken == " 50 tot 65 jaar" ~ "50 to 65 years",
+    Persoonskenmerken == " 65 tot 75 jaar" ~ "75 to 75 years",
+    Persoonskenmerken == " 75 jaar of ouder" ~ "75 years +",
+    Persoonskenmerken == " Nederland" ~ "Dutch",
+    Persoonskenmerken == " niet-westers" ~ "Non-western",
+    Persoonskenmerken == " westers" ~ "Western",
+    Persoonskenmerken == " 1e 20%-groep" ~ "0-20%-group",
+    Persoonskenmerken == " 2e 20%-groep" ~ "20-40%-group",
+    Persoonskenmerken == " 3e 20%-groep" ~ "40-60%-group",
+    Persoonskenmerken == " 4e 20%-groep" ~ "60-80%-group",
+    Persoonskenmerken == " 5e 20%-groep" ~ "80-100%-group",
+    Persoonskenmerken == "geen" ~ "No subscription",
+    Persoonskenmerken == "weekabonnement" ~ "Weekly-subscription",
+    Persoonskenmerken == "weekendabonnement" ~ "Weekend-subscription",
+    Persoonskenmerken == "1 Laag" ~ "Low",
+    Persoonskenmerken == "2 Middelbaar" ~ "Middle",
+    Persoonskenmerken == "3 Hoog" ~ "High",
+    Persoonskenmerken == "Geen rijbewijs; jonger dan 17 jaar" ~ "No drivers license: Younger than 17 years",
+    Persoonskenmerken == "Geen rijbewijs; wel 17 jaar of ouder" ~ "No drivers license: 17 years or older",
+    Persoonskenmerken == "Rijbewijs, geen personenauto in hh" ~ "Drivers license: No personal car in owns",
+    Persoonskenmerken == "Rijbewijs, personenauto in hh" ~ "Drivers license: Personal car in owns",
+    Persoonskenmerken == "Rijbewijs, personenauto op eigen naam" ~ "Personal car in own name"))
+   
+data84709 <- data84709 %>%
+  mutate(Transport = case_when(
+    Vervoerwijzen == "Totaal" ~ "Total",
+    Vervoerwijzen == "Personenauto  (passagier)" ~ "Personal car(Passenger)",
+    Vervoerwijzen == "Personenauto (bestuurder)" ~ "Personal car(Driver)",
+    Vervoerwijzen == "Trein" ~ "Train",
+    Vervoerwijzen == "Overige vervoerwijze" ~ "Other",
+    Vervoerwijzen == "Bus/tram/metro" ~ "Bus/tram/metro",
+    Vervoerwijzen == "Fiets" ~ "Bicycle",
+    Vervoerwijzen == "Lopen" ~ "Walking"))
+
+data84709 <-
+  data84709 %>% select(
+    Personal_Characteristics,
+    Feature,
+    Verplaatsingen_1,
+    Perioden,
+    RegioS,
+    Transport,
+    Reisduur_3,
+    Afstand_2
+  )
 
 ##### Data 83488 - Drivers License #############################################
 ## Drivers License
@@ -655,7 +719,7 @@ data80305$Municipality <-
   tempRegion$Title[match(data80305$Regions, tempRegion$Key)]
 data80305$Municipality <- recode(
   data80305$Municipality,
-  "Groningen (PV)" = "Groningen",
+  "Groningen (PV)" = "Groningen ",
   # extra space because city/province issue
   "Fryslân (PV)" = "Friesland",
   "Drenthe (PV)" = "Drenthe"
@@ -711,37 +775,11 @@ mapDataproximity <- municipalBoundaries %>%
 ################ Traffic/Infrastructure ########################################
 ##### Data 70806 - Length of Highways ##########################################
 # Length of Highways
-datatemporary <- cbs_get_data(
+data70806 <- cbs_get_data(
   "70806NED",
   SoortRijbanen = c(
-    "T001491",
-    "A047342",
-    "A047344",
-    "A047345",
-    "A047346",
-    "A047348",
-    "A047349",
-    "A047350",
-    "A047352",
-    "A047354",
-    "A047355",
-    "A047356",
-    "A047357",
-    "A047358",
-    "A047360",
-    "A047362",
-    "A047363",
-    "A047364",
-    "A047365",
-    "A047366"
-  ),
-  Perioden = has_substring("JJ")
-)
-metadata70806 <- cbs_get_meta("70806NED")
-data70806 <- datatemporary
-
-data70806 <- data70806 %>%
-  filter(RegioS %in% c(
+    "T001491","A047344", "A047348", "A047352", "A047360"
+  ), RegioS = c(
     "GM1680", "GM0059", "GM0060",
     "GM0003", "GM0106", "GM0005",
     "GM0007", "GM0063", "GM0055",
@@ -769,23 +807,34 @@ data70806 <- data70806 %>%
     "GM1701", "GM1950", "GM0098",
     "GM0052", "GM0053", "GM1690",
     "GM0710", "GM0683", "GM0056"
-  ))
-# This filtering will be done in import
-# Years may be added as interactivity
+  ),
+  Perioden = has_substring("JJ")
+)
+metadata70806 <- cbs_get_meta("70806NED")
 
 # data70806_2 <- data70806 %>% filter(RegioS %in% c("PV20  ", "PV21  ", "PV22  "))
 tempPerioden70806 <- metadata70806$Perioden
 tempSoortrijbanen70806 <- metadata70806$SoortRijbanen
 tempRegioS70806 <- metadata70806$RegioS
 
-data70806$Perioden <- tempPerioden70806$Title[match(data70806$Perioden, tempPerioden70806$Key)]
-data70806$SoortRijbanen <- tempSoortrijbanen70806$Title[match(data70806$SoortRijbanen, tempSoortrijbanen70806$Key)]
+data70806$Perioden <-
+  tempPerioden70806$Title[match(data70806$Perioden, tempPerioden70806$Key)]
+data70806$SoortRijbanen <-
+  tempSoortrijbanen70806$Title[match(data70806$SoortRijbanen, tempSoortrijbanen70806$Key)]
 colnames(data70806)[1] <- "identificatie"
 # data70806_2$Perioden <- tempPerioden70806$Title[match(data70806_2$Perioden, tempPerioden70806$Key)]
 # data70806_2$SoortRijbanen <- tempSoortrijbanen70806$Title[match(data70806_2$SoortRijbanen, tempSoortrijbanen70806$Key)]
 # data70806_2$RegioS <- tempRegioS70806$Title[match(data70806_2$RegioS, tempRegioS70806$Key)]
 # data70806_2$RegioS <- gsub(" (PV)", "", data70806_2$RegioS, fixed = TRUE)
 
+# Translating
+data70806 <- data70806 %>%
+  mutate(SoortRijbanen = case_when(
+    SoortRijbanen == "Totale weglengte" ~ "Total roads",
+    SoortRijbanen == "Gemeentelijke wegen: totaal" ~ "Total Municipal Roads",
+    SoortRijbanen == "Waterschapswegen: totaal" ~ "Total Water Board Roads",
+    SoortRijbanen == "Provinciale wegen: totaal" ~ "Total Provincial Roads",
+    SoortRijbanen == "Rijkswegen: totaal" ~ "Total National Roads"))
 
 mapDatarijbanen <- municipalBoundaries %>%
   left_join(data70806, municipalBoundaries, by = "identificatie")
@@ -807,8 +856,10 @@ tempRegioS83712 <- metadata83712$RegioS
 tempPerioden83712 <- metadata83712$Perioden
 
 # Matching and replacing Keys for Keys
-data83712$RegioS <- tempRegioS83712$Title[match(data83712$RegioS, tempRegioS83712$Key)]
-data83712$Perioden <- tempPerioden83712$Title[match(data83712$Perioden, tempPerioden83712$Key)]
+data83712$RegioS <-
+  tempRegioS83712$Title[match(data83712$RegioS, tempRegioS83712$Key)]
+data83712$Perioden <-
+  tempPerioden83712$Title[match(data83712$Perioden, tempPerioden83712$Key)]
 
 # mutation and aliasing
 colnames(data83712)[1] <- "provinces"

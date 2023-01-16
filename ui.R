@@ -181,11 +181,11 @@ shinyUI(navbarPage(
             column(
               3,
               selectInput(
-                inputId = "Vervoerwijzen_graph1",
+                inputId = "Transport_graph1",
                 label = "Mode of Transport",
-                choices = unique(data84709$Vervoerwijzen),
+                choices = unique(data84709$Transport),
                 multiple = FALSE,
-                selected = "Totaal"
+                selected = "Total"
               )
             )
           )
@@ -200,16 +200,16 @@ shinyUI(navbarPage(
               "Regions in years",
               plotlyOutput("DrivingLicense1"),
               fluidRow(
-              column(
-                5,
-                selectInput(
-                  inputId = "LicenseCategory",
-                  label = "License Category",
-                  choices = unique(data83488$CategoryDrivingLicence),
-                  multiple = FALSE,
-                  selected = "Total"
-                )),
-              column(
+                column(
+                  5,
+                  selectInput(
+                    inputId = "LicenseCategory",
+                    label = "License Category",
+                    choices = unique(data83488$CategoryDrivingLicence),
+                    multiple = FALSE,
+                    selected = "Total"
+                  )),
+                column(
                   3,
                   selectInput(
                     inputId = "LicenseHolderAge",
@@ -240,7 +240,7 @@ shinyUI(navbarPage(
                     selected = "2022",
                     multiple = FALSE
                   ))))),
-    hr())))),
+          hr())))),
   tabPanel(
     "Green Mobility",
     h3("Indicators of 'Green Mobility' Across Different Regions Within the Northern Netherlands"),
@@ -256,13 +256,13 @@ shinyUI(navbarPage(
           fluidRow(
             column(
               9,
-            selectInput(
-              inputId = "Vehicles_combined",
-              label = "Vehicles",
-              choices = unique(datacombined$Vehicles),
-              multiple = TRUE,
-              selected = "Van"
-            ))
+              selectInput(
+                inputId = "Vehicles_combined",
+                label = "Vehicles",
+                choices = unique(datacombined$Vehicles),
+                multiple = TRUE,
+                selected = "Van"
+              ))
           ),
           tabsetPanel(
             tabPanel(
@@ -280,11 +280,11 @@ shinyUI(navbarPage(
                       selected = "Groningen"
                     )
                   )
-                  ),
+                ),
                 #plotlyOutput("plotidea12.1"),
                 hr()
-                )
-              ),
+              )
+            ),
             tabPanel(
               "In selected year per each region",
               fluidPage(
@@ -300,11 +300,11 @@ shinyUI(navbarPage(
                       multiple = FALSE,
                       selected = "2021"
                     )
-                    )
                   )
                 )
               )
-            )),
+            )
+          )),
         tabPanel(
           "Vehicles and fuels",
           h4("Vehicle (fuel) type used, given fuel (vehicle) type"),
@@ -325,7 +325,7 @@ shinyUI(navbarPage(
                   )
                 )),
               hr()
-              ),
+            ),
             tabPanel(
               "Fuel type used, given vehicle type",
               plotlyOutput("plotidea13.1"),
@@ -339,8 +339,8 @@ shinyUI(navbarPage(
                     multiple = FALSE,
                     selected = "Van"
                   )))),
-              hr())
-                )))),
+            hr())
+        )))),
   tabPanel(
     "Traffic/Infrastructure",
     h3("Traffic and Built Infrastructure Across Different Regions Within the Northern Netherlands"),
