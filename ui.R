@@ -2,6 +2,14 @@ source("global.R")
 
 shinyUI(navbarPage(
   "Mobility in the Northern Netherlands",
+  navbarMenu(
+    "Home",
+    tabPanel("About the Data",
+             h3("About the Data")
+             ),
+    tabPanel("About the Team",
+             h3("About the Data"))
+  ),
   tabPanel(
     "Mobility Indicators",
     h3("Indicators of Mobility Across Different Regions Within the Northern Netherlands"),
@@ -410,9 +418,4 @@ shinyUI(navbarPage(
       hr()
     )
   ),
-  navbarMenu(
-    "About us/data",
-    tabPanel("Datasets origin and details"),
-    tabPanel("Creators")
-  )
 ))
