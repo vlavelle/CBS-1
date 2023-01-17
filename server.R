@@ -58,7 +58,7 @@ shinyServer(function(input, output) {
       filter(Periods == input$periods)
   })
   
-  ###### Mobility Indicators Tab
+  ##### Mobility Indicators Tab  #####
   ### Modes per Region
   # Data
   data_84710 <- reactive({
@@ -111,7 +111,6 @@ shinyServer(function(input, output) {
   })
   
   
-  
   ### Motives & Modes per regions
   # Data 1
   data84710_1 <- reactive({
@@ -127,7 +126,6 @@ shinyServer(function(input, output) {
   })
   
   # Plot 1
-  
   output$lineplottravelmotives <- renderPlotly({
     lineplot_1 <- ggplot(
       data = data84710_1(),
@@ -354,7 +352,7 @@ shinyServer(function(input, output) {
                     xref = 'paper', 
                     yref = 'paper', 
                     font = list(size = 12)))
-      
+    
   })
   
   
@@ -441,7 +439,7 @@ shinyServer(function(input, output) {
   })
   
   
-  ##### Green Mobility Tab
+  ##### Green Mobility Tab  #####
   ## VEHICLES
   # Data
   data_vehicles <- reactive(
@@ -601,7 +599,7 @@ shinyServer(function(input, output) {
   })
   
   
-  #### Traffic and Infrastructure Tab
+  ##### Traffic and Infrastructure Tab  #####
   # Traffic Intensity
   # Data
   data_83712 <- data83712 %>%
@@ -677,7 +675,7 @@ shinyServer(function(input, output) {
     gg_1 <- ggplotly(plotted, tooltip = "text") %>% 
       layout(annotations = # adds caption to plot
                list(x = 1, y = 0, 
-                    text = "CBS & PDOK", 
+                    text = "CBS 70806 & PDOK", 
                     showarrow = F, 
                     # sets the x and y id to the proportional to the edge of the graph:
                     xref = 'paper', 
@@ -709,7 +707,7 @@ shinyServer(function(input, output) {
   
   
   
-  ##### Proximity to Amenities Tab
+  ##### Proximity to Amenities Tab  #####
   # Data
   proximity_data <- reactive({
     mapDataproximity %>%
@@ -719,7 +717,7 @@ shinyServer(function(input, output) {
       filter(name == input$proxmapvariable)
   })
   # Map
-  output$proximity_map <- renderPlotly({ # map is made first, then called within girafe function to create the output
+  output$proximity_map <- renderPlotly({ 
     proximity_map_plot <- ggplot(proximity_data()) +
       geom_sf(aes(
         fill = distances,
@@ -734,10 +732,11 @@ shinyServer(function(input, output) {
       scale_colour_manual(values = rep("grey40", 40)) +
       theme_void() +
       labs(fill = "in km")
+    
     gg_2 <- ggplotly(proximity_map_plot, tooltip = "text") %>% 
       layout(annotations = # adds caption to plot
                list(x = 1, y = 0, 
-                    text = "CBS & PDOK", 
+                    text = "CBS 80305 & PDOK", 
                     showarrow = F, 
                     # sets the x and y id to the proportional to the edge of the graph:
                     xref = 'paper', 
