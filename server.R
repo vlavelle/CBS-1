@@ -97,8 +97,10 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 84710ENG",
         fill = "Travel Mode:"
       )
-    modesperregionplotly <- ggplotly(modesperregionplot, tooltip = c("text"))
-    modesperregionplotly
+    
+    ggplotly(modesperregionplot, tooltip = c("text"), dynamicTicks = TRUE) %>% 
+      layout(yaxis = list(tickformat = ".0f"))
+    
   })
   
   
@@ -139,8 +141,9 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 84710",
         colour = "Region:"
       )
-    lineplotly_1 <- ggplotly(lineplot_1, tooltip = c("text"))
-    lineplotly_1
+    
+    ggplotly(lineplot_1, tooltip = c("text"), dynamicTicks = TRUE)
+    
   })
   
   # Data 2
@@ -178,8 +181,8 @@ shinyServer(function(input, output) {
         colour = "Region:"
       )
     
-    lineplotly_2 <- ggplotly(lineplot_2, tooltip = c("text"))
-    lineplotly_2
+    ggplotly(lineplot_2, tooltip = c("text"), dynamicTicks = TRUE)
+    
   })
   
   ### Timeframe Data: Travel Purpose
@@ -220,8 +223,8 @@ shinyServer(function(input, output) {
         colour = "Region:"
       )
     # Plotly
-    data85055plotly <- ggplotly(data85055plot, tooltip = c("text"))
-    data85055plotly
+    ggplotly(data85055plot, tooltip = c("text"), dynamicTicks = TRUE)
+    
   })
   
   ### Timeframe Data: Travel Mode
@@ -263,8 +266,8 @@ shinyServer(function(input, output) {
       )
     
     # Plotly
-    data85056plotly <- ggplotly(data85056plot, tooltip = c("text"))
-    data85056plotly
+    ggplotly(data85056plot, tooltip = c("text"), dynamicTicks = TRUE)
+    
   })
   
   ### Personal Characteristics
@@ -303,7 +306,7 @@ shinyServer(function(input, output) {
       ) +
       scale_fill_manual(values = regioncolours)
     
-    ggplotly(Persoonskenmerken_plot, tooltip = c("text"))
+    ggplotly(Persoonskenmerken_plot, tooltip = c("text"), dynamicTicks = TRUE)
   })
   
   
@@ -339,7 +342,8 @@ shinyServer(function(input, output) {
         x = "Years",
         y = "Number of people with driver's licenses"
       )
-    ggplotly(DrivingLicense1, tooltip = c("text"))
+    
+    ggplotly(DrivingLicense1, tooltip = c("text"), dynamicTicks = TRUE)
   })
   
   dataDrivingLicense2 <- reactive(data83488 %>%
@@ -368,7 +372,8 @@ shinyServer(function(input, output) {
       theme_minimal() +
       scale_fill_manual(values = regioncolours) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
-    ggplotly(DrivingLicense2, tooltip = c("text"))
+    
+    ggplotly(DrivingLicense2, tooltip = c("text"), dynamicTicks = TRUE)
   })
   
   
@@ -404,7 +409,8 @@ shinyServer(function(input, output) {
       ylab("Number of vehicles") +
       xlab("Years") +
       theme_minimal()
-    ggplotly(plot12)
+    
+    ggplotly(plot12, dynamicTicks = TRUE)
   })
   # Plot
   output$plotidea12.1 <- renderPlotly({
@@ -423,7 +429,7 @@ shinyServer(function(input, output) {
       ylab("Number of vehicles") + # Specific Region
       xlab("Years") +
       theme_minimal()
-    ggplotly(plot12.2)
+    ggplotly(plot12.2, dynamicTicks = TRUE)
   })
   
   ## FUEL TYPE
@@ -463,7 +469,7 @@ shinyServer(function(input, output) {
       geom_line() +
       theme_minimal() +
       ylab("Different vehicles used in Nothern Netherlands")
-    ggplotly(plot1, tooltip = c("text"))
+    ggplotly(plot1, tooltip = c("text"), dynamicTicks = TRUE)
   })
   # Plot
   output$plotidea13.1 <- renderPlotly({
@@ -482,7 +488,7 @@ shinyServer(function(input, output) {
       geom_line() +
       theme_minimal() +
       ylab("Different vehicles used in the Nothern Netherlands")
-    ggplotly(plot2, tooltip = c("text"))
+    ggplotly(plot2, tooltip = c("text"), dynamicTicks = TRUE)
   })
   
   
@@ -518,7 +524,7 @@ shinyServer(function(input, output) {
       )
     ylim(0, 1270)
     
-    ggplotly(trafficintensity, tooltip = c("text"))
+    ggplotly(trafficintensity, tooltip = c("text"), dynamicTicks = TRUE)
   })
   
   # Data
@@ -644,6 +650,6 @@ shinyServer(function(input, output) {
       # unified colours not working here!!
       theme_minimal()
     
-    ggplotly(prox_barplot, tooltip = c("text"))
+    ggplotly(prox_barplot, tooltip = c("text"), dynamicTicks = TRUE)
   })
 })
