@@ -6,7 +6,7 @@ shinyUI(navbarPage(
     "Home",
     tabPanel("About the Data",
              h3("About the Data")
-             ),
+    ),
     tabPanel("About the Team",
              h3("About the Data"))
   ),
@@ -22,7 +22,7 @@ shinyUI(navbarPage(
         tabPanel(
           "Purpose of travel",
           h4("Travel Characteristics: Purpose of Travel"),
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 85055ENG: The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the mode of travel on the x axis, along with purpose of travel in the drop-down."),
           tabsetPanel(
             tabPanel(
               "Regions in years",
@@ -86,7 +86,7 @@ shinyUI(navbarPage(
         tabPanel(
           "Mode of travel",
           h4("Travel Characteristics: Mode of Travel"),
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 85056ENG: The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the mode of travel on the x axis, along with mode of travel in the drop-down."),
           tabsetPanel(
             tabPanel(
               "Regions in years",
@@ -201,7 +201,7 @@ shinyUI(navbarPage(
         tabPanel(
           "Driving licenses",
           h4("Other Characteristics: Driving Licences"),
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 83488ENG: The graph below contains the number of people with a driver’s license on the y axis from the year 2014 to 2022 in Drenthe, Friesland, and Groningen."),
           
           tabsetPanel(
             tabPanel(
@@ -260,7 +260,7 @@ shinyUI(navbarPage(
         tabPanel(
           "Vehicles and regions",
           h4("aaaaa"),
-          h5("some accompanying text about dataset(s)"),
+          h5("Datasets 85239NED, 85240NED, 85237NED: The graph below contains the number of selected vehicles on the y axis and years 2019 to 2022 on the x axis."),
           fluidRow(
             column(
               9,
@@ -360,13 +360,13 @@ shinyUI(navbarPage(
         tabPanel(
           "Traffic Intensity",
           h4("Traffic Intensity"),
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 83712NED: The graph below shows the average hourly number of cars on the y axis from the year 2011 to 2018 in Drenthe, Friesland, and Groningen"),
           plotlyOutput("traffic_intensity_plot")
         ),
         tabPanel(
           "Length of Highways",
           h4("Length of Highways"),
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 70806NED: The graph below is a heatmap about the length of highways in Northern Netherlands in Kilometeres(km) "),
           plotlyOutput("highway_map"),
           fluidRow(
             column(3, selectInput(
@@ -395,7 +395,7 @@ shinyUI(navbarPage(
       fluidRow(
         column(
           4,
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 80305ENG: The bar chart below shows the average distance to nearest facilities as requested by the user in Kilometers by car "),
           plotlyOutput("proximityplot"),
           fluidRow(
             column(
@@ -411,7 +411,7 @@ shinyUI(navbarPage(
         ),
         column(
           8,
-          h5("some accompanying text about dataset(s)"),
+          h5("Dataset 80305ENG: The heatmap below shows the distance to nearest facilities as requested by the user in Kilometers by car in the Northern Netherlands."),
           plotlyOutput("proximity_map")
         )
       ),
