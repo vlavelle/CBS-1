@@ -337,7 +337,7 @@ shinyServer(function(input, output) {
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) +
       labs(
         x = "Characteristic",
-        y = "Distance is it average distance?check",
+        y = "Average number of trips per day, per person",
         caption = "Data Source: CBS 84709",
         colour = "Region:"
       ) +
