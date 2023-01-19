@@ -292,7 +292,7 @@ data84709 <- data84709 %>%
     Persoonskenmerken == "Rijbewijs, geen personenauto in hh" ~ "Drivers license: No personal car in owns",
     Persoonskenmerken == "Rijbewijs, personenauto in hh" ~ "Drivers license: Personal car in owns",
     Persoonskenmerken == "Rijbewijs, personenauto op eigen naam" ~ "Personal car in own name"))
-   
+
 data84709 <- data84709 %>%
   mutate(Transport = case_when(
     Vervoerwijzen == "Totaal" ~ "Total",

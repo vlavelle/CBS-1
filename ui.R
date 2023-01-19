@@ -260,21 +260,10 @@ shinyUI(navbarPage(
         tabPanel(
           "Vehicles and regions",
           h4("aaaaa"),
-          h5("Datasets 85239NED, 85240NED, 85237NED: The graph below contains the number of selected vehicles on the y axis and years 2019 to 2022 on the x axis."),
-          fluidRow(
-            column(
-              9,
-              selectInput(
-                inputId = "Vehicles_combined",
-                label = "Vehicles",
-                choices = unique(datacombined$Vehicles),
-                multiple = TRUE,
-                selected = "Van"
-              ))
-          ),
+          h5("Datasets 85240NED, 85237NED and Personal Electric Vehicles: The graph below contains the number of selected vehicles on the y axis and years 2019 to 2022 on the x axis."),
           tabsetPanel(
             tabPanel(
-              "In selected region per years",
+              "In selected region by years",
               fluidPage(
                 plotlyOutput("plotidea12"),
                 fluidRow(
@@ -294,7 +283,7 @@ shinyUI(navbarPage(
               )
             ),
             tabPanel(
-              "In selected year per each region",
+              "In selected year by region",
               fluidPage(
                 plotlyOutput("plotidea12.2"),
                 hr(),
@@ -315,7 +304,7 @@ shinyUI(navbarPage(
           )),
         tabPanel(
           "Vehicles and fuels",
-          h4("Vehicle (fuel) type used, given fuel (vehicle) type"),
+          h4("Vehicle (fuel) type used given fuel (vehicle) type"),
           h5("some accompanying text about dataset(s)"),
           tabsetPanel(
             tabPanel(
@@ -335,7 +324,7 @@ shinyUI(navbarPage(
               hr()
             ),
             tabPanel(
-              "Fuel type used, given vehicle type",
+              "Fuel type used given vehicle type",
               plotlyOutput("plotidea13.1"),
               fluidRow(
                 column(
