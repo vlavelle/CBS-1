@@ -650,7 +650,7 @@ shinyServer(function(input, output) {
     
     ggplotly(trafficintensity, tooltip = c("text"), dynamicTicks = TRUE) %>% 
       layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
+               list(x = 1, y = 0, 
                     text = "CBS 83712", 
                     showarrow = F, 
                     # sets the x and y id to the proportional to the edge of the graph:
