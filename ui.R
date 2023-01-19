@@ -22,11 +22,11 @@ shinyUI(navbarPage(
         tabPanel(
           "Purpose of travel",
           h4("Travel Characteristics: Purpose of Travel"),
-          h5("Dataset 85055ENG: The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the mode of travel on the x axis, along with purpose of travel in the drop-down."),
           tabsetPanel(
             tabPanel(
               "Regions in years",
               fluidPage(
+                h6("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the Period (year) on the x axis, along with purpose of travel as a drop down."),
                 plotlyOutput("lineplottravelmotives"),
                 hr(),
                 fluidRow(
@@ -46,6 +46,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Regions in years: different timeframes",
               fluidPage(
+                h6("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with purpose of travel as a drop down."),
                 plotlyOutput("timeframedataplot"),
                 hr(),
                 fluidRow(
@@ -86,10 +87,10 @@ shinyUI(navbarPage(
         tabPanel(
           "Mode of travel",
           h4("Travel Characteristics: Mode of Travel"),
-          h5("Dataset 85056ENG: The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the mode of travel on the x axis, along with mode of travel in the drop-down."),
           tabsetPanel(
             tabPanel(
               "Regions in years",
+              h5("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, and the mode of travel on the x axis."),
               plotlyOutput("lineplottravelmodes"),
               hr(),
               fluidRow(
@@ -107,6 +108,7 @@ shinyUI(navbarPage(
             ),
             tabPanel(
               "Regions in years: different timeframes",
+              h6("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with mode of travel as a drop down."),
               plotlyOutput("secondtimeframedataplot"),
               hr(),
               fluidRow(
@@ -201,11 +203,10 @@ shinyUI(navbarPage(
         tabPanel(
           "Driving licenses",
           h4("Other Characteristics: Driving Licences"),
-          h5("Dataset 83488ENG: The graph below contains the number of people with a driver’s license on the y axis from the year 2014 to 2022 in Drenthe, Friesland, and Groningen."),
-          
           tabsetPanel(
             tabPanel(
               "Regions in years",
+              h5("The graph below contains the number of people with a driver’s license on the y axis from the year 2014 to 2022 in Drenthe, Friesland, and Groningen, along with License category and Age holder as a drop-down. "),
               plotlyOutput("DrivingLicense1"),
               fluidRow(
                 column(
@@ -228,6 +229,7 @@ shinyUI(navbarPage(
                   )))),
             tabPanel(
               "Regions in years",
+              h5("The graph below contains the number of people with a driver’s license on the y axis the age of the holder in Drenthe, Friesland, and Groningen, along with License category and year as a drop-down. "),
               plotlyOutput("DrivingLicense2"),
               fluidRow(
                 column(
@@ -260,11 +262,12 @@ shinyUI(navbarPage(
         tabPanel(
           "Vehicles and regions",
           h4("aaaaa"),
-          h5("Datasets 85240NED, 85237NED and Personal Electric Vehicles: The graph below contains the number of selected vehicles on the y axis and years 2019 to 2022 on the x axis."),
+  
           tabsetPanel(
             tabPanel(
               "In selected region by years",
               fluidPage(
+                h5("The graph below contains the number of selected vehicles on the y axis and years 2019 to 2022 on the x axis."),
                 plotlyOutput("plotidea12"),
                 fluidRow(
                   column(
@@ -285,6 +288,7 @@ shinyUI(navbarPage(
             tabPanel(
               "In selected year by region",
               fluidPage(
+                h5("The graph below shows the number of vehicles on the y axis  along with a drop down, and Region on the x axis. "),
                 plotlyOutput("plotidea12.2"),
                 hr(),
                 fluidRow(
