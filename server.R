@@ -570,7 +570,9 @@ shinyServer(function(input, output) {
       geom_point() +
       geom_line() +
       theme_minimal() +
-      ylab("Different vehicles used in Nothern Netherlands")
+      labs(y = "Number of vehicles",
+           x = "Years",
+           colour = "Vehicle type")
     
     ggplotly(plot1, tooltip = c("text"), dynamicTicks = TRUE) %>% 
       layout(annotations = # adds caption to plot
@@ -598,7 +600,9 @@ shinyServer(function(input, output) {
       geom_point() +
       geom_line() +
       theme_minimal() +
-      ylab("Different vehicles used in the Nothern Netherlands")
+      labs(y = "Vehicles using this fuel type",
+           x = "Years",
+           colour = "Fuel type")
     
     ggplotly(plot2, tooltip = c("text"), dynamicTicks = TRUE) %>% 
       layout(annotations = # adds caption to plot
