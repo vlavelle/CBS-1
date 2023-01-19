@@ -339,7 +339,7 @@ shinyServer(function(input, output) {
         x = "Characteristic",
         y = "Average number of trips per day, per person",
         caption = "Data Source: CBS 84709",
-        colour = "Region:"
+        fill = "Region:"
       ) +
       scale_fill_manual(values = regioncolours)
     
