@@ -26,7 +26,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Regions in years",
               fluidPage(
-                h6("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the Period (year) on the x axis, along with purpose of travel as a drop down."),
+                h5("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the Period (year) on the x axis, along with purpose of travel as a drop down."),
                 plotlyOutput("lineplottravelmotives"),
                 hr(),
                 fluidRow(
@@ -46,7 +46,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Regions in years: different timeframes",
               fluidPage(
-                h6("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with purpose of travel as a drop down."),
+                h5("The graph below contains the average yearly trips per person in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with purpose of travel as a drop down."),
                 plotlyOutput("timeframedataplot"),
                 hr(),
                 fluidRow(
@@ -108,7 +108,7 @@ shinyUI(navbarPage(
             ),
             tabPanel(
               "Regions in years: different timeframes",
-              h6("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with mode of travel as a drop down."),
+              h5("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with mode of travel as a drop down."),
               plotlyOutput("secondtimeframedataplot"),
               hr(),
               fluidRow(
@@ -262,7 +262,7 @@ shinyUI(navbarPage(
         tabPanel(
           "Vehicles and regions",
           h4("aaaaa"),
-  
+          
           tabsetPanel(
             tabPanel(
               "In selected region by years",
