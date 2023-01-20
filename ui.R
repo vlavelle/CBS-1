@@ -26,7 +26,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Regions in years",
               fluidPage(
-                h5("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the Period (year) on the x axis, along with purpose of travel as a drop down."),
+                h5("The graph below contains the mean distance travelled per trip from 2018 to 2021 in different Dutch provinces and regions. The provinces are represented as lines with the average distance present on the y-axis. the periods (years) are on the x-axis, and the purpose of travel is available as a drop down."),
                 plotlyOutput("lineplottravelmotives"),
                 hr(),
                 fluidRow(
@@ -46,7 +46,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Regions in years: different timeframes",
               fluidPage(
-                h5("The graph below contains the average yearly trips per person in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with purpose of travel as a drop down."),
+                h5("The graph below contains the mean distance travelled per trip in different Dutch provinces and the Northern Netherlands. The mean distance per trip is present on the y-axis, with the provinces given as lines. The time frame in which the trips occurred lies on the x-axis and can be chosen by the user, with the options “Departure time”, “Day of the week” and “Month. Users may also choose for which year they want to view the data, and which purpose of travel they are interested in."),
                 plotlyOutput("timeframedataplot"),
                 hr(),
                 fluidRow(
@@ -90,7 +90,8 @@ shinyUI(navbarPage(
           tabsetPanel(
             tabPanel(
               "Regions in years",
-              h5("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, and the mode of travel on the x axis."),
+              fluidPage(
+              h5("The graph below contains the mean distance travelled per trip from 2018 to 2021 in different Dutch provinces and regions. The provinces are represented as lines with the average distance present on the y-axis. the periods (years) are on the x-axis, and the mode of travel is available as a drop down. "),
               plotlyOutput("lineplottravelmodes"),
               hr(),
               fluidRow(
@@ -105,10 +106,11 @@ shinyUI(navbarPage(
                   )
                 )
               )
-            ),
+            )),
             tabPanel(
               "Regions in years: different timeframes",
-              h5("The graph below contains the average yearly trips per person in 2021 in different Dutch provinces on the y axis, the time frame of the trip on the x axis, along with mode of travel as a drop down."),
+              fluidPage(
+              h5("The graph below contains the mean distance travelled per trip in different Dutch provinces and the Northern Netherlands. The mean distance per trip is present on the y-axis, with the provinces given as lines. The time frame in which the trips occurred lies on the x-axis and can be chosen by the user, with the options “Departure time”, “Day of the week” and “Month. Users may also choose for which year they want to view the data, and which mode of travel they are interested in."),
               plotlyOutput("secondtimeframedataplot"),
               hr(),
               fluidRow(
@@ -142,7 +144,7 @@ shinyUI(navbarPage(
                   )
                 )
               )
-            )
+            ))
           ),
         ),
         # tabPanel(
@@ -164,7 +166,7 @@ shinyUI(navbarPage(
         tabPanel(
           "Personal Characteristics",
           h4("Other Characteristics: Personal"),
-          h5("some accompanying text about dataset(s)"),
+          h5("In this graph the average number of trips per person per day is shown. If multiple transport modes are used in one trip, the one in which the furthest distance was covered is used. Hence, a trip is not considered over if the transport mode changes midway. The y-axis shows this average number of trips, while the x-axis shows a characteristic. The regions are represented as bars. There is the option to view a different year, and choose different characteristics to view. Users can also choose a specific mode of transport."),
           plotlyOutput("Persoonskenmerken"),
           hr(),
           fluidRow(
@@ -205,8 +207,8 @@ shinyUI(navbarPage(
           h4("Other Characteristics: Driving Licences"),
           tabsetPanel(
             tabPanel(
-              "Regions in years",
-              h5("The graph below contains the number of people with a driver’s license on the y axis from the year 2014 to 2022 in Drenthe, Friesland, and Groningen, along with License category and Age holder as a drop-down. "),
+              "Regions in years given license holder age",
+              h5("The graph below shows the number of people who have a driver’s license on the y-axis from the year 2014 to 2022 with the years on the x-axis.  The provinces Drenthe, Friesland, and Groningen are visible as lines. Users can choose to view different categories of driving licenses, as well as different age groups."),
               plotlyOutput("DrivingLicense1"),
               fluidRow(
                 column(
@@ -228,8 +230,8 @@ shinyUI(navbarPage(
                     selected = "Total"
                   )))),
             tabPanel(
-              "Regions in years",
-              h5("The graph below contains the number of people with a driver’s license on the y axis the age of the holder in Drenthe, Friesland, and Groningen, along with License category and year as a drop-down. "),
+              "Regions per license holder age given year",
+              h5("The bar graph below shows the distribution of the age of driving license holders in the three Northern provinces. Users can choose a year to view, and may also choose a license category. The graph then presents all age groups and the number of license holders per age group, by region."),
               plotlyOutput("DrivingLicense2"),
               fluidRow(
                 column(
@@ -261,13 +263,13 @@ shinyUI(navbarPage(
         id = "tabset",
         tabPanel(
           "Vehicles and regions",
-          h4("aaaaa"),
+          h4("Number of vehicles used in regions in years"),
           
           tabsetPanel(
             tabPanel(
               "In selected region by years",
               fluidPage(
-                h5("The graph below contains the number of selected vehicles on the y axis and years 2019 to 2022 on the x axis."),
+                h5("The time-series graph shows the number of different types of vehicles on the y-axis, and years 2019 to 2022 on the x axis, giving an overview of the increase or decrease in use of certain vehicles. This graph is made from a combination of three datasets, hence the difference in time periods available for electric vehicles versus all other vehicle types."),
                 plotlyOutput("plotidea12"),
                 fluidRow(
                   column(
@@ -288,7 +290,7 @@ shinyUI(navbarPage(
             tabPanel(
               "In selected year by region",
               fluidPage(
-                h5("The graph below shows the number of vehicles on the y axis  along with a drop down, and Region on the x axis. "),
+                h5("This bar graph shows the number of vehicles on the y-axis, grouped by region which shows on the x-axis. Users are able to choose which year to view by the drop down menu."),
                 plotlyOutput("plotidea12.2"),
                 hr(),
                 fluidRow(
@@ -309,10 +311,10 @@ shinyUI(navbarPage(
         tabPanel(
           "Vehicles and fuels",
           h4("Vehicle (fuel) type used given fuel (vehicle) type"),
-          h5("some accompanying text about dataset(s)"),
           tabsetPanel(
             tabPanel(
-              "Vehicle type used, given fuel type",
+              "Vehicle type used given fuel type",
+              h5("This graph shows the different vehicle types by fuel type used, where fuel type is selected by the user. Data is only available at a national level, hence regions cannot be selected."),
               plotlyOutput("plotidea13"),
               fluidRow(
                 column(
@@ -329,6 +331,7 @@ shinyUI(navbarPage(
             ),
             tabPanel(
               "Fuel type used given vehicle type",
+              h5("This graph shows the different fuel types used by vehicles in recent years, where vehicle type is selected by the user. Data is only available at a national level, hence regions cannot be selected. "),
               plotlyOutput("plotidea13.1"),
               fluidRow(
                 column(
@@ -353,13 +356,13 @@ shinyUI(navbarPage(
         tabPanel(
           "Traffic Intensity",
           h4("Traffic Intensity"),
-          h5("Dataset 83712NED: The graph below shows the average hourly number of cars on the y axis from the year 2011 to 2018 in Drenthe, Friesland, and Groningen"),
+          h5("The following line graph shows the average hourly number of cars on roads on the y-axis, between the years 2011 and 2018 which are shown on the x-axis. Drenthe, Friesland, and Groningen are each represented by a line."),
           plotlyOutput("traffic_intensity_plot")
         ),
         tabPanel(
           "Length of Highways",
           h4("Length of Highways"),
-          h5("Dataset 70806NED: The graph below is a heatmap about the length of highways in Northern Netherlands in Kilometeres(km) "),
+          h5("The choropleth map shows the municipalities in the Northern Netherlands in terms of the kilometers of roads they have. The colour of each municipality is determined by the length of their highways in kilometeres. There is the option to view different years, and different types of highways and roads."),
           plotlyOutput("highway_map"),
           fluidRow(
             column(3, selectInput(
@@ -388,7 +391,7 @@ shinyUI(navbarPage(
       fluidRow(
         column(
           4,
-          h5("Dataset 80305ENG: The bar chart below shows the average distance to nearest facilities as requested by the user in Kilometers by car "),
+          h5("This bar chart shows the average distance to the nearest facilities, as requested by the user, in kilometers driven by car. There are 15 facilities to choose from, and an additional indicator which averages all 15 facilities."),
           plotlyOutput("proximityplot"),
           fluidRow(
             column(
@@ -404,7 +407,7 @@ shinyUI(navbarPage(
         ),
         column(
           8,
-          h5("Dataset 80305ENG: The heatmap below shows the distance to nearest facilities as requested by the user in Kilometers by car in the Northern Netherlands."),
+          h5("The choropleth proximity map shows the distance to the nearest facilities in kilometers driven by car in the municipalities of the Northern Netherlands. Municipalities are coloured based on their distance to the chosen facility. The same 15 facilities and average of all 15 are available as options to be chosen."),
           plotlyOutput("proximity_map")
         )
       ),
