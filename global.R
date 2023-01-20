@@ -42,16 +42,20 @@ data84710 <- cbs_get_data(
   )
 )
 
-## Data Prep##
+## Data Prep ##
 # temp tables
 tempPeriods84710 <- metadata84710$Periods
 tempMotives84710 <- metadata84710$TravelMotives
 tempModes84710 <- metadata84710$TravelModes
 
 # Matching and replacing Keys for Keys
-data84710$Periods <- tempPeriods84710$Title[match(data84710$Periods, tempPeriods84710$Key)]
-data84710$TravelMotives <- tempMotives84710$Title[match(data84710$TravelMotives, tempMotives84710$Key)]
-data84710$TravelModes <- tempModes84710$Title[match(data84710$TravelModes, tempModes84710$Key)]
+data84710$Periods <-
+  tempPeriods84710$Title[match(data84710$Periods, tempPeriods84710$Key)]
+data84710$TravelMotives <-
+  tempMotives84710$Title[match(data84710$TravelMotives, tempMotives84710$Key)]
+data84710$TravelModes <-
+  tempModes84710$Title[match(data84710$TravelModes, tempModes84710$Key)]
+
 # Fixing Region names manually
 data84710$RegionCharacteristics <- recode(data84710$RegionCharacteristics,
                                           "NL01    " = "The Netherlands",
@@ -668,8 +672,26 @@ data80305 <- cbs_get_data(
     "GM0096", "GM1949", "GM1969", "GM1701", "GM1950", "GM0098",
     "GM0052", "GM0053", "GM1690", "GM0710", "GM0683", "GM0056"
   ),
-  select = c("Periods", "Regions", "DistanceToGPPractice_1", "DistanceToGPPost_5", "DistanceToPharmacy_6", "DistanceToHospital_11", "DistanceToLargeSupermarket_20", "DistanceToShopForOtherDailyFood_24", "DistanceToDepartmentStore_28", "DistanceToCafeEtc_32", "DistanceToRestaurant_40", "DistanceToDaycareCentres_48", "DistanceToOutOfSchoolCare_52", "DistanceToSchool_60", "DistanceToSchool_64", "DistanceToTrainStationsAllTypes_101", "DistanceToLibrary_103")
-) # the recreational, (semi)public green and sports one were NA for all regions
+  select = c(
+    "Periods",
+    "Regions",
+    "DistanceToGPPractice_1",
+    "DistanceToGPPost_5",
+    "DistanceToPharmacy_6",
+    "DistanceToHospital_11",
+    "DistanceToLargeSupermarket_20",
+    "DistanceToShopForOtherDailyFood_24",
+    "DistanceToDepartmentStore_28",
+    "DistanceToCafeEtc_32",
+    "DistanceToRestaurant_40",
+    "DistanceToDaycareCentres_48",
+    "DistanceToOutOfSchoolCare_52",
+    "DistanceToSchool_56",
+    "DistanceToSchool_60",
+    "DistanceToTrainStationsAllTypes_101",
+    "DistanceToLibrary_103"
+  )
+) # the recreational, (semi) public green and sports one were NA for all regions
 
 data80305 <- data80305 %>%
   mutate(
@@ -679,12 +701,13 @@ data80305 <- data80305 %>%
         DistanceToLargeSupermarket_20 + DistanceToShopForOtherDailyFood_24 +
         DistanceToDepartmentStore_28 + DistanceToCafeEtc_32 +
         DistanceToRestaurant_40 + DistanceToDaycareCentres_48 +
-        DistanceToOutOfSchoolCare_52 + DistanceToSchool_60 +
-        DistanceToSchool_64 + DistanceToTrainStationsAllTypes_101 + DistanceToLibrary_103
+        DistanceToOutOfSchoolCare_52 + DistanceToSchool_56 +
+        DistanceToSchool_60 + DistanceToTrainStationsAllTypes_101 + DistanceToLibrary_103
     ) / 15
   ) %>%
   mutate(Avg15 = round(Avg15, 2))
-
+# 60 = Preparatory secondary vocational education
+# 64 = General secondary education (HAVO)
 data80305 <-
   data80305 %>% rename(
     "GP Practice" = "DistanceToGPPractice_1",
@@ -698,8 +721,8 @@ data80305 <-
     "Restaurant" = "DistanceToRestaurant_40",
     "Daycare Centres" = "DistanceToDaycareCentres_48",
     "Out Of School Care" = "DistanceToOutOfSchoolCare_52",
-    "School Type 1" = "DistanceToSchool_60",
-    "School Type 2" = "DistanceToSchool_64",
+    "Secondary schools" = "DistanceToSchool_56",
+    "Primary schools" = "DistanceToSchool_60",
     "Train Station" = "DistanceToTrainStationsAllTypes_101",
     "Library" = "DistanceToLibrary_103",
     "Average of 15 indicators" = "Avg15"
@@ -727,7 +750,6 @@ data80305$Municipality <- recode(
 
 
 
-
 longformdata80305 <-
   pivot_longer(
     data80305,
@@ -743,8 +765,8 @@ longformdata80305 <-
       "Restaurant",
       "Daycare Centres",
       "Out Of School Care",
-      "School Type 1",
-      "School Type 2",
+      "Secondary schools",
+      "Primary schools",
       "Train Station",
       "Library",
       "Average of 15 indicators"
@@ -769,6 +791,10 @@ municipalBoundaries <- municipalBoundaries_unfiltered %>%
 
 mapDataproximity <- municipalBoundaries %>%
   left_join(longformdata80305, by = c(identificatie = "Regions"))
+mapDataproximity$ligtInProvincieNaam <- recode(
+  mapDataproximity$ligtInProvincieNaam,
+  "Fryslân" = "Friesland"
+)
 
 
 
