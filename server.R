@@ -445,7 +445,10 @@ shinyServer(function(input, output) {
   data_vehicles <- reactive(
     datacombined %>%
       filter(Region == input$Region_combined) %>%
-      group_by(Vehicles, Years)
+      group_by(Vehicles, Years) %>% 
+      mutate(tooltip_text = paste0("Vehicle:", Vehicles,
+                                   "\n", "Count", Count,
+                                   "\n", "Region", Region))
   )
   data_vehicles_2 <- reactive(
     datacombined %>%
@@ -459,7 +462,8 @@ shinyServer(function(input, output) {
         x = Years,
         y = Count,
         group = factor(Vehicles),
-        colour = factor(Vehicles)
+        colour = factor(Vehicles),
+        text = tooltip_text
       )
     ) +
       geom_line() +
@@ -469,15 +473,20 @@ shinyServer(function(input, output) {
       ylab("Number of vehicles") +
       xlab("Years") 
     
-    ggplotly(plot12, dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = -0.2, 
-                    text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"), 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+    ggplotly(plot12, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2,
+            y = -0.2,
+            text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = 'paper',
+            yref = 'paper',
+            font = list(size = 12)
+          )
+      )
   })
   # Plot
   # has no tooltip as of yet
@@ -503,13 +512,16 @@ shinyServer(function(input, output) {
   
   # Plot
   output$plotidea12.2 <- renderPlotly({
-      plot12.2 <-
-        ggplot(datacombined %>%
-                 filter(Years == "2021") , aes(x = Region, y = Count, fill = Vehicles)) +
-        geom_bar(stat ="identity", position = "stack", width = 0.5) +
-        ylab("Number of vehicles") + # Specific Region
-        xlab("Years") +
-        theme_minimal()
+    plot12.2 <-
+      ggplot(datacombined %>%
+               filter(Years == "2021") ,
+             aes(x = Region, y = Count, fill = Vehicles)) +
+      geom_bar(stat = "identity",
+               position = "stack",
+               width = 0.5) +
+      ylab("Number of vehicles") + # Specific Region
+      xlab("Years") +
+      theme_minimal()
       
       plotly12.2 <- ggplotly(plot12.2, dynamicTicks = TRUE) %>%
         layout(
@@ -525,6 +537,7 @@ shinyServer(function(input, output) {
               font = list(size = 12)
             )
         )
+      # this is not working entirely
       for (i in 1:length(plotly12.2$x$data)) {
         plotly12.2$x$data[[i]]$base <- NULL
         temporary <- plotly12.2$x$data[[i]]
@@ -534,6 +547,8 @@ shinyServer(function(input, output) {
       plotly12.2
       
     })
+  
+  
   ## FUEL TYPE
   # Data
   dataFueltypes2 <- reactive(
@@ -543,7 +558,9 @@ shinyServer(function(input, output) {
         "Count: ", Count, "\n",
         "Vehicle Type: ", Vehicletype, "\n",
         "Fuel Type: ", Fueltype
-      ))
+      )) %>%
+      group_by(Vehicletype, Years)
+    
   )
   dataFueltypes3 <- reactive(
     datafueltypes1 %>%
@@ -552,7 +569,8 @@ shinyServer(function(input, output) {
         "Count: ", Count, "\n",
         "Vehicle Type: ", Vehicletype, "\n",
         "Fuel Type: ", Fueltype
-      ))
+      )) %>% 
+      group_by(Fueltype, Years)
   )
   # Plot
   output$plotidea13 <- renderPlotly({
@@ -563,10 +581,10 @@ shinyServer(function(input, output) {
           x = Years,
           y = Count,
           colour = factor(Vehicletype),
-          group = Vehicletype,
+          group = factor(Vehicletype),
           text = tooltip_fuel
         )
-      ) + # Possible to use different Y-indicators?
+      ) + 
       geom_point() +
       geom_line() +
       theme_minimal() +
@@ -593,7 +611,7 @@ shinyServer(function(input, output) {
           x = Years,
           y = Count,
           colour = factor(Fueltype),
-          group = Fueltype,
+          group = factor(Fueltype),
           text = tooltip_fuel
         )
       ) +

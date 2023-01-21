@@ -355,6 +355,8 @@ elektrische_personenauto_provincie_2_ <- read_excel("elektrische_personenauto_pr
 )
 data_elek_2 <- elektrische_personenauto_provincie_2_ %>%
   filter(Regio == "Friesland" | Regio == "Groningen" | Regio == "Drenthe")
+
+# @Victoria change these three lines
 colnames(data_elek_2)[2] <- "Years" # Changing colnames
 colnames(data_elek_2)[3] <- "Count"
 colnames(data_elek_2)[1] <- "Region"
@@ -364,40 +366,52 @@ data_elek_2 <- data_elek_2 %>% # Add extra column to dataframe
 
 data_elek_2 <- data_elek_2[c("Region", "Years", "Vehicles", "Count")]
 data_elek_2 <- mutate(data_elek_2, across(everything(), as.factor))
+# @Thijs what is this?
 data_elek_2$Count <- as.numeric(as.character(data_elek_2$Count))
 
 ##### Data 85239 - Vehicles 1 ##################################################
 ## VOERTUIGEN/ Vehicles 1
+# @Victoria filter import
 metadata85239 <- cbs_get_meta("85239NED")
-data85239 <- cbs_get_data("85239NED") # Please filter the import!
+data85239 <- cbs_get_data(
+  "85239NED",
+  Perioden = has_substring("JJ"),
+  Bouwjaren = "T001378",
+  select = c(
+    "Voertuigtype",
+    "Perioden",
+    "TotaalNederland_1",
+    "Groningen_2",
+    "Fryslan_3",
+    "Drenthe_4"
+  )
+) # Please filter the import!
 
 ## Data Prep##
 # temp tables
 tempVoertuigtype85239 <- metadata85239$Voertuigtype
-tempBouwjaren85239 <- metadata85239$Bouwjaren
 tempPerioden85239 <- metadata85239$Perioden
 
 # Matching and replacing Keys for Keys
 data85239$Voertuigtype <- tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
-data85239$Bouwjaren <- tempBouwjaren85239$Title[match(data85239$Bouwjaren, tempBouwjaren85239$Key)]
 data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
-data85239 <- data85239 %>% filter(Bouwjaren == "Totaal alle bouwjaren")
+# data85239 <- data85239 %>% filter(Bouwjaren == "Totaal alle bouwjaren")
 
 # Mutations
 # Making different datasets to change regions from columns to rows
-
+# Victoria change functions
 dataGroningen <- data85239 %>%
-  select(Perioden, Bouwjaren, Voertuigtype, Groningen_2) %>%
+  select(Perioden, Voertuigtype, Groningen_2) %>%
   mutate(Region = "Groningen") %>%
   rename(Count = Groningen_2)
 
 dataFriesland <- data85239 %>%
-  select(Perioden, Bouwjaren, Voertuigtype, Fryslan_3) %>%
+  select(Perioden, Voertuigtype, Fryslan_3) %>%
   mutate(Region = "Friesland") %>%
   rename(Count = Fryslan_3)
 
 dataDrenthe <- data85239 %>%
-  select(Perioden, Bouwjaren, Voertuigtype, Drenthe_4) %>%
+  select(Perioden, Voertuigtype, Drenthe_4) %>%
   mutate(Region = "Drenthe") %>%
   rename(Count = Drenthe_4)
 
@@ -409,6 +423,8 @@ data85239new <- data85239new %>%
 
 datafiltervoertuig <- data85239new %>% # Change colnames
   filter(Voertuigtype == "Totaal bedrijfsvoertuigen")
+
+# @Victoria fix this
 colnames(data85239new)[1] <- "Years"
 colnames(data85239new)[2] <- "Vehicles"
 
@@ -416,14 +432,30 @@ data85239new <- data85239new[c("Region", "Years", "Vehicles", "Count")]
 
 ##### Data 85240 - Vehicles 2 ###################################################
 # VOERTUIGEN/Vehicles 2
+# @Victoria filter import
 metadata85240 <- cbs_get_meta("85240NED")
-data85240 <- cbs_get_data("85240NED") # Please filter the import!
+data85240 <- cbs_get_data(
+  "85240NED",
+  Perioden = has_substring("JJ"),
+  Provincie = c("PV20  ", "PV21  ", "PV22  "),
+  TenaamstellingEnLeeftijdParticulier = "T001191",
+  Bouwjaar = "T001378",
+  select = c(
+    "Provincie",
+    "Perioden",
+    "VoertuigenMetBromfietskenteken_1",
+    "Snorfiets_2",
+    "Bromfiets_3",
+    "Brommobiel_4",
+    "OverigeVoertuigenMetBromfietskenteken_5"
+  )
+) 
 
 # Please filter the import!
-data85240 <- data85240 %>%
-  filter(Provincie == "PV20  " | Provincie == "PV21  " | Provincie == "PV22  ") %>%
-  filter(TenaamstellingEnLeeftijdParticulier == "T001191") %>%
-  filter(Bouwjaar == "T001378")
+# data85240 <- data85240 %>%
+#   filter(Provincie == "PV20  " | Provincie == "PV21  " | Provincie == "PV22  ") %>%
+#   filter(TenaamstellingEnLeeftijdParticulier == "T001191") %>%
+#   filter(Bouwjaar == "T001378")
 
 # Temp table
 tempPerioden85240 <- metadata85240$Perioden
@@ -438,28 +470,29 @@ data85240$Provincie <- recode(data85240$Provincie,
 
 # Making different datasets to change regions from columns to rows
 
+# @Victoria
 dataVoertuigenmetbromfietskenteken <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, VoertuigenMetBromfietskenteken_1) %>% 
+  select(Perioden, Provincie, VoertuigenMetBromfietskenteken_1) %>% 
   mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>% 
   rename(Count = VoertuigenMetBromfietskenteken_1)
 
 dataSnorfiets <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, Snorfiets_2) %>% 
+  select(Perioden, Provincie, Snorfiets_2) %>% 
   mutate(Voertuigtype = "Snorfiets") %>% 
   rename(Count = Snorfiets_2)
 
 dataBromfiets <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, Bromfiets_3) %>% 
+  select(Perioden, Provincie, Bromfiets_3) %>% 
   mutate(Voertuigtype = "Bromfiets") %>% 
   rename(Count = Bromfiets_3)
 
 dataBrommobiel <- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, Brommobiel_4) %>% 
+  select(Perioden, Provincie, Brommobiel_4) %>% 
   mutate(Voertuigtype = "Brommobiel") %>% 
   rename(Count = Brommobiel_4)
 
 dataOverigebrommobiel<- data85240 %>%
-  select(Perioden, Bouwjaar, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>% 
+  select(Perioden, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>% 
   mutate(Voertuigtype = "Overige voertuigen met bromfietskenteken") %>% 
   rename(Count = OverigeVoertuigenMetBromfietskenteken_5)
 
@@ -474,33 +507,53 @@ data85240new <-
     dataOverigebrommobiel
   )
 data85240new <-
-  data85240new %>% 
-  group_by(Perioden, Voertuigtype) %>% select(Perioden, Provincie, Count, Voertuigtype)
+  data85240new %>%
+  group_by(Perioden, Voertuigtype) #%>% select(Perioden, Provincie, Count, Voertuigtype)
 
-colnames(data85240new)[1] <- "Years" # Changing colnames
-colnames(data85240new)[2] <- "Region"
-colnames(data85240new)[4] <- "Vehicles"
+#
+colnames(data85240new)[colnames(data85240new) == 'Perioden'] <-
+  'Years'
+colnames(data85240new)[colnames(data85240new) == 'Provincie'] <-
+  'Region'
+colnames(data85240new)[colnames(data85240new) == 'Voertuigtype'] <-
+  'Vehicles'
+
+# colnames(data85240new)[1] <- "Years" # Changing colnames
+# colnames(data85240new)[2] <- "Region"
+# colnames(data85240new)[4] <- "Vehicles"
 
 ##### Data 85237 - Vehicles 3 ##################################################
 # VOERTUIGEN/Vehicles 3
-data85237 <- cbs_get_data("85237NED") # Please filter the import!
+data85237 <- cbs_get_data(
+  "85237NED",
+  Perioden = has_substring("JJ"),
+  Bouwjaar = "T001378",
+  select = c(
+    "Perioden",
+    "TotaalNederland_1",
+    "Groningen_2",
+    "Fryslan_3",
+    "Drenthe_4"
+  )
+) # Please filter the import!
 metadata85237 <- cbs_get_meta("85237NED")
 
 ## Data Prep##
 # temp tables
 tempPerioden85237 <- metadata85237$Perioden
-tempBouwjaar85237 <- metadata85237$Bouwjaar
 tempBrandstofsoort85237 <- metadata85237$Brandstofsoort
 
 # Then, Replace Keys, by matching keys of temp table and imported table
-data85237$Perioden <- tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
-data85237$Bouwjaar <- tempBouwjaar85237$Title[match(data85237$Bouwjaar, tempBouwjaar85237$Key)]
+data85237$Perioden <-
+  tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
 
-data85237 <- data85237 %>%
-  filter(Bouwjaar == "Totaal alle bouwjaren") %>%
-  select(Perioden, TotaalNederland_1, Groningen_2, Fryslan_3, Drenthe_4)
+
+# data85237 <- data85237 %>%
+#   filter(Bouwjaar == "Totaal alle bouwjaren") %>%
+#   select(Perioden, TotaalNederland_1, Groningen_2, Fryslan_3, Drenthe_4)
 
 # Making different datasets to change regions from columns to rows
+# @Victoria 
 dataGroningen1 <- data85237 %>%
   select(Perioden, Groningen_2) %>%
   mutate(Region = "Groningen") %>%
@@ -524,7 +577,10 @@ data85237new <- data85237new %>%
 data85237new <- data85237new %>%
   mutate(Vehicles = "Normal car")
 
-colnames(data85237new)[1] <- "Years"
+
+# colnames(data85237new)[1] <- "Years"
+colnames(data85237new)[colnames(data85237new) == "Perioden"] <-
+  "Years"
 
 # Dataprep for combined lineplot
 datacombined <- bind_rows(data_elek_2, data85240new, data85239new, data85237new)
@@ -553,86 +609,103 @@ datacombined <- datacombined %>%
 
 ##### Data 85239 - Fuel Types ##################################################
 ## FUEL TYPES
-data85239 <- cbs_get_data("85239NED")
-# Please filter the import!
-metadata85239 <- cbs_get_meta("85239NED")
+data85239 <- cbs_get_data(
+  "85239NED",
+  Bouwjaren = "T001378",
+  select = c(
+    "Voertuigtype",
+    "Perioden",
+    "Benzine_15",
+    "Diesel_16",
+    "LPG_17",
+    "Elektriciteit_18",
+    "CNG_19",
+    "GeenOverigeOnbekendeBrandstof_20",
+    "Totaal_21"
+  )
+)
+
+metadata85239 <-
+  cbs_get_meta("85239NED")
 
 tempVoertuigtype85239 <- metadata85239$Voertuigtype
-tempBouwjaren85239 <- metadata85239$Bouwjaren
 tempPerioden85239 <- metadata85239$Perioden
 
 # Then, Replace Keys, by matching keys of temp table and imported table
-data85239$Voertuigtype <- tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
-data85239$Bouwjaren <- tempBouwjaren85239$Title[match(data85239$Bouwjaren, tempBouwjaren85239$Key)]
-data85239$Perioden <- tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
+data85239$Voertuigtype <-
+  tempVoertuigtype85239$Title[match(data85239$Voertuigtype, tempVoertuigtype85239$Key)]
+data85239$Perioden <-
+  tempPerioden85239$Title[match(data85239$Perioden, tempPerioden85239$Key)]
 
-data85239 <- data85239 %>% filter(Bouwjaren == "Totaal alle bouwjaren")
 
-dataFueltypeCommercial <- data85239 %>%
-  select(Voertuigtype, Perioden, Benzine_15, Diesel_16, LPG_17, Elektriciteit_18, CNG_19, GeenOverigeOnbekendeBrandstof_20, Totaal_21)
+dataFueltypeCommercial <- data85239
 
-colnames(dataFueltypeCommercial)[8] <- "OverigOnbekend_20"
+colnames(dataFueltypeCommercial)[colnames(dataFueltypeCommercial) == 'GeenOverigeOnbekendeBrandstof_20'] <-
+  'OverigOnbekend_20'
 
 ##### Data 85237 - All Normal Vehicles #########################################
 # All normal Vehicles
-data85237 <- cbs_get_data("85237NED")
+data85237 <-
+  cbs_get_data(
+    "85237NED",
+    Perioden = has_substring("JJ"),
+    Bouwjaar = c("T001378") ,
+    select = c(
+      "Perioden",
+      "Benzine_15",
+      "Diesel_16",
+      "LPG_17",
+      "Elektriciteit_18",
+      "CNG_19",
+      "OverigOnbekend_20",
+      "Totaal_21"
+    )
+  )
 metadata85237 <- cbs_get_meta("85237NED")
 
 ## Data Prep##
 # temp tables
 tempPerioden85237 <- metadata85237$Perioden
-tempBouwjaar85237 <- metadata85237$Bouwjaar
 
 # Then, Replace Keys, by matching keys of temp table and imported table
 data85237$Perioden <- tempPerioden85237$Title[match(data85237$Perioden, tempPerioden85237$Key)]
-data85237$Bouwjaar <- tempBouwjaar85237$Title[match(data85237$Bouwjaar, tempBouwjaar85237$Key)]
 
-data85237 <- data85237 %>%
-  filter(Bouwjaar == "Totaal alle bouwjaren")
 
 dataFueltypeNormal <- data85237 %>%
-  select(Bouwjaar, Perioden, Benzine_15, Diesel_16, LPG_17, Elektriciteit_18, CNG_19, OverigOnbekend_20, Totaal_21)
-
-dataFueltypeNormal <- dataFueltypeNormal %>%
   mutate(Voertuigtype = "Personal vehicle")
 
-dataFueltypeNormal <- dataFueltypeNormal[c("Voertuigtype", "Perioden", "Benzine_15", "Diesel_16", "LPG_17", "Elektriciteit_18", "CNG_19", "OverigOnbekend_20", "Totaal_21")]
 
 dataFueltypes <- bind_rows(dataFueltypeNormal, dataFueltypeCommercial)
-colnames(dataFueltypes)[1] <- "Vehicletype"
-colnames(dataFueltypes)[2] <- "Years"
 
-dataBenzine <- dataFueltypes %>%
-  select(Vehicletype, Years, Benzine_15) %>%
-  mutate(Fueltype = "Benzine") %>%
-  rename(Count = Benzine_15)
 
-dataDiesel <- dataFueltypes %>%
-  select(Vehicletype, Years, Diesel_16) %>%
-  mutate(Fueltype = "Diesel") %>%
-  rename(Count = Diesel_16)
+dataFueltypes <- dataFueltypes %>% rename(
+  "Years" = "Perioden",
+  "Vehicletype" = "Voertuigtype",
+  "Benzine" = "Benzine_15",
+  "Diesel" = "Diesel_16",
+  "LPG" = "LPG_17",
+  "Electricity" = "Elektriciteit_18",
+  "CNG" = "CNG_19",
+  "Unknown" = "OverigOnbekend_20",
+  "Total" = "Totaal_21"
+)
 
-dataLPG <- dataFueltypes %>%
-  select(Vehicletype, Years, LPG_17) %>%
-  mutate(Fueltype = "LPG") %>%
-  rename(Count = LPG_17)
+datafueltypes1 <- pivot_longer(
+  dataFueltypes,
+  cols = c(
+    Benzine,
+    Diesel,
+    LPG,
+    Electricity,
+    CNG,
+    Unknown,
+    Total
+  ),
+  names_to = "Fueltype",
+  values_to = "Count",
+  values_drop_na = FALSE
+)
 
-dataElektriciteit <- dataFueltypes %>%
-  select(Vehicletype, Years, Elektriciteit_18) %>%
-  mutate(Fueltype = "Elektriciteit") %>%
-  rename(Count = Elektriciteit_18)
-
-dataCNG <- dataFueltypes %>%
-  select(Vehicletype, Years, CNG_19) %>%
-  mutate(Fueltype = "CNG") %>%
-  rename(Count = CNG_19)
-
-dataOnbekend <- dataFueltypes %>%
-  select(Vehicletype, Years, OverigOnbekend_20) %>%
-  mutate(Fueltype = "Unknown") %>%
-  rename(Count = OverigOnbekend_20)
-
-datafueltypes1 <- bind_rows(dataBenzine, dataDiesel, dataLPG, dataElektriciteit, dataCNG, dataOnbekend)
 
 datafueltypes1 <- datafueltypes1 %>%
   mutate(Vehicletype = case_when(
