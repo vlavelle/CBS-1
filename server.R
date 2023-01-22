@@ -610,7 +610,7 @@ shinyServer(function(input, output) {
              aes(
                x = Region,
                y = Count,
-               fill = Vehicles,
+               fill = factor(Vehicles),
                text = tooltip_text
              )) +
       geom_col(
