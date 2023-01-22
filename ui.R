@@ -2,15 +2,54 @@ source("global.R")
 
 shinyUI(navbarPage(
   "Mobility in the Northern Netherlands",
-  navbarMenu(
-    "Home",
-    tabPanel(
-      "About the Data",
-      h3("About the Data")
-    ),
-    tabPanel(
-      "About the Team",
-      h3("About the Team")
+  tabPanel(
+    "Homepage",
+    h3("Homepage"),
+    hr(),
+    fluidPage(
+      fluidRow(
+        column(
+          4,
+          fluidPage(
+            h5("Creators"),
+            p("Team CBS_1 of minor DataWise blabla", style = "font-family: 'times'; font-si16pt"),
+            hr(),
+            h5("CBS"),
+            p("CBS", style = "font-family: 'times'; font-si16pt"),
+            hr(),
+          )
+        ),
+        column(
+          8,
+          fluidPage(
+            h5("This dashboard"),
+            tabsetPanel(
+              tabPanel(
+                "Data origin",
+                fluidPage(
+                  p(" "),
+                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt")
+                )
+              ),
+              tabPanel(
+                "Datasets",
+                fluidPage(
+                  p(" "),
+                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt")
+                )
+              ),
+              tabPanel(
+                "Packages used",
+                fluidPage(
+                  p(" "),
+                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt")
+                )
+              )
+            )
+          )
+        )
+      ),
+      hr()
     )
   ),
   tabPanel(
