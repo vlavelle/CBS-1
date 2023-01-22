@@ -12,7 +12,7 @@ library(tidyr)
 
 
 # set wd to the file location where you have downloaded the global, server and UI files
-setwd("~/R/CBS Project/Dashboard1")
+setwd("/Users/macbookair/Desktop/CBS/dashboard")
 
 ################ Mobility Indicators ###########################################
 ##### Data 84710 - Regions in years Tabs #######################################
@@ -21,8 +21,10 @@ metadata84710 <- cbs_get_meta("84710ENG")
 data84710 <- cbs_get_data(
   id = "84710ENG",
   Periods = has_substring("JJ"),
-  RegionCharacteristics = c("NL01    ", "LD01    ", "PV20    ",
-                            "PV21    ", "PV22    "),
+  RegionCharacteristics = c(
+    "NL01    ", "LD01    ", "PV20    ",
+    "PV21    ", "PV22    "
+  ),
   Population = "A048710",
   # 6 and older
   Margins = "MW00000",
@@ -58,11 +60,11 @@ data84710$TravelModes <-
 
 # Fixing Region names manually
 data84710$RegionCharacteristics <- recode(data84710$RegionCharacteristics,
-                                          "NL01    " = "The Netherlands",
-                                          "LD01    " = "Northern Netherlands",
-                                          "PV20    " = "Groningen",
-                                          "PV21    " = "Friesland",
-                                          "PV22    " = "Drenthe"
+  "NL01    " = "The Netherlands",
+  "LD01    " = "Northern Netherlands",
+  "PV20    " = "Groningen",
+  "PV21    " = "Friesland",
+  "PV22    " = "Drenthe"
 )
 
 ##### Data 85055 - Timeframe: Purpose of Travel ################################
@@ -104,10 +106,10 @@ data85055$TravelPurposes <- temp_TravelPurposes85055$Title[match(data85055$Trave
 data85055$Population <- temp_Population85055$Title[match(data85055$Population, temp_Population85055$Key)]
 # Fixing Region names manually
 data85055$RegionCharacteristics <- recode(data85055$RegionCharacteristics,
-                                          "LD01    " = "Northern Netherlands",
-                                          "PV20    " = "Groningen",
-                                          "PV21    " = "Friesland",
-                                          "PV22    " = "Drenthe"
+  "LD01    " = "Northern Netherlands",
+  "PV20    " = "Groningen",
+  "PV21    " = "Friesland",
+  "PV22    " = "Drenthe"
 )
 # Mutations
 data85055 <- data85055 %>%
@@ -169,10 +171,10 @@ data85056$ModesOfTravel <- temp_ModesOfTravel85056$Title[match(data85056$ModesOf
 data85056$Population <- temp_Population85056$Title[match(data85056$Population, temp_Population85056$Key)]
 # Fixing Region names manually
 data85056$RegionCharacteristics <- recode(data85056$RegionCharacteristics,
-                                          "LD01    " = "Northern Netherlands",
-                                          "PV20    " = "Groningen",
-                                          "PV21    " = "Friesland",
-                                          "PV22    " = "Drenthe"
+  "LD01    " = "Northern Netherlands",
+  "PV20    " = "Groningen",
+  "PV21    " = "Friesland",
+  "PV22    " = "Drenthe"
 )
 # mutation for aliasing
 data85056 <- data85056 %>%
@@ -229,11 +231,11 @@ data84709$Persoonskenmerken <- temp_Persoonskenmerken84709$Title[match(data84709
 data84709$Vervoerwijzen <- temp_Vervoerwijzen84709$Title[match(data84709$Vervoerwijzen, temp_Vervoerwijzen84709$Key)]
 # Fixing Region names manually
 data84709$RegioS <- recode(data84709$RegioS,
-                           "NL01    " = "The Netherlands",
-                           "LD01    " = "Northern Netherlands",
-                           "PV20    " = "Groningen",
-                           "PV21    " = "Friesland",
-                           "PV22    " = "Drenthe"
+  "NL01    " = "The Netherlands",
+  "LD01    " = "Northern Netherlands",
+  "PV20    " = "Groningen",
+  "PV21    " = "Friesland",
+  "PV22    " = "Drenthe"
 )
 
 # mutation and translating from Dutch
@@ -295,7 +297,8 @@ data84709 <- data84709 %>%
     Persoonskenmerken == "Geen rijbewijs; wel 17 jaar of ouder" ~ "No drivers license: 17 years or older",
     Persoonskenmerken == "Rijbewijs, geen personenauto in hh" ~ "Drivers license: No personal car in owns",
     Persoonskenmerken == "Rijbewijs, personenauto in hh" ~ "Drivers license: Personal car in owns",
-    Persoonskenmerken == "Rijbewijs, personenauto op eigen naam" ~ "Personal car in own name"))
+    Persoonskenmerken == "Rijbewijs, personenauto op eigen naam" ~ "Personal car in own name"
+  ))
 
 data84709 <- data84709 %>%
   mutate(Transport = case_when(
@@ -306,7 +309,8 @@ data84709 <- data84709 %>%
     Vervoerwijzen == "Overige vervoerwijze" ~ "Other",
     Vervoerwijzen == "Bus/tram/metro" ~ "Bus/tram/metro",
     Vervoerwijzen == "Fiets" ~ "Bicycle",
-    Vervoerwijzen == "Lopen" ~ "Walking"))
+    Vervoerwijzen == "Lopen" ~ "Walking"
+  ))
 
 data84709 <-
   data84709 %>% select(
@@ -323,7 +327,7 @@ data84709 <-
 ##### Data 83488 - Drivers License #############################################
 ## Drivers License
 data83488 <- cbs_get_data("83488ENG",
-                          Region = c("PV20  ", "PV21  ", "PV22  ")
+  Region = c("PV20  ", "PV21  ", "PV22  ")
 )
 metadata83488 <- cbs_get_meta("83488ENG")
 
@@ -339,9 +343,9 @@ data83488$AgeDrivingLicenseHolder <- tempAgeDrivingLicenseHolder83488$Title[matc
 data83488$Periods <- tempPeriods83488$Title[match(data83488$Periods, tempPeriods83488$Key)]
 # Fixing Region names manually
 data83488$Region <- recode(data83488$Region,
-                           "PV20  " = "Groningen",
-                           "PV21  " = "Friesland",
-                           "PV22  " = "Drenthe"
+  "PV20  " = "Groningen",
+  "PV21  " = "Friesland",
+  "PV22  " = "Drenthe"
 )
 
 
@@ -351,7 +355,7 @@ data83488$Region <- recode(data83488$Region,
 ##### Data from Excel ############################################################
 # data from excel
 elektrische_personenauto_provincie_2_ <- read_excel("elektrische_personenauto_provincie (2).xlsx",
-                                                    sheet = "Tabel 1"
+  sheet = "Tabel 1"
 )
 data_elek_2 <- elektrische_personenauto_provincie_2_ %>%
   filter(Regio == "Friesland" | Regio == "Groningen" | Regio == "Drenthe")
@@ -449,7 +453,7 @@ data85240 <- cbs_get_data(
     "Brommobiel_4",
     "OverigeVoertuigenMetBromfietskenteken_5"
   )
-) 
+)
 
 # Please filter the import!
 # data85240 <- data85240 %>%
@@ -463,41 +467,41 @@ tempPerioden85240 <- metadata85240$Perioden
 data85240$Perioden <- tempPerioden85240$Title[match(data85240$Perioden, tempPerioden85240$Key)]
 # fixing Region names manually
 data85240$Provincie <- recode(data85240$Provincie,
-                              "PV20  " = "Groningen",
-                              "PV21  " = "Friesland",
-                              "PV22  " = "Drenthe"
+  "PV20  " = "Groningen",
+  "PV21  " = "Friesland",
+  "PV22  " = "Drenthe"
 )
 
 # Making different datasets to change regions from columns to rows
 
 # @Victoria
 dataVoertuigenmetbromfietskenteken <- data85240 %>%
-  select(Perioden, Provincie, VoertuigenMetBromfietskenteken_1) %>% 
-  mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>% 
+  select(Perioden, Provincie, VoertuigenMetBromfietskenteken_1) %>%
+  mutate(Voertuigtype = "Voertuig met bromfietskenteken") %>%
   rename(Count = VoertuigenMetBromfietskenteken_1)
 
 dataSnorfiets <- data85240 %>%
-  select(Perioden, Provincie, Snorfiets_2) %>% 
-  mutate(Voertuigtype = "Snorfiets") %>% 
+  select(Perioden, Provincie, Snorfiets_2) %>%
+  mutate(Voertuigtype = "Snorfiets") %>%
   rename(Count = Snorfiets_2)
 
 dataBromfiets <- data85240 %>%
-  select(Perioden, Provincie, Bromfiets_3) %>% 
-  mutate(Voertuigtype = "Bromfiets") %>% 
+  select(Perioden, Provincie, Bromfiets_3) %>%
+  mutate(Voertuigtype = "Bromfiets") %>%
   rename(Count = Bromfiets_3)
 
 dataBrommobiel <- data85240 %>%
-  select(Perioden, Provincie, Brommobiel_4) %>% 
-  mutate(Voertuigtype = "Brommobiel") %>% 
+  select(Perioden, Provincie, Brommobiel_4) %>%
+  mutate(Voertuigtype = "Brommobiel") %>%
   rename(Count = Brommobiel_4)
 
-dataOverigebrommobiel<- data85240 %>%
-  select(Perioden, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>% 
-  mutate(Voertuigtype = "Overige voertuigen met bromfietskenteken") %>% 
+dataOverigebrommobiel <- data85240 %>%
+  select(Perioden, Provincie, OverigeVoertuigenMetBromfietskenteken_5) %>%
+  mutate(Voertuigtype = "Overige voertuigen met bromfietskenteken") %>%
   rename(Count = OverigeVoertuigenMetBromfietskenteken_5)
 
 
-#Dataprep for combined lineplot
+# Dataprep for combined lineplot
 data85240new <-
   bind_rows(
     dataVoertuigenmetbromfietskenteken,
@@ -508,15 +512,15 @@ data85240new <-
   )
 data85240new <-
   data85240new %>%
-  group_by(Perioden, Voertuigtype) #%>% select(Perioden, Provincie, Count, Voertuigtype)
+  group_by(Perioden, Voertuigtype) # %>% select(Perioden, Provincie, Count, Voertuigtype)
 
 #
-colnames(data85240new)[colnames(data85240new) == 'Perioden'] <-
-  'Years'
-colnames(data85240new)[colnames(data85240new) == 'Provincie'] <-
-  'Region'
-colnames(data85240new)[colnames(data85240new) == 'Voertuigtype'] <-
-  'Vehicles'
+colnames(data85240new)[colnames(data85240new) == "Perioden"] <-
+  "Years"
+colnames(data85240new)[colnames(data85240new) == "Provincie"] <-
+  "Region"
+colnames(data85240new)[colnames(data85240new) == "Voertuigtype"] <-
+  "Vehicles"
 
 # colnames(data85240new)[1] <- "Years" # Changing colnames
 # colnames(data85240new)[2] <- "Region"
@@ -553,7 +557,7 @@ data85237$Perioden <-
 #   select(Perioden, TotaalNederland_1, Groningen_2, Fryslan_3, Drenthe_4)
 
 # Making different datasets to change regions from columns to rows
-# @Victoria 
+# @Victoria
 dataGroningen1 <- data85237 %>%
   select(Perioden, Groningen_2) %>%
   mutate(Region = "Groningen") %>%
@@ -640,8 +644,8 @@ data85239$Perioden <-
 
 dataFueltypeCommercial <- data85239
 
-colnames(dataFueltypeCommercial)[colnames(dataFueltypeCommercial) == 'GeenOverigeOnbekendeBrandstof_20'] <-
-  'OverigOnbekend_20'
+colnames(dataFueltypeCommercial)[colnames(dataFueltypeCommercial) == "GeenOverigeOnbekendeBrandstof_20"] <-
+  "OverigOnbekend_20"
 
 ##### Data 85237 - All Normal Vehicles #########################################
 # All normal Vehicles
@@ -649,7 +653,7 @@ data85237 <-
   cbs_get_data(
     "85237NED",
     Perioden = has_substring("JJ"),
-    Bouwjaar = c("T001378") ,
+    Bouwjaar = c("T001378"),
     select = c(
       "Perioden",
       "Benzine_15",
@@ -877,7 +881,7 @@ mapDataproximity$ligtInProvincieNaam <- recode(
 data70806 <- cbs_get_data(
   "70806NED",
   SoortRijbanen = c(
-    "T001491","A047344", "A047348", "A047352", "A047360"
+    "T001491", "A047344", "A047348", "A047352", "A047360"
   ), RegioS = c(
     "GM1680", "GM0059", "GM0060",
     "GM0003", "GM0106", "GM0005",
@@ -933,7 +937,8 @@ data70806 <- data70806 %>%
     SoortRijbanen == "Gemeentelijke wegen: totaal" ~ "Total Municipal Roads",
     SoortRijbanen == "Waterschapswegen: totaal" ~ "Total Water Board Roads",
     SoortRijbanen == "Provinciale wegen: totaal" ~ "Total Provincial Roads",
-    SoortRijbanen == "Rijkswegen: totaal" ~ "Total National Roads"))
+    SoortRijbanen == "Rijkswegen: totaal" ~ "Total National Roads"
+  ))
 
 mapDatarijbanen <- municipalBoundaries %>%
   left_join(data70806, municipalBoundaries, by = "identificatie")
