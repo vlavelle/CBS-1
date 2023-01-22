@@ -32,7 +32,7 @@ source("global.R", local = TRUE)
 
 
 shinyServer(function(input, output) {
-  
+
   # define a vector for the colours for the Region (colourblind safe)
   # Not yet implemented
   regioncolours <-
@@ -49,15 +49,15 @@ shinyServer(function(input, output) {
       "Drenthe" = "#D95F02",
       "Friesland" = "#E6AB02"
     )
-  
-  
-  
+
+
+
   # Data - Not sure where the plot for this one is
   data_80305 <- reactive({
     data80305 %>%
       filter(Periods == input$periods)
   })
-  
+
   ##### Mobility Indicators Tab  #####
   ### Modes per Region
   # Data
@@ -76,7 +76,7 @@ shinyServer(function(input, output) {
       ) %>%
       mutate(tooltip_text = paste(TravelModes, "\n", "Region: ", RegionCharacteristics, "\n", Trips_4))
   })
-  
+
   # Plot 1
   output$plotidea1 <- renderPlotly({
     modesperregionplot <- ggplot(
@@ -97,20 +97,23 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 84710ENG",
         fill = "Travel Mode:"
       )
-    
-    ggplotly(modesperregionplot, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 84710", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+
+    ggplotly(modesperregionplot, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 84710",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
-  
+
+
   ### Motives & Modes per regions
   # Data 1
   data84710_1 <- reactive({
@@ -124,7 +127,7 @@ shinyServer(function(input, output) {
       distinct() %>%
       mutate(tooltip_text = paste0("Region: ", RegionCharacteristics, "\n", "Distance: ", mean_distance_travelled))
   })
-  
+
   # Plot 1
   output$lineplottravelmotives <- renderPlotly({
     lineplot_1 <- ggplot(
@@ -146,19 +149,22 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 84710",
         colour = "Region:"
       )
-    
-    ggplotly(lineplot_1, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 84710", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+
+    ggplotly(lineplot_1, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 84710",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
+
   # Data 2
   data84710_2 <- reactive({
     data84710 %>%
@@ -171,7 +177,7 @@ shinyServer(function(input, output) {
       distinct() %>%
       mutate(tooltip_text = paste0("Region: ", RegionCharacteristics, "\n", "Distance:", mean_distance_travelled))
   })
-  
+
   # Plot 2
   output$lineplottravelmodes <- renderPlotly({
     lineplot_2 <- ggplot(
@@ -193,19 +199,22 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 84710",
         colour = "Region:"
       )
-    
-    ggplotly(lineplot_2, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 84710", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+
+    ggplotly(lineplot_2, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 84710",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
+
   ### Timeframe Data: Travel Purpose
   # Data
   data_85055 <- reactive({
@@ -219,7 +228,7 @@ shinyServer(function(input, output) {
         TripCharacteristics
       ))
   })
-  
+
   # Plot
   output$timeframedataplot <- renderPlotly({
     data85055plot <- ggplot(
@@ -244,18 +253,21 @@ shinyServer(function(input, output) {
         colour = "Region:"
       )
     # Plotly
-    ggplotly(data85055plot, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 85055", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+    ggplotly(data85055plot, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 85055",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
+
   ### Timeframe Data: Travel Mode
   # Data
   data_85056 <- reactive({
@@ -269,7 +281,7 @@ shinyServer(function(input, output) {
         TripCharacteristics
       ))
   })
-  
+
   # Plot
   output$secondtimeframedataplot <- renderPlotly({
     data85056plot <- ggplot(
@@ -293,20 +305,23 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 85055",
         colour = "Region:"
       )
-    
+
     # Plotly
-    ggplotly(data85056plot, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 85056", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+    ggplotly(data85056plot, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 85056",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
+
   ### Personal Characteristics
   # Data
   data_84709 <- reactive({
@@ -320,7 +335,7 @@ shinyServer(function(input, output) {
         "Region: ", RegioS
       ))
   })
-  
+
   # Plot
   output$Persoonskenmerken <- renderPlotly({
     Persoonskenmerken_plot <- ggplot(
@@ -342,20 +357,23 @@ shinyServer(function(input, output) {
         fill = "Region:"
       ) +
       scale_fill_manual(values = regioncolours)
-    
+
     ggplotly(Persoonskenmerken_plot, tooltip = c("text"), dynamicTicks = TRUE) %>%
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 84709", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 84709",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
-  
+
+
   # Driving license
   dataDrivingLicense1 <- reactive(
     data83488 %>%
@@ -367,7 +385,7 @@ shinyServer(function(input, output) {
         "Region: ", Region, "\n"
       ))
   )
-  
+
   output$DrivingLicense1 <- renderPlotly({
     DrivingLicense1 <- ggplot(
       dataDrivingLicense1(),
@@ -388,28 +406,32 @@ shinyServer(function(input, output) {
         x = "Years",
         y = "Number of people with driver's licenses"
       )
-    
-    ggplotly(DrivingLicense1, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 83488", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+
+    ggplotly(DrivingLicense1, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 83488",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
+
   dataDrivingLicense2 <- reactive(data83488 %>%
-                                    filter(Periods == input$PeriodsLicense) %>%
-                                    filter(CategoryDrivingLicence == input$LicenseCategory2) %>%
-                                    filter(AgeDrivingLicenseHolder != "Total") %>%
-                                    mutate(tooltip_text = paste0(
-                                      "Count: ", PeopleWithADrivingLicence_1, "\n",
-                                      "Region: ", Region, "\n",
-                                      "Category: ", CategoryDrivingLicence
-                                    )))
-  
+    filter(Periods == input$PeriodsLicense) %>%
+    filter(CategoryDrivingLicence == input$LicenseCategory2) %>%
+    filter(AgeDrivingLicenseHolder != "Total") %>%
+    mutate(tooltip_text = paste0(
+      "Count: ", PeopleWithADrivingLicence_1, "\n",
+      "Region: ", Region, "\n",
+      "Category: ", CategoryDrivingLicence
+    )))
+
   output$DrivingLicense2 <- renderPlotly({
     DrivingLicense2 <- ggplot(
       dataDrivingLicense2(),
@@ -426,33 +448,39 @@ shinyServer(function(input, output) {
       theme_minimal() +
       scale_fill_manual(values = regioncolours) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
-    
-    ggplotly(DrivingLicense2, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1, y = 0, 
-                    text = "CBS 83488", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+
+    ggplotly(DrivingLicense2, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1, y = 0,
+            text = "CBS 83488",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
-  
+
+
   ##### Green Mobility Tab  #####
   ## VEHICLES
   # Data
   data_vehicles <- reactive(
     datacombined %>%
       filter(Region == input$Region_combined) %>%
-      group_by(Vehicles, Years) %>% 
-      mutate(tooltip_text = paste0("Vehicle:", Vehicles,
-                                   "\n", "Count", Count,
-                                   "\n", "Region", Region))
+      group_by(Vehicles, Years) %>%
+      mutate(tooltip_text = paste0(
+        "Vehicle:", Vehicles,
+        "\n", "Count", Count,
+        "\n", "Region", Region
+      ))
   )
   data_vehicles_2 <- reactive(
     datacombined %>%
-      filter(Years == input$Years_combined) 
+      filter(Years == input$Years_combined)
   )
   # Plot
   output$plotidea12 <- renderPlotly({
@@ -471,8 +499,8 @@ shinyServer(function(input, output) {
       theme_minimal() +
       ylim(0, 50000) +
       ylab("Number of vehicles") +
-      xlab("Years") 
-    
+      xlab("Years")
+
     ggplotly(plot12, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
         annotations = # adds caption to plot
@@ -482,73 +510,55 @@ shinyServer(function(input, output) {
             text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
             showarrow = F,
             # sets the x and y id to the proportional to the edge of the graph:
-            xref = 'paper',
-            yref = 'paper',
+            xref = "paper",
+            yref = "paper",
             font = list(size = 12)
           )
       )
   })
-  # Plot
-  # has no tooltip as of yet
-  # I think this graph is not in the dashboard anymore
-  # output$plotidea12.1 <- renderPlotly({
-  #   plot12.1 <-
-  #     ggplot(data_vehicles(), aes(x = Years, y = Count, fill = Vehicles)) +
-  #     geom_col(width = 0.8) +
-  #     ylab("Number of vehicles") + # Specific Region
-  #     xlab("Years") +
-  #     theme_minimal()
-  #   
-  #   ggplotly(plot12.1) %>% 
-  #     layout(annotations = # adds caption to plot
-  #              list(x = 1.2, y = -0.18, 
-  #                   text = paste0("85237, 85240,", "\n", "Electric Personal Vehicles"), 
-  #                   showarrow = F, 
-  #                   # sets the x and y id to the proportional to the edge of the graph:
-  #                   xref = 'paper', 
-  #                   yref = 'paper', 
-  #                   font = list(size = 12)))
-  # })
-  
+
   # Plot
   output$plotidea12.2 <- renderPlotly({
     plot12.2 <-
-      ggplot(datacombined %>%
-               filter(Years == "2021") ,
-             aes(x = Region, y = Count, fill = Vehicles)) +
-      geom_bar(stat = "identity",
-               position = "stack",
-               width = 0.5) +
+      ggplot(
+        datacombined %>%
+          filter(Years == "2021"),
+        aes(x = Region, y = Count, fill = Vehicles)
+      ) +
+      geom_bar(
+        stat = "identity",
+        position = "stack",
+        width = 0.5
+      ) +
       ylab("Number of vehicles") + # Specific Region
       xlab("Years") +
       theme_minimal()
-      
-      plotly12.2 <- ggplotly(plot12.2, dynamicTicks = TRUE) %>%
-        layout(
-          annotations = # adds caption to plot
-            list(
-              x = 1.2,
-              y = -0.15,
-              text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
-              showarrow = F,
-              # sets the x and y id to the proportional to the edge of the graph:
-              xref = 'paper',
-              yref = 'paper',
-              font = list(size = 12)
-            )
-        )
-      # this is not working entirely
-      for (i in 1:length(plotly12.2$x$data)) {
-        plotly12.2$x$data[[i]]$base <- NULL
-        temporary <- plotly12.2$x$data[[i]]
-        plotly12.2$x$data[[i]] <- plotly12.2$x$data[[length(plotly12.2$x$data) - i + 1]]
-        plotly12.2$x$data[[length(plotly12.2$x$data) - i + 1]] <- temporary
-      }
-      plotly12.2
-      
-    })
-  
-  
+
+    plotly12.2 <- ggplotly(plot12.2, dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2,
+            y = -0.15,
+            text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
+    # this is not working entirely
+    for (i in 1:length(plotly12.2$x$data)) {
+      plotly12.2$x$data[[i]]$base <- NULL
+      temporary <- plotly12.2$x$data[[i]]
+      plotly12.2$x$data[[i]] <- plotly12.2$x$data[[length(plotly12.2$x$data) - i + 1]]
+      plotly12.2$x$data[[length(plotly12.2$x$data) - i + 1]] <- temporary
+    }
+    plotly12.2
+  })
+
+
   ## FUEL TYPE
   # Data
   dataFueltypes2 <- reactive(
@@ -560,7 +570,6 @@ shinyServer(function(input, output) {
         "Fuel Type: ", Fueltype
       )) %>%
       group_by(Vehicletype, Years)
-    
   )
   dataFueltypes3 <- reactive(
     datafueltypes1 %>%
@@ -569,7 +578,7 @@ shinyServer(function(input, output) {
         "Count: ", Count, "\n",
         "Vehicle Type: ", Vehicletype, "\n",
         "Fuel Type: ", Fueltype
-      )) %>% 
+      )) %>%
       group_by(Fueltype, Years)
   )
   # Plot
@@ -584,23 +593,29 @@ shinyServer(function(input, output) {
           group = factor(Vehicletype),
           text = tooltip_fuel
         )
-      ) + 
+      ) +
       geom_point() +
       geom_line() +
       theme_minimal() +
-      labs(y = "Number of vehicles",
-           x = "Years",
-           colour = "Vehicle type")
-    
-    ggplotly(plot1, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 85239", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+      labs(
+        y = "Number of vehicles",
+        x = "Years",
+        colour = "Vehicle type"
+      )
+
+    ggplotly(plot1, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 85239",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
   # Plot
   output$plotidea13.1 <- renderPlotly({
@@ -618,22 +633,28 @@ shinyServer(function(input, output) {
       geom_point() +
       geom_line() +
       theme_minimal() +
-      labs(y = "Vehicles using this fuel type",
-           x = "Years",
-           colour = "Fuel type")
-    
-    ggplotly(plot2, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 85239", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+      labs(
+        y = "Vehicles using this fuel type",
+        x = "Years",
+        colour = "Fuel type"
+      )
+
+    ggplotly(plot2, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 85239",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
-  
+
+
   ##### Traffic and Infrastructure Tab  #####
   # Traffic Intensity
   # Data
@@ -665,18 +686,22 @@ shinyServer(function(input, output) {
         colour = "Provinces"
       )
     ylim(0, 1270)
-    
-    ggplotly(trafficintensity, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.2, y = 0, 
-                    text = "CBS 83712", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+
+    ggplotly(trafficintensity, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.2, y = 0,
+            text = "CBS 83712",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
-  
+
   # Data
   # Length of highways
   # making data reactive by type of highway
@@ -688,7 +713,7 @@ shinyServer(function(input, output) {
       mutate(tooltip_text = paste(naam, ": ", Weglengte_1, "\n", "Province: ", ligtInProvincieNaam)) %>% # combined
       filter(SoortRijbanen == input$SoortRijbanen)
   })
-  
+
   # Plot
   output$highway_map <- renderPlotly({
     plotted <- ggplot(mapData_rijbanen()) +
@@ -706,17 +731,21 @@ shinyServer(function(input, output) {
       scale_colour_manual(values = rep("grey40", 40)) +
       theme_void() +
       theme(legend.position = "bottom") # plotly ignores this
-    
-    gg_1 <- ggplotly(plotted, tooltip = "text") %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1, y = 0, 
-                    text = "CBS 70806 & PDOK", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+
+    gg_1 <- ggplotly(plotted, tooltip = "text") %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1, y = 0,
+            text = "CBS 70806 & PDOK",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
+
     gg_1 %>%
       style(
         hoveron = "text",
@@ -726,7 +755,7 @@ shinyServer(function(input, output) {
       )
     # config(modeBarButtonsToRemove = c("comparedataonhover")) # check this
   })
-  
+
   ## accompanying bar graph
   # provincial_highways <- reactive(
   #   data70806_2 %>%
@@ -739,9 +768,9 @@ shinyServer(function(input, output) {
   #   geom_col(aes(x = RegioS, y = Weglengte_1)) +
   #   theme_minimal()
   # })
-  
-  
-  
+
+
+
   ##### Proximity to Amenities Tab  #####
   # Data
   proximity_data <- reactive({
@@ -752,7 +781,7 @@ shinyServer(function(input, output) {
       filter(name == input$proxmapvariable)
   })
   # Map
-  output$proximity_map <- renderPlotly({ 
+  output$proximity_map <- renderPlotly({
     proximity_map_plot <- ggplot(proximity_data()) +
       geom_sf(aes(
         fill = distances,
@@ -767,17 +796,21 @@ shinyServer(function(input, output) {
       scale_colour_manual(values = rep("grey40", 40)) +
       theme_void() +
       labs(fill = "in km")
-    
-    gg_2 <- ggplotly(proximity_map_plot, tooltip = "text") %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1, y = 0, 
-                    text = "CBS 80305 & PDOK", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
-    
+
+    gg_2 <- ggplotly(proximity_map_plot, tooltip = "text") %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1, y = 0,
+            text = "CBS 80305 & PDOK",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
+
     gg_2 %>%
       style(
         hoveron = "text",
@@ -786,7 +819,7 @@ shinyServer(function(input, output) {
         traces = seq.int(2, length(gg_2$x$data))
       )
   })
-  
+
   # Plot accompanying proximity map
   provincial_data <- reactive({
     longformdata80305 %>%
@@ -814,15 +847,19 @@ shinyServer(function(input, output) {
       ) +
       scale_fill_manual(values = regioncolours_prox) + # for unified colours
       theme_minimal()
-    
-    ggplotly(prox_barplot, tooltip = c("text"), dynamicTicks = TRUE) %>% 
-      layout(annotations = # adds caption to plot
-               list(x = 1.4, y = 0, 
-                    text = "CBS 80305", 
-                    showarrow = F, 
-                    # sets the x and y id to the proportional to the edge of the graph:
-                    xref = 'paper', 
-                    yref = 'paper', 
-                    font = list(size = 12)))
+
+    ggplotly(prox_barplot, tooltip = c("text"), dynamicTicks = TRUE) %>%
+      layout(
+        annotations = # adds caption to plot
+          list(
+            x = 1.4, y = 0,
+            text = "CBS 80305",
+            showarrow = F,
+            # sets the x and y id to the proportional to the edge of the graph:
+            xref = "paper",
+            yref = "paper",
+            font = list(size = 12)
+          )
+      )
   })
 })
