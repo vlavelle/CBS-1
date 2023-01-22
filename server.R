@@ -529,6 +529,24 @@ shinyServer(function(input, output) {
   
   ##### Green Mobility Tab  #####
   ## VEHICLES
+  # colourblind friendly palette for vehicle types
+  vehicle_colours <- c(
+    "Electric vehicle" =  "#000000",       
+    "All mopeds" = "#004949",     
+    "Moped(25km/h)" = "#009292",        
+    "Moped(45km/h)" = "#ff6db6",  
+    "Moped (45km/h and <350kg)" = "#ffb6db",
+    "Remaining mopeds" = "#490092",       
+    "All commercial vehicles"  = "#006ddb", 
+    "Van" = "#b66dff",                    
+    "Truck" = "#6db6ff",                  
+    "Tractor" = "#b6dbff",                  
+    "Special vehicle" = "#920000",         
+    "Bus" = "#924900",                      
+    "Trailer" = "#db6d00",                 
+    "Semi trailer" = "#24ff24",             
+    "Normal car" = "#ffff6d"  
+  )
   # Data reactivity
   data_vehicles <- reactive(
     datacombined %>%
@@ -551,6 +569,7 @@ shinyServer(function(input, output) {
         text = tooltip_text
       )
     ) +
+      scale_colour_manual(values = vehicle_colours) +
       geom_line() +
       geom_point() +
       theme_minimal() +
@@ -581,6 +600,7 @@ shinyServer(function(input, output) {
     data_vehicles_2 <- reactive(
       datacombined %>%
         filter(Years == input$Years_combined) %>% 
+        # filter(Vehicles == input$Vehicles_combined2) %>% 
         mutate(tooltip_text = paste0("Vehicle: ", Vehicles,
                                      "\n", "Count: ", Count,
                                      "\n", "Region: ", Region))
@@ -593,10 +613,11 @@ shinyServer(function(input, output) {
                fill = Vehicles,
                text = tooltip_text
              )) +
-      geom_bar(stat = "identity",
+      geom_col(
                position = "stack",
                width = 0.5) +
-      labs(x = "Years",
+      scale_fill_manual(values = vehicle_colours) +
+      labs(x = "Region",
            y = "Number of vehicles",
            fill = "Vehicle type") +
       theme_minimal()
@@ -616,7 +637,8 @@ shinyServer(function(input, output) {
             xref = 'paper',
             yref = 'paper',
             font = list(size = 12)
-          )
+          )#,
+        # showlegend = FALSE
       )
     # this is not working entirely
     for (i in 1:length(plotly_vehicles_2$x$data)) {

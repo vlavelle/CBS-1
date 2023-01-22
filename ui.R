@@ -10,7 +10,7 @@ shinyUI(navbarPage(
     ),
     tabPanel(
       "About the Team",
-      h3("About the Data")
+      h3("About the Team")
     )
   ),
   tabPanel(
@@ -305,7 +305,17 @@ shinyUI(navbarPage(
                       selected = "2021"
                     )
                   )
-                )
+                ),
+                # column(
+                #   6,
+                #   selectInput(
+                #     inputId = "Vehicles_combined2",
+                #     label = "Vehicle type",
+                #     choices = unique(datacombined$Vehicles),
+                #     multiple = TRUE,
+                #     selected = "Van"
+                #   )
+                # )
               )
             )
           )
