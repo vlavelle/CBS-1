@@ -4,11 +4,14 @@ shinyUI(navbarPage(
   "Mobility in the Northern Netherlands",
   navbarMenu(
     "Home",
-    tabPanel("About the Data",
-             h3("About the Data")
+    tabPanel(
+      "About the Data",
+      h3("About the Data")
     ),
-    tabPanel("About the Team",
-             h3("About the Data"))
+    tabPanel(
+      "About the Team",
+      h3("About the Data")
+    )
   ),
   tabPanel(
     "Mobility Indicators",
@@ -91,77 +94,64 @@ shinyUI(navbarPage(
             tabPanel(
               "Regions in years",
               fluidPage(
-              h5("The graph below contains the mean distance travelled per trip from 2018 to 2021 in different Dutch provinces and regions. The provinces are represented as lines with the average distance present on the y-axis. the periods (years) are on the x-axis, and the mode of travel is available as a drop down. "),
-              plotlyOutput("lineplottravelmodes"),
-              hr(),
-              fluidRow(
-                column(
-                  3,
-                  selectInput(
-                    inputId = "TravelModes",
-                    label = "Select a Mode of Travel",
-                    choices = unique(data84710$TravelModes),
-                    multiple = FALSE,
-                    selected = "Total"
+                h5("The graph below contains the mean distance travelled per trip from 2018 to 2021 in different Dutch provinces and regions. The provinces are represented as lines with the average distance present on the y-axis. the periods (years) are on the x-axis, and the mode of travel is available as a drop down. "),
+                plotlyOutput("lineplottravelmodes"),
+                hr(),
+                fluidRow(
+                  column(
+                    3,
+                    selectInput(
+                      inputId = "TravelModes",
+                      label = "Select a Mode of Travel",
+                      choices = unique(data84710$TravelModes),
+                      multiple = FALSE,
+                      selected = "Total"
+                    )
                   )
                 )
               )
-            )),
+            ),
             tabPanel(
               "Regions in years: different timeframes",
               fluidPage(
-              h5("The graph below contains the mean distance travelled per trip in different Dutch provinces and the Northern Netherlands. The mean distance per trip is present on the y-axis, with the provinces given as lines. The time frame in which the trips occurred lies on the x-axis and can be chosen by the user, with the options “Departure time”, “Day of the week” and “Month. Users may also choose for which year they want to view the data, and which mode of travel they are interested in."),
-              plotlyOutput("secondtimeframedataplot"),
-              hr(),
-              fluidRow(
-                column(
-                  3,
-                  selectInput(
-                    inputId = "ModesOfTravel",
-                    label = "Select a Mode of Travel",
-                    choices = unique(data85056$ModesOfTravel),
-                    multiple = FALSE,
-                    selected = "Total"
-                  )
-                ),
-                column(
-                  3,
-                  selectInput(
-                    inputId = "Periods2",
-                    label = "Select Year",
-                    choices = unique(data85056$Periods),
-                    selected = "2021",
-                    multiple = FALSE
-                  )
-                ),
-                column(
-                  3,
-                  radioButtons(
-                    "Timeframe2",
-                    "Pick a timeframe",
-                    choiceNames = c("Departure time", "Day of the week", "Month"),
-                    choiceValues = c("Departure time", "Day of the week", "Month")
+                h5("The graph below contains the mean distance travelled per trip in different Dutch provinces and the Northern Netherlands. The mean distance per trip is present on the y-axis, with the provinces given as lines. The time frame in which the trips occurred lies on the x-axis and can be chosen by the user, with the options “Departure time”, “Day of the week” and “Month. Users may also choose for which year they want to view the data, and which mode of travel they are interested in."),
+                plotlyOutput("secondtimeframedataplot"),
+                hr(),
+                fluidRow(
+                  column(
+                    3,
+                    selectInput(
+                      inputId = "ModesOfTravel",
+                      label = "Select a Mode of Travel",
+                      choices = unique(data85056$ModesOfTravel),
+                      multiple = FALSE,
+                      selected = "Total"
+                    )
+                  ),
+                  column(
+                    3,
+                    selectInput(
+                      inputId = "Periods2",
+                      label = "Select Year",
+                      choices = unique(data85056$Periods),
+                      selected = "2021",
+                      multiple = FALSE
+                    )
+                  ),
+                  column(
+                    3,
+                    radioButtons(
+                      "Timeframe2",
+                      "Pick a timeframe",
+                      choiceNames = c("Departure time", "Day of the week", "Month"),
+                      choiceValues = c("Departure time", "Day of the week", "Month")
+                    )
                   )
                 )
               )
-            ))
+            )
           ),
         ),
-        # tabPanel(
-        ############        # "do we want this one??",
-        # plotlyOutput("plotidea1"),
-        # hr(),
-        # fluidRow(
-        # column(
-        # 3,
-        # selectInput(
-        # inputId = "region",
-        # label = "Select region",
-        # choices = unique(data84710$RegionCharacteristics),
-        # selected = "Northern Netherlands"
-        # )
-        # )
-        # )
         "Other Characteristics",
         tabPanel(
           "Personal Characteristics",
@@ -219,7 +209,8 @@ shinyUI(navbarPage(
                     choices = unique(data83488$CategoryDrivingLicence),
                     multiple = FALSE,
                     selected = "Total"
-                  )),
+                  )
+                ),
                 column(
                   3,
                   selectInput(
@@ -228,7 +219,10 @@ shinyUI(navbarPage(
                     choices = unique(data83488$AgeDrivingLicenseHolder),
                     multiple = FALSE,
                     selected = "Total"
-                  )))),
+                  )
+                )
+              )
+            ),
             tabPanel(
               "Regions per license holder age given year",
               h5("The bar graph below shows the distribution of the age of driving license holders in the three Northern provinces. Users can choose a year to view, and may also choose a license category. The graph then presents all age groups and the number of license holders per age group, by region."),
@@ -242,7 +236,8 @@ shinyUI(navbarPage(
                     choices = unique(data83488$CategoryDrivingLicence),
                     multiple = FALSE,
                     selected = "Total"
-                  )),
+                  )
+                ),
                 column(
                   4,
                   selectInput(
@@ -251,8 +246,16 @@ shinyUI(navbarPage(
                     choices = unique(data83488$Periods),
                     selected = "2022",
                     multiple = FALSE
-                  ))))),
-          hr())))),
+                  )
+                )
+              )
+            )
+          ),
+          hr()
+        )
+      )
+    )
+  ),
   tabPanel(
     "Green Mobility",
     h3("Indicators of 'Green Mobility' Across Different Regions Within the Northern Netherlands"),
@@ -264,7 +267,6 @@ shinyUI(navbarPage(
         tabPanel(
           "Vehicles and regions",
           h4("Number of vehicles used in regions in years"),
-          
           tabsetPanel(
             tabPanel(
               "In selected region by years",
@@ -277,13 +279,12 @@ shinyUI(navbarPage(
                     selectInput(
                       inputId = "Region_combined",
                       label = "Region",
-                      choices = unique(datacombined$Region), # What to do here, because you use a different column right?
+                      choices = unique(datacombined$Region),
                       multiple = FALSE,
                       selected = "Groningen"
                     )
                   )
                 ),
-                #plotlyOutput("plotidea12.1"),
                 hr()
               )
             ),
@@ -307,7 +308,8 @@ shinyUI(navbarPage(
                 )
               )
             )
-          )),
+          )
+        ),
         tabPanel(
           "Vehicles and fuels",
           h4("Vehicle (fuel) type used given fuel (vehicle) type"),
@@ -322,11 +324,12 @@ shinyUI(navbarPage(
                   selectInput(
                     inputId = "Fueltype",
                     label = "Fuel type",
-                    choices = unique(datafueltypes1$Fueltype), # What to do here, because you use a different column right?
+                    choices = unique(datafueltypes1$Fueltype),
                     multiple = FALSE,
                     selected = "Benzine"
                   )
-                )),
+                )
+              ),
               hr()
             ),
             tabPanel(
@@ -339,12 +342,19 @@ shinyUI(navbarPage(
                   selectInput(
                     inputId = "Vehicletype",
                     label = "Vehicle type",
-                    choices = unique(datafueltypes1$Vehicletype), # What to do here, because you use a different column right?
+                    choices = unique(datafueltypes1$Vehicletype),
                     multiple = FALSE,
                     selected = "Van"
-                  )))),
-            hr())
-        )))),
+                  )
+                )
+              )
+            ),
+            hr()
+          )
+        )
+      )
+    )
+  ),
   tabPanel(
     "Traffic/Infrastructure",
     h3("Traffic and Built Infrastructure Across Different Regions Within the Northern Netherlands"),
@@ -366,8 +376,8 @@ shinyUI(navbarPage(
           plotlyOutput("highway_map"),
           fluidRow(
             column(3, selectInput(
-              inputId = "SoortRijbanen", # for server side interactivity
-              label = "Type of Highway", # text displayed
+              inputId = "SoortRijbanen",
+              label = "Type of Highway",
               choices = unique(data70806$SoortRijbanen),
               selected = "Totale weglengte"
             )),
