@@ -272,7 +272,7 @@ shinyUI(navbarPage(
               "In selected region by years",
               fluidPage(
                 h5("The time-series graph shows the number of different types of vehicles on the y-axis, and years 2019 to 2022 on the x axis, giving an overview of the increase or decrease in use of certain vehicles. This graph is made from a combination of three datasets, hence the difference in time periods available for electric vehicles versus all other vehicle types."),
-                plotlyOutput("plotidea12"),
+                plotlyOutput("vehicles_1"),
                 fluidRow(
                   column(
                     3,
@@ -292,7 +292,7 @@ shinyUI(navbarPage(
               "In selected year by region",
               fluidPage(
                 h5("This bar graph shows the number of vehicles on the y-axis, grouped by region which shows on the x-axis. Users are able to choose which year to view by the drop down menu."),
-                plotlyOutput("plotidea12.2"),
+                plotlyOutput("vehicles_2"),
                 hr(),
                 fluidRow(
                   column(
@@ -317,7 +317,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Vehicle type used given fuel type",
               h5("This graph shows the different vehicle types by fuel type used, where fuel type is selected by the user. Data is only available at a national level, hence regions cannot be selected."),
-              plotlyOutput("plotidea13"),
+              plotlyOutput("fuel_1"),
               fluidRow(
                 column(
                   3,
@@ -335,7 +335,7 @@ shinyUI(navbarPage(
             tabPanel(
               "Fuel type used given vehicle type",
               h5("This graph shows the different fuel types used by vehicles in recent years, where vehicle type is selected by the user. Data is only available at a national level, hence regions cannot be selected. "),
-              plotlyOutput("plotidea13.1"),
+              plotlyOutput("fuel_2"),
               fluidRow(
                 column(
                   3,
