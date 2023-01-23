@@ -45,7 +45,7 @@ shinyUI(navbarPage(
                 "Packages used",
                 fluidPage(
                   p(" "),
-                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt"),
+                  p("All the packages used for this dashboard...", style = "font-family: 'times'; font-si16pt"),
                   fluidRow(
                     tableOutput("packagestable")
                   )
