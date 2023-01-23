@@ -13,17 +13,17 @@ shinyUI(navbarPage(
           h4("Creators"),
           p("The dashboard was created by five students following the Data-Wise
               minor at the University of Groningen. Over the last few months, we have 
-              spent countless hours sourcing data, creating graphs, and putting them 
-              onto the dashboard using RShiny. Although we had a lot of hurdles to cross, 
-              we are proud of what we have been able to accomplish. Created high-quality 
-              dashboard provides valuable insights into mobility in the Northern Netherlands.",
+              spent many hours sourcing data, creating graphs and putting them 
+              into the dashboard created using Shiny. Creating this dashboard 
+              provides further insights into mobility in the Northern Netherlands.
+              After much work, we are proud of what we have been able to accomplish. ",
             style = "font-family: 'times'; font-si18pt"
           ),
           hr(),
           h4("CBS"),
           p("Centraal Bureau Voor de Statistiek, Nederland (CBS) was founded in
               1899 in response to a growing demand for statistics. They are an independent
-              firm that sources, publishes, and updates statistics in the country to then
+              firm that sources, publishes, and updates statistics in the country which are then
               be used for policy making and government decision-making, but also to inform the 
               public",
             style = "font-family: 'times'; font-si18pt"
@@ -65,8 +65,8 @@ shinyUI(navbarPage(
                   further insight and more specific data.",
                   style = "font-family: 'times'; font-si18pt"
                 ),
-                p(" -  Dynamic scales: our axis are dynamic, zoom in or out and
-                  the axis will zoom with you",
+                p(" -  Dynamic scales: our y-axes are dynamic. Zoom in or out and
+                  the axis will change with you.",
                   style = "font-family: 'times'; font-si18pt"
                 ),
                 p(" -  Easy comparison: for any overlapping or hard to read data
@@ -89,10 +89,10 @@ shinyUI(navbarPage(
                   p(" "),
                   p("Most of the data used during the course of creating the dashboard
                     originates from the", a("CBS Statine website",
-                    href = "https://opendata.cbs.nl/statline#/CBS/nl/"
-                  ),
-                  ", with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK). The datasets used are introduced in the table below.",
-                  style = "font-family: 'times'; font-si18pt"
+                                            href = "https://opendata.cbs.nl/statline#/CBS/nl/"
+                    ),
+                    ", with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK). The datasets used are introduced in the table below.",
+                    style = "font-family: 'times'; font-si18pt"
                   ),
                   tableOutput("datatable")
                 )

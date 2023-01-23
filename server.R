@@ -577,8 +577,8 @@ shinyServer(function(input, output) {
       layout(barmode = "stack", # sets the bar plot to a stacked bar chart
              annotations = # adds caption to plot
                list(
-                 x = 1.2, # positioning of caption
-                 y = -0.15,
+                 x = 1.25, # positioning of caption
+                 y = -0.1,
                  # text for caption:
                  text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
                  showarrow = F,

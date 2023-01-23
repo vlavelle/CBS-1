@@ -12,7 +12,7 @@ library(tidyr)
 
 
 # set wd to the file location where you have downloaded the global, server and UI files
-setwd("/Users/macbookair/Desktop/CBS/dashboard")
+setwd("~/R/CBS Project/Dashboard1")
 
 ################ Mobility Indicators ###########################################
 ##### Data 84710 - Regions in years Tabs #######################################
@@ -397,7 +397,7 @@ data84709 <-
 ##### Data 83488 - Drivers License #############################################
 ## Drivers License
 data83488 <- cbs_get_data("83488ENG",
-  Region = c("PV20  ", "PV21  ", "PV22  ")
+                          Region = c("PV20  ", "PV21  ", "PV22  ")
 )
 metadata83488 <- cbs_get_meta("83488ENG")
 
@@ -438,12 +438,12 @@ data83488$Region <- recode(
 # data from excel
 elektrische_personenauto_provincie_2_ <-
   read_excel("elektrische_personenauto_provincie (2).xlsx",
-    sheet = "Tabel 1"
+             sheet = "Tabel 1"
   )
 
 data_elek_2 <- elektrische_personenauto_provincie_2_ %>%
   filter(Regio == "Friesland" |
-    Regio == "Groningen" | Regio == "Drenthe")
+           Regio == "Groningen" | Regio == "Drenthe")
 
 # renaming columns to English
 data_elek_2 <- data_elek_2 %>% rename(
@@ -502,14 +502,14 @@ data85239 <- data85239 %>% rename(
 )
 # Change regions from columns to rows by changing from wide to long dataset
 data85239new <- pivot_longer(data85239,
-  cols = c(
-    Groningen,
-    Friesland,
-    Drenthe
-  ),
-  names_to = "Region",
-  values_to = "Count",
-  values_drop_na = FALSE
+                             cols = c(
+                               Groningen,
+                               Friesland,
+                               Drenthe
+                             ),
+                             names_to = "Region",
+                             values_to = "Count",
+                             values_drop_na = FALSE
 )
 
 data85239new <- data85239new %>%
@@ -566,16 +566,16 @@ data85240 <- data85240 %>% rename(
 
 # Change vehicle types from columns to rows by changing wide data to long
 data85240new <- pivot_longer(data85240,
-  cols = c(
-    VoertuigenMetBromfietskenteken_1,
-    Snorfiets_2,
-    Bromfiets_3,
-    Brommobiel_4,
-    OverigeVoertuigenMetBromfietskenteken_5
-  ),
-  names_to = "Vehicles",
-  values_to = "Count",
-  values_drop_na = FALSE
+                             cols = c(
+                               VoertuigenMetBromfietskenteken_1,
+                               Snorfiets_2,
+                               Bromfiets_3,
+                               Brommobiel_4,
+                               OverigeVoertuigenMetBromfietskenteken_5
+                             ),
+                             names_to = "Vehicles",
+                             values_to = "Count",
+                             values_drop_na = FALSE
 )
 data85240new <- data85240new %>% mutate(Vehicles = case_when(
   Vehicles == "VoertuigenMetBromfietskenteken_1" ~ "Voertuigen Met Bromfietskenteken",
@@ -623,14 +623,14 @@ data85237 <- data85237 %>% rename(
   "Drenthe" = "Drenthe_4"
 )
 data85237new <- pivot_longer(data85237,
-  cols = c(
-    Groningen,
-    Friesland,
-    Drenthe
-  ),
-  names_to = "Region",
-  values_to = "Count",
-  values_drop_na = FALSE
+                             cols = c(
+                               Groningen,
+                               Friesland,
+                               Drenthe
+                             ),
+                             names_to = "Region",
+                             values_to = "Count",
+                             values_drop_na = FALSE
 )
 
 # Adds column showing vehicle type as "Normal car"
@@ -929,7 +929,7 @@ municipalBoundaries <- municipalBoundaries_unfiltered %>%
 mapDataproximity <- municipalBoundaries %>%
   left_join(longformdata80305, by = c(identificatie = "Regions"))
 mapDataproximity$ligtInProvincieNaam <- recode(mapDataproximity$ligtInProvincieNaam,
-  "Fryslân" = "Friesland"
+                                               "Fryslân" = "Friesland"
 )
 
 
@@ -1004,8 +1004,8 @@ mapDatarijbanen <- municipalBoundaries %>%
 # Traffic Intensity
 metadata83712 <- cbs_get_meta("83712NED")
 data83712 <- cbs_get_data("83712NED",
-  RegioS = c("PV20", "PV21", "PV22"),
-  Perioden = has_substring("JJ")
+                          RegioS = c("PV20", "PV21", "PV22"),
+                          Perioden = has_substring("JJ")
 )
 
 ## Data Prep##
@@ -1030,27 +1030,27 @@ data83712 <- data83712 %>% rename(
 data83712$provinces <- gsub(" (PV)", "", data83712$provinces, fixed = TRUE)
 data83712$provinces <- gsub("Fryslân", "Friesland", data83712$provinces, fixed = TRUE)
 
-###tables####
-##Packages##
-#adding data
+### tables ####
+## Packages ##
+# adding data
 packages_used <- c("dplyr", "shiny", "shinydashboard", "SF", "cbsodataR", 
                    "ggplot2", "plotly", "readxl", "forcats", "tidyr")
 used_for <- c("Mutating, filtering, and renaming datasets", 
-              "Creating interactive dashboard", "Creating interactive dashboard", 
+              "Creating interactive dashboard", "Creating an interactive dashboard", 
               "Importing shapefile", "Importing datasets and metadata from CBS website", 
               "Plotting all data", "Converting ggplots to plotly for extra interactivity", 
               "Importing excel document into R", "Reordering of axes", 
               "Converting wide datasets into long datasets")
-#making table
+# making table
 packages_table <- data.frame(packages_used, used_for)
-#renaming columns
+# renaming columns
 names(packages_table) <- c("Packages Used", "Used For")
 
-##Data##
-#adding data
+## Data ##
+# adding data
 data_used <- c("85055ENG", "85056ENG", "84709NED", "83488ENG", "85239NED",
-                   "85240NED", "85237NED", "80305ENG", "70806NED", "83712NED"
-               )
+               "85240NED", "85237NED", "80305ENG", "70806NED", "83712NED"
+)
 data_name <- c("Mobility; per trip, purposes of travel, trip characteristics and regions",
                "Mobility; per trip, trip characteristics, modes of travel and regions",
                "Mobiliteit; per persoon, persoonskenmerken, vervoerwijzen en regio's",
@@ -1061,7 +1061,7 @@ data_name <- c("Mobility; per trip, purposes of travel, trip characteristics and
                "Proximity to facilities; distances by car, regional",
                "Lengte van wegen; wegkenmerken, regio",
                "Traffic intensity; national roads, regions"
-               )
+)
 data_summary <- c("The dataset contains the distance, purpose, region, and period of trips done in the Netherlands.",
                   "The dataset contains the distance, the mode of transport, region, and period of trips done in the Netherlands.",
                   "This dataset contains the average distance traveled, the year, the reason of travel, and the mode of transport that was taken for the trip(s). This dataset is in Dutch.",
@@ -1072,7 +1072,7 @@ data_summary <- c("The dataset contains the distance, purpose, region, and perio
                   "This dataset contains the average distance to a large variety of different facilities such as General Practitioners, grocery stores, etc. by car.",
                   "This dataset contains the length of road networks in the Netherlands, broken down by different kinds of roads and regions.",
                   "This dataset contains the intensity of traffic outside built up areas. In other words, there are different measuring points determining the number of motor vehicles passing per hour."
-                  )
-#making table
+)
+# making table
 data_table <- data.frame(data_used, data_name, data_summary)
 names(data_table) <-c("Dataset #", "Name of Dataset", "Short Summary")
