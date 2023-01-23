@@ -604,7 +604,7 @@ shinyServer(function(input, output) {
           list(
             x = 1.2,
             y = -0.2,
-            text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
+            text = paste0("CBS: 85237, 85240", "\n", "Electric Personal Vehicles"),
             showarrow = F,
             # sets the x and y id to the proportional to the edge of the graph:
             xref = "paper",
@@ -658,7 +658,7 @@ shinyServer(function(input, output) {
           list(
             x = 1.2,
             y = -0.15,
-            text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
+            text = paste0("CBS: 85237, 85240", "\n", "Electric Personal Vehicles"),
             showarrow = F,
             # sets the x and y id to the proportional to the edge of the graph:
             xref = "paper",
