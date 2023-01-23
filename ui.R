@@ -9,46 +9,92 @@ shinyUI(navbarPage(
     fluidPage(
       fluidRow(
         column(
-          4,
-          fluidPage(
-            h5("Creators"),
-            p("The dashboard was created by five RUG students studying the Datawise minor. Over the last few months, we have spent countless hours sourcing data, creating graphs, and putting them onto the dashboard using RShiny. Although we had a lot of hurdles to cross, we are proud of what we have been able to accomplish. We have created a high-quality dashboard that provides insights into mobility in the Northern Netherlands.", style = "font-family: 'times'; font-si16pt"),
-            hr(),
-            h5("CBS"),
-            p("Centraal Bureau Voor de Statistiek, Nederland (CBS) was founded in 1899 in response to a growing demand for statistics. They are an independent firm that sources, publishes, and updates statistics in the country to then be used for policy making and government decision-making.", style = "font-family: 'times'; font-si16pt"),
-            hr(),
-          )
+          3,
+          h4("Creators"),
+          p("The dashboard was created by five students following the Data-Wise
+              minor at the University of Groningen. Over the last few months, we have 
+              spent countless hours sourcing data, creating graphs, and putting them 
+              onto the dashboard using RShiny. Although we had a lot of hurdles to cross, 
+              we are proud of what we have been able to accomplish. Created high-quality 
+              dashboard provides valuable insights into mobility in the Northern Netherlands.",
+            style = "font-family: 'times'; font-si18pt"
+          ),
+          hr(),
+          h4("CBS"),
+          p("Centraal Bureau Voor de Statistiek, Nederland (CBS) was founded in
+              1899 in response to a growing demand for statistics. They are an independent
+              firm that sources, publishes, and updates statistics in the country to then
+              be used for policy making and government decision-making, but also to inform the 
+              public",
+            style = "font-family: 'times'; font-si18pt"
+          ),
+          hr(),
         ),
         column(
-          8,
+          9,
           fluidPage(
-            h5("This dashboard"),
+            h4("This dashboard"),
             tabsetPanel(
               tabPanel(
-                "Data origin",
-                fluidPage(
-                  p(" "),
-                  p("Most of the data used during the course of creating the dashboard originates from the CBS Statine website (https://opendata.cbs.nl/statline#/CBS/nl/), with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK).CBS provides an R package that allows users to import datasets into R studio directly and eliminates the need to download and import them separately. Thus, most of our datasets were imported into R using the functions that come with this package. The datasets used are introduced in the table on the next tab.", style = "font-family: 'times'; font-si16pt")
-                )
-              ),
-              tabPanel(
-                "Datasets",
-                fluidPage(
-                  p(" "),
-                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt"),
-                  fluidRow(
-                    tableOutput("datatable")
-                  )
+                "Instructions for use",
+                p(" "),
+                p("All graphs in our dashboard make use of a combination of ggplot2
+                and plotly. Plotly is a data visualisation source that can be used
+                for graphs in both R and Python. Using Plotly allows us to add an
+                additional layer of interactivity to our graphs with hover tooltips
+                and interactive legends. Within our graphs, the following is possible
+                  due to plotly:",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Zoom: use the plotly toolbar to zoom in and out.",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Select: focus on specific data to zoom in on by drawing a
+                  rectangle around it.",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Pan: Use the toolbar and select the pan option to move
+                  around the graph.",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Interactive legends: click on elements of the legend to
+                  remove them or add them back",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Hover on information: hover above points on our graphs for
+                  further insight and more specific data.",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Dynamic scales: our axis are dynamic, zoom in or out and
+                  the axis will zoom with you",
+                  style = "font-family: 'times'; font-si18pt"
+                ),
+                p(" -  Easy comparison: for any overlapping or hard to read data
+                  points, choose the 'compare on hover' option available in the
+                  plotly toolbar. This will let you view the information for all
+                  data points at once.",
+                  style = "font-family: 'times'; font-si18pt"
                 )
               ),
               tabPanel(
                 "Packages used",
                 fluidPage(
                   p(" "),
-                  p("All the packages used for this dashboard...", style = "font-family: 'times'; font-si16pt"),
-                  fluidRow(
-                    tableOutput("packagestable")
-                  )
+                  tableOutput("packagestable")
+                )
+              ),
+              tabPanel(
+                "Datasets details",
+                fluidPage(
+                  p(" "),
+                  p("Most of the data used during the course of creating the dashboard
+                    originates from the", a("CBS Statine website",
+                    href = "https://opendata.cbs.nl/statline#/CBS/nl/"
+                  ),
+                  ", with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK). The datasets used are introduced in the table below.",
+                  style = "font-family: 'times'; font-si18pt"
+                  ),
+                  tableOutput("datatable")
                 )
               )
             )
