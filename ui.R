@@ -15,7 +15,7 @@ shinyUI(navbarPage(
             p("The dashboard was created by five RUG students studying the Datawise minor. Over the last few months, we have spent countless hours sourcing data, creating graphs, and putting them onto the dashboard using RShiny. Although we had a lot of hurdles to cross, we are proud of what we have been able to accomplish. We have created a high-quality dashboard that provides insights into mobility in the Northern Netherlands.", style = "font-family: 'times'; font-si16pt"),
             hr(),
             h5("CBS"),
-            p("CBS", style = "font-family: 'times'; font-si16pt"),
+            p("Centraal Bureau Voor de Statistiek, Nederland (CBS) was founded in 1899 in response to a growing demand for statistics. They are an independent firm that sources, publishes, and updates statistics in the country to then be used for policy making and government decision-making.", style = "font-family: 'times'; font-si16pt"),
             hr(),
           )
         ),
