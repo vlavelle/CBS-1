@@ -35,14 +35,20 @@ shinyUI(navbarPage(
                 "Datasets",
                 fluidPage(
                   p(" "),
-                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt")
+                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt"),
+                  fluidRow(
+                    tableOutput("datatable")
+                  )
                 )
               ),
               tabPanel(
                 "Packages used",
                 fluidPage(
                   p(" "),
-                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt")
+                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt"),
+                  fluidRow(
+                    tableOutput("packagestable")
+                  )
                 )
               )
             )
@@ -466,7 +472,7 @@ shinyUI(navbarPage(
         ),
         column(
           8,
-          h5("The choropleth proximity map shows the distance to the nearest facilities in kilometers driven by car in the municipalities of the Northern Netherlands. Municipalities are coloured based on their distance to the chosen facility. The same 15 facilities and average of all 15 are available as options to be chosen."),
+          h5("The choropleth proximity map shows the distance to the nearest facilities in kilometers driven by car in the municipalities of the Northern Netherlands. Municipalities are coloured based on their distance to the chosen facility. The same 15 facilities and average of all 15 are available as options to be chosen. The Data for both graphs is limited to 2020, due to changes in municialpal borders and incomplete data for more recent years."),
           plotlyOutput("proximity_map")
         )
       ),
