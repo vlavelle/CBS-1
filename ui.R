@@ -12,7 +12,7 @@ shinyUI(navbarPage(
           4,
           fluidPage(
             h5("Creators"),
-            p("Team CBS_1 of minor DataWise blabla", style = "font-family: 'times'; font-si16pt"),
+            p("The dashboard was created by five RUG students studying the Datawise minor. Over the last few months, we have spent countless hours sourcing data, creating graphs, and putting them onto the dashboard using RShiny. Although we had a lot of hurdles to cross, we are proud of what we have been able to accomplish. We have created a high-quality dashboard that provides insights into mobility in the Northern Netherlands.", style = "font-family: 'times'; font-si16pt"),
             hr(),
             h5("CBS"),
             p("CBS", style = "font-family: 'times'; font-si16pt"),
@@ -28,7 +28,7 @@ shinyUI(navbarPage(
                 "Data origin",
                 fluidPage(
                   p(" "),
-                  p("All the data origins from the CBS website...", style = "font-family: 'times'; font-si16pt")
+                  p("Most of the data used during the course of creating the dashboard originates from the CBS Statine website (https://opendata.cbs.nl/statline#/CBS/nl/), with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK).CBS provides an R package that allows users to import datasets into R studio directly and eliminates the need to download and import them separately. Thus, most of our datasets were imported into R using the functions that come with this package. The datasets used are introduced in the table on the next tab.", style = "font-family: 'times'; font-si16pt")
                 )
               ),
               tabPanel(
