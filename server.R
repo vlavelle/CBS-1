@@ -33,20 +33,20 @@ source("global.R", local = TRUE)
 
 shinyServer(function(input, output) {
   
-  # defining a vector for the colours for the Region (colourblind safe)
+  # defining a vector for the colours for the Region
   regioncolours <-
     c(
-      "The Netherlands" = "#E7298A",
-      "Northern Netherlands" = "#7570B3",
-      "Groningen" = "#1B9E77",
-      "Drenthe" = "#D95F02",
-      "Friesland" = "#E6AB02"
+      "The Netherlands" = "darkorange2",
+      "Northern Netherlands" = "darkorchid4",
+      "Groningen" = "forestgreen",
+      "Drenthe" = "red2",
+      "Friesland" = "royalblue2"
     )
   regioncolours_prox <-
     c(
-      "Groningen " = "#1B9E77",
-      "Drenthe" = "#D95F02",
-      "Friesland" = "#E6AB02"
+      "Groningen " = "forestgreen",
+      "Drenthe" = "red2",
+      "Friesland" = "royalblue2"
     )
   
   # Table Output
@@ -56,64 +56,9 @@ shinyServer(function(input, output) {
   
   ##### Mobility Indicators Tab  #####
   
-  ### Modes per Region
-  # Data reactivity
-  # this is all not in the dashboard @seb delete?
-  # data_84710 <- reactive({
-  #   data84710 %>%
-  #     filter(RegionCharacteristics == input$region) %>%
-  #     filter(Periods == "2021") %>%
-  #     filter(TravelMotives == "Total") %>% # only value, no confidence interval
-  #     filter(TravelModes != "Total") %>%
-  #     select(
-  #       TravelMotives,
-  #       TravelModes,
-  #       RegionCharacteristics,
-  #       Periods,
-  #       Trips_4
-  #     ) %>%
-  #     mutate(tooltip_text = paste(TravelModes, "\n", "Region: ", RegionCharacteristics, "\n", Trips_4))
-  # })
-  #
-  # # Plot 1
-  # output$plotidea1 <- renderPlotly({
-  #   modesperregionplot <- ggplot(
-  #     data = data_84710(),
-  #     aes(
-  #       x = TravelModes,
-  #       y = Trips_4, # yearly avg
-  #       fill = TravelModes,
-  #       text = tooltip_text # yearly avg
-  #     )
-  #   ) +
-  #     geom_col() +
-  #     theme_minimal() +
-  #     labs(
-  #       title = "Average Yearly Trips in 2021",
-  #       x = "Travel Mode",
-  #       y = "Avg Trips per Person Per Year",
-  #       caption = "Data Source: CBS 84710ENG",
-  #       fill = "Travel Mode:"
-  #     )
-  #
-  #   ggplotly(modesperregionplot, tooltip = c("text"), dynamicTicks = TRUE) %>%
-  #     layout(
-  #       annotations = # adds caption to plot
-  #         list(
-  #           x = 1.2, y = 0,
-  #           text = "CBS 84710",
-  #           showarrow = F,
-  #           # sets the x and y id to the proportional to the edge of the graph:
-  #           xref = "paper",
-  #           yref = "paper",
-  #           font = list(size = 12)
-  #         )
-  #     )
-  # })
-  
-  
   ### Motives & Modes per regions
   # Data reactivity
+  
   data84710_1 <- reactive({
     data84710 %>%
       filter(TravelModes == "Total") %>%
@@ -546,32 +491,31 @@ shinyServer(function(input, output) {
   ## VEHICLES
   # colourblind friendly palette for vehicle types
   vehicle_colours <- c(
-    "Electric vehicle" = "#000000",
-    "All mopeds" = "#004949",
-    "Moped(25km/h)" = "#009292",
-    "Moped(45km/h)" = "#ff6db6",
-    "Moped (45km/h and <350kg)" = "#ffb6db",
-    "Remaining mopeds" = "#490092",
-    "All commercial vehicles" = "#006ddb",
-    "Van" = "#b66dff",
-    "Truck" = "#6db6ff",
-    "Tractor" = "#b6dbff",
-    "Special vehicle" = "#920000",
-    "Bus" = "#924900",
-    "Trailer" = "#db6d00",
-    "Semi trailer" = "#24ff24",
-    "Normal car" = "#ffff6d"
+    "Electric vehicle" = "chartreuse3",
+    "All mopeds" = "aquamarine3",
+    "Moped(25km/h)" = "chocolate2",
+    "Moped(45km/h)" = "blue3",
+    "Moped (45km/h and <350kg)" = "blueviolet",
+    "Remaining mopeds" = "darkgoldenrod2",
+    "All commercial vehicles" = "darkorchid4",
+    "Van" = "gray55",
+    "Truck" = "lawngreen",
+    "Tractor" = "lightcoral",
+    "Special vehicle" = "navy",
+    "Bus" = "yellow1",
+    "Trailer" = "darkorange2",
+    "Semi trailer" = "gray18",
+    "Normal car" = "darkolivegreen1"
   )
   # Data reactivity
   data_vehicles <- reactive(
     datacombined %>%
       filter(Region == input$Region_combined) %>%
-      group_by(Vehicles, Years) %>%
-      mutate(tooltip_text = paste0(
-        "Vehicle: ", Vehicles,
-        "\n", "Count: ", Count,
-        "\n", "Region: ", Region
-      ))
+      # filter(Vehicles == input$Vehicles_combined2) %>% 
+      group_by(Vehicles, Years) %>% 
+      mutate(tooltip_text = paste0("Vehicle: ", Vehicles,
+                                   "\n", "Count: ", Count,
+                                   "\n", "Region: ", Region))
   )
   
   # Plot output
@@ -586,16 +530,12 @@ shinyServer(function(input, output) {
         text = tooltip_text
       )
     ) +
-      scale_colour_manual(values = vehicle_colours) +
       geom_line() +
       geom_point() +
       theme_minimal() +
-      ylim(0, 50000) +
-      labs(
-        y = "Number of vehicles",
-        x = "Years",
-        colour = "Vehicle type"
-      )
+      labs(y = "Number of vehicles",
+           x = "Years",
+           colour = "Vehicle type")
     
     # Plotly creation
     ggplotly(plot_vehicles_1, tooltip = c("text"), dynamicTicks = TRUE) %>%
@@ -604,79 +544,51 @@ shinyServer(function(input, output) {
           list(
             x = 1.2,
             y = -0.2,
-            text = paste0("CBS: 85237, 85240", "\n", "Electric Personal Vehicles"),
+            text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
             showarrow = F,
             # sets the x and y id to the proportional to the edge of the graph:
-            xref = "paper",
-            yref = "paper",
+            xref = 'paper',
+            yref = 'paper',
             font = list(size = 12)
           )
       )
   })
-  
+
   # Plot 2 for Vehicles
+  # note: for this vehicle, plotly alone was used in place of ggplotly
+  # the reason being that ggplotly does not fully support stacked bar plots
+  # due to this different method, detailed comments are added:
   output$vehicles_2 <- renderPlotly({
-    data_vehicles_2 <- reactive(
-      datacombined %>%
-        filter(Years == input$Years_combined) %>%
-        # filter(Vehicles == input$Vehicles_combined2) %>%
-        mutate(tooltip_text = paste0(
-          "Vehicle: ", Vehicles,
-          "\n", "Count: ", Count,
-          "\n", "Region: ", Region
-        ))
-    )
-    plot_vehicles_2 <-
-      ggplot(
-        data_vehicles_2(),
-        aes(
-          x = Region,
-          y = Count,
-          fill = factor(Vehicles),
-          text = tooltip_text
-        )
-      ) +
-      geom_col(
-        position = "stack",
-        width = 0.5
-      ) +
-      scale_fill_manual(values = vehicle_colours) +
-      labs(
-        x = "Region",
-        y = "Number of vehicles",
-        fill = "Vehicle type"
-      ) +
-      theme_minimal()
-    
-    # Plotly creation
-    plotly_vehicles_2 <- ggplotly(plot_vehicles_2,
-                                  tooltip = c("text"),
-                                  dynamicTicks = TRUE
-    ) %>%
-      layout(
-        annotations = # adds caption to plot
-          list(
-            x = 1.2,
-            y = -0.15,
-            text = paste0("CBS: 85237, 85240", "\n", "Electric Personal Vehicles"),
-            showarrow = F,
-            # sets the x and y id to the proportional to the edge of the graph:
-            xref = "paper",
-            yref = "paper",
-            font = list(size = 12)
-          ) # ,
-        # showlegend = FALSE
-      )
-    # this is not working entirely
-    for (i in 1:length(plotly_vehicles_2$x$data)) {
-      plotly_vehicles_2$x$data[[i]]$base <- NULL
-      temporary <- plotly_vehicles_2$x$data[[i]]
-      plotly_vehicles_2$x$data[[i]] <- plotly_vehicles_2$x$data[[length(plotly_vehicles_2$x$data) - i + 1]]
-      plotly_vehicles_2$x$data[[length(plotly_vehicles_2$x$data) - i + 1]] <- temporary
-    }
-    plotly_vehicles_2
+    data_vehicles_2 <- datacombined 
+    plot_vehicles_2 <- plot_ly(
+      # interactive years filtering done within the graphing
+      data = data_vehicles_2 %>% filter(Years == input$Years_combined),
+      x = ~ Region, # x axis
+      y = ~ Count, # y axis
+      color = ~ Vehicles, # specifiying fill 
+      type = "bar", # type of plot is a bar plot
+      textposition = "none", # prevents text being printed above the bars
+      hoverinfo = 'text', # sets the hoverinfo to text provided below
+      # creating the text for the hoverinfo:
+      text = ~ paste0("Vehicle: ", Vehicles, 
+                      '</br></br>', "Count: ", Count, # </br> creates a new line
+                      '</br>', "Region: ", Region, "</br></br>")
+    ) %>% 
+      layout(barmode = "stack", # sets the bar plot to a stacked bar chart
+             annotations = # adds caption to plot
+               list(
+                 x = 1.2, # positioning of caption
+                 y = -0.15,
+                 # text for caption:
+                 text = paste0("CBS: 85237, 85240,", "\n", "Electric Personal Vehicles"),
+                 showarrow = F,
+                 # sets the x and y id to the proportional to the edge of the graph:
+                 xref = 'paper',
+                 yref = 'paper',
+                 font = list(size = 12)
+               ))
+    plot_vehicles_2
   })
-  
   
   ## FUEL TYPE
   # Data reactivity
