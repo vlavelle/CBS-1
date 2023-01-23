@@ -32,7 +32,7 @@ source("global.R", local = TRUE)
 
 
 shinyServer(function(input, output) {
-
+  
   # defining a vector for the colours for the Region (colourblind safe)
   regioncolours <-
     c(
@@ -48,11 +48,14 @@ shinyServer(function(input, output) {
       "Drenthe" = "#D95F02",
       "Friesland" = "#E6AB02"
     )
-
-
-
+  
+  # Table Output
+  
+  output$packagestable <- renderTable(packages_table)
+  output$datatable <- renderTable(data_table)
+  
   ##### Mobility Indicators Tab  #####
-
+  
   ### Modes per Region
   # Data reactivity
   # this is all not in the dashboard @seb delete?
@@ -107,8 +110,8 @@ shinyServer(function(input, output) {
   #         )
   #     )
   # })
-
-
+  
+  
   ### Motives & Modes per regions
   # Data reactivity
   data84710_1 <- reactive({
@@ -141,7 +144,7 @@ shinyServer(function(input, output) {
         )
       )
   })
-
+  
   # Plot output
   output$lineplottravelmotives <- renderPlotly({
     lineplot_1 <- ggplot(
@@ -179,7 +182,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   # Data reactivity plot 2
   data84710_2 <- reactive({
     data84710 %>%
@@ -211,7 +214,7 @@ shinyServer(function(input, output) {
         )
       )
   })
-
+  
   # Plot 2 output
   output$lineplottravelmodes <- renderPlotly({
     lineplot_2 <- ggplot(
@@ -248,7 +251,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   ### Timeframe Data: Travel Purpose
   # Data reactivity
   data_85055 <- reactive({
@@ -263,7 +266,7 @@ shinyServer(function(input, output) {
         TripCharacteristics
       ))
   })
-
+  
   # Plot output
   output$timeframedataplot <- renderPlotly({
     data85055plot <- ggplot(
@@ -287,7 +290,7 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 85055",
         colour = "Region:"
       )
-
+    
     # Plotly for extra interactivity
     # Dynamic ticks for dyanmic y axis
     ggplotly(data85055plot, tooltip = c("text"), dynamicTicks = TRUE) %>%
@@ -304,7 +307,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   ### Timeframe Data: Travel Mode
   # Data reactivity
   data_85056 <- reactive({
@@ -318,7 +321,7 @@ shinyServer(function(input, output) {
         TripCharacteristics
       ))
   })
-
+  
   # Plot output
   output$secondtimeframedataplot <- renderPlotly({
     data85056plot <- ggplot(
@@ -342,11 +345,11 @@ shinyServer(function(input, output) {
         caption = "Data Source: CBS 85055",
         colour = "Region:"
       )
-
+    
     # Plotly creation
     ggplotly(data85056plot,
-      tooltip = c("text"),
-      dynamicTicks = TRUE
+             tooltip = c("text"),
+             dynamicTicks = TRUE
     ) %>%
       layout(
         annotations = # adds caption to plot
@@ -362,7 +365,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   ### Personal Characteristics
   # Data reactivity
   data_84709 <- reactive({
@@ -376,7 +379,7 @@ shinyServer(function(input, output) {
         "Region: ", RegioS
       ))
   })
-
+  
   # Plot output
   output$Persoonskenmerken <- renderPlotly({
     Persoonskenmerken_plot <- ggplot(
@@ -402,11 +405,11 @@ shinyServer(function(input, output) {
         fill = "Region:"
       ) +
       scale_fill_manual(values = regioncolours)
-
+    
     # Plotly output
     ggplotly(Persoonskenmerken_plot,
-      tooltip = c("text"),
-      dynamicTicks = TRUE
+             tooltip = c("text"),
+             dynamicTicks = TRUE
     ) %>%
       layout(
         annotations = # adds caption to plot
@@ -422,8 +425,8 @@ shinyServer(function(input, output) {
           )
       )
   })
-
-
+  
+  
   # Driving license
   # Data reactivity
   dataDrivingLicense1 <- reactive(
@@ -463,11 +466,11 @@ shinyServer(function(input, output) {
         x = "Years",
         y = "Number of people with driver's licenses"
       )
-
+    
     # Plotly creation
     ggplotly(DrivingLicense1,
-      tooltip = c("text"),
-      dynamicTicks = TRUE
+             tooltip = c("text"),
+             dynamicTicks = TRUE
     ) %>%
       layout(
         annotations = # adds caption to plot
@@ -483,7 +486,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   # Data reactivity for second driver's license graph
   dataDrivingLicense2 <- reactive(
     data83488 %>%
@@ -503,7 +506,7 @@ shinyServer(function(input, output) {
         )
       )
   )
-
+  
   # second plot for driver's licenses
   output$DrivingLicense2 <- renderPlotly({
     DrivingLicense2 <- ggplot(
@@ -521,7 +524,7 @@ shinyServer(function(input, output) {
       theme_minimal() +
       scale_fill_manual(values = regioncolours) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
+    
     # Plotly creation
     ggplotly(DrivingLicense2, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
@@ -537,8 +540,8 @@ shinyServer(function(input, output) {
           )
       )
   })
-
-
+  
+  
   ##### Green Mobility Tab  #####
   ## VEHICLES
   # colourblind friendly palette for vehicle types
@@ -570,7 +573,7 @@ shinyServer(function(input, output) {
         "\n", "Region: ", Region
       ))
   )
-
+  
   # Plot output
   output$vehicles_1 <- renderPlotly({
     plot_vehicles_1 <- ggplot(
@@ -593,7 +596,7 @@ shinyServer(function(input, output) {
         x = "Years",
         colour = "Vehicle type"
       )
-
+    
     # Plotly creation
     ggplotly(plot_vehicles_1, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
@@ -610,7 +613,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   # Plot 2 for Vehicles
   output$vehicles_2 <- renderPlotly({
     data_vehicles_2 <- reactive(
@@ -644,11 +647,11 @@ shinyServer(function(input, output) {
         fill = "Vehicle type"
       ) +
       theme_minimal()
-
+    
     # Plotly creation
     plotly_vehicles_2 <- ggplotly(plot_vehicles_2,
-      tooltip = c("text"),
-      dynamicTicks = TRUE
+                                  tooltip = c("text"),
+                                  dynamicTicks = TRUE
     ) %>%
       layout(
         annotations = # adds caption to plot
@@ -673,8 +676,8 @@ shinyServer(function(input, output) {
     }
     plotly_vehicles_2
   })
-
-
+  
+  
   ## FUEL TYPE
   # Data reactivity
   dataFueltypes2 <- reactive(
@@ -687,7 +690,7 @@ shinyServer(function(input, output) {
       )) %>%
       group_by(Vehicletype, Years)
   )
-
+  
   # Plot output
   output$fuel_1 <- renderPlotly({
     plot1 <-
@@ -709,7 +712,7 @@ shinyServer(function(input, output) {
         x = "Years",
         colour = "Vehicle type"
       )
-
+    
     # Plotly output
     ggplotly(plot1, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
@@ -725,7 +728,7 @@ shinyServer(function(input, output) {
           )
       )
   })
-
+  
   # Data reactivity plot 2
   dataFueltypes3 <- reactive(
     datafueltypes1 %>%
@@ -737,7 +740,7 @@ shinyServer(function(input, output) {
       )) %>%
       group_by(Fueltype, Years)
   )
-
+  
   # Plot
   output$fuel_2 <- renderPlotly({
     plot2 <-
@@ -759,7 +762,7 @@ shinyServer(function(input, output) {
         x = "Years",
         colour = "Fuel type"
       )
-
+    
     # Plotly output
     ggplotly(plot2, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
@@ -775,9 +778,9 @@ shinyServer(function(input, output) {
           )
       )
   })
-
-
-
+  
+  
+  
   ##### Traffic and Infrastructure Tab  #####
   # Traffic Intensity
   # Data
@@ -786,7 +789,7 @@ shinyServer(function(input, output) {
       "Region: ", provinces, "\n",
       "No. cars: ", VerkeersintensiteitenRijkswegen_1
     ))
-
+  
   # Plot output
   output$traffic_intensity_plot <- renderPlotly({
     trafficintensity <- ggplot(
@@ -810,7 +813,7 @@ shinyServer(function(input, output) {
         colour = "Provinces"
       )
     ylim(0, 1270)
-
+    
     # Plotly creation
     ggplotly(trafficintensity, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
@@ -826,8 +829,8 @@ shinyServer(function(input, output) {
           )
       )
   })
-
-
+  
+  
   ## Length of highways
   # making data reactive by type of highway
   mapData_rijbanen <- reactive({
@@ -844,7 +847,7 @@ shinyServer(function(input, output) {
       )) %>%
       filter(SoortRijbanen == input$SoortRijbanen)
   })
-
+  
   # Plot output
   output$highway_map <- renderPlotly({
     plotted <- ggplot(mapData_rijbanen()) +
@@ -862,7 +865,7 @@ shinyServer(function(input, output) {
       # turn outline of all 40 municipalities grey:
       scale_colour_manual(values = rep("grey40", 40)) +
       theme_void()
-
+    
     # plotly
     gg_1 <- ggplotly(plotted, tooltip = "text") %>%
       layout(
@@ -877,7 +880,7 @@ shinyServer(function(input, output) {
             font = list(size = 12)
           )
       )
-
+    
     gg_1 %>%
       style(
         hoveron = "text",
@@ -885,7 +888,7 @@ shinyServer(function(input, output) {
         traces = seq.int(2, length(gg_1$x$data))
       )
   })
-
+  
   ## accompanying bar graph
   # provincial_highways <- reactive(
   #   data70806_2 %>%
@@ -898,9 +901,9 @@ shinyServer(function(input, output) {
   #   geom_col(aes(x = RegioS, y = Weglengte_1)) +
   #   theme_minimal()
   # })
-
-
-
+  
+  
+  
   ##### Proximity to Amenities Tab  #####
   # Data reactivity
   proximity_data <- reactive({
@@ -928,7 +931,7 @@ shinyServer(function(input, output) {
       scale_colour_manual(values = rep("grey40", 40)) +
       theme_void() +
       labs(fill = "in km")
-
+    
     gg_2 <- ggplotly(proximity_map_plot, tooltip = "text") %>%
       layout(
         annotations = # adds caption to plot
@@ -942,7 +945,7 @@ shinyServer(function(input, output) {
             font = list(size = 12)
           )
       )
-
+    
     gg_2 %>%
       style(
         hoveron = "text",
@@ -950,7 +953,7 @@ shinyServer(function(input, output) {
         traces = seq.int(2, length(gg_2$x$data))
       )
   })
-
+  
   # Plot accompanying proximity map
   # making the data reactive
   provincial_data <- reactive({
@@ -980,7 +983,7 @@ shinyServer(function(input, output) {
       ) +
       scale_fill_manual(values = regioncolours_prox) + # for unified colours
       theme_minimal()
-
+    
     # Creating plotly
     ggplotly(prox_barplot, tooltip = c("text"), dynamicTicks = TRUE) %>%
       layout(
