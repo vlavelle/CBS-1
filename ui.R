@@ -70,10 +70,20 @@ shinyUI(navbarPage(
                 p(" "),
                 p(
                   "Most of the data used during the course of creating the dashboard
-                    originates from the", a("CBS Statine website",
+                    originates from the",
+                  a("CBS Statine website",
                     href = "https://opendata.cbs.nl/statline#/CBS/nl/"
                   ),
-                  ", with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK). The datasets used are introduced in the table below."
+                  ", with data used for plotting maps obtained from the",
+                  a("Publieke Dienstverlening Op de Kaart (PDOK)",
+                    href = "https://service.pdok.nl/kadaster/bestuurlijkegebieden/wfs/v1_0?request=GetFeature&service=WFS&version=1.1.0&outputFormat=application%2Fjson%3B%20subtype%3Dgeojson&typeName=bestuurlijkegebieden:Gemeentegebied"
+                  ),
+                  ". The datasets directly imported from the CBS website are
+                  introduced in the table below (one dataset, electric personal 
+                  vehicles, was only available as an ", 
+                  a("excel file",
+                    href = "https://www.cbs.nl/-/media/_excel/2021/40/elektrische_personenauto_provincie.xlsx"
+                  ), ")."
                 ),
                 tableOutput("datatable")
               )
