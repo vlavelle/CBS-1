@@ -6,96 +6,76 @@ shinyUI(navbarPage(
     "Homepage",
     h3("Homepage"),
     hr(),
-    fluidPage(
-      fluidRow(
-        column(
-          3,
+    fluidRow(
+      column(
+        3,
+        fluidPage(
           h4("Creators"),
           p("The dashboard was created by five students following the Data-Wise
-              minor at the University of Groningen. Over the last few months, we have 
-              spent many hours sourcing data, creating graphs and putting them 
-              into the dashboard created using Shiny. Creating this dashboard 
+              minor at the University of Groningen. Over the last few months, we have
+              spent many hours sourcing data, creating graphs and putting them
+              into the dashboard created using Shiny. Creating this dashboard
               provides further insights into mobility in the Northern Netherlands.
-              After much work, we are proud of what we have been able to accomplish. ",
-            style = "font-family: 'times'; font-si18pt"
-          ),
+              After much work, we are proud of what we have been able to accomplish."),
           hr(),
           h4("CBS"),
           p("Centraal Bureau Voor de Statistiek, Nederland (CBS) was founded in
               1899 in response to a growing demand for statistics. They are an independent
               firm that sources, publishes, and updates statistics in the country which are then
-              be used for policy making and government decision-making, but also to inform the 
-              public",
-            style = "font-family: 'times'; font-si18pt"
-          ),
+              be used for policy making and government decision-making, but also to inform the
+              public."),
           hr(),
-        ),
-        column(
-          9,
-          fluidPage(
-            h4("This dashboard"),
-            tabsetPanel(
-              tabPanel(
-                "Instructions for use",
-                p(" "),
-                p("All graphs in our dashboard make use of a combination of ggplot2
+        )
+      ),
+      column(
+        9,
+        fluidPage(
+          h4("This dashboard"),
+          tabsetPanel(
+            tabPanel(
+              "Instructions for use",
+              p(" "),
+              p("All graphs in our dashboard make use of a combination of ggplot2
                 and plotly. Plotly is a data visualisation source that can be used
                 for graphs in both R and Python. Using Plotly allows us to add an
                 additional layer of interactivity to our graphs with hover tooltips
                 and interactive legends. Within our graphs, the following is possible
-                  due to plotly:",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Zoom: use the plotly toolbar to zoom in and out.",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Select: focus on specific data to zoom in on by drawing a
-                  rectangle around it.",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Pan: Use the toolbar and select the pan option to move
-                  around the graph.",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Interactive legends: click on elements of the legend to
-                  remove them or add them back",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Hover on information: hover above points on our graphs for
-                  further insight and more specific data.",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Dynamic scales: our y-axes are dynamic. Zoom in or out and
-                  the axis will change with you.",
-                  style = "font-family: 'times'; font-si18pt"
-                ),
-                p(" -  Easy comparison: for any overlapping or hard to read data
+                  due to plotly:"),
+              p(" -  Zoom: use the plotly toolbar to zoom in and out."),
+              p(" -  Select: focus on specific data to zoom in on by drawing a
+                  rectangle around it."),
+              p(" -  Pan: Use the toolbar and select the pan option to move
+                  around the graph."),
+              p(" -  Interactive legends: click on elements of the legend to
+                  remove them or add them back"),
+              p(" -  Hover on information: hover above points on our graphs for
+                  further insight and more specific data."),
+              p(" -  Dynamic scales: our y-axes are dynamic. Zoom in or out and
+                  the axis will change with you."),
+              p(" -  Easy comparison: for any overlapping or hard to read data
                   points, choose the 'compare on hover' option available in the
                   plotly toolbar. This will let you view the information for all
-                  data points at once.",
-                  style = "font-family: 'times'; font-si18pt"
-                )
-              ),
-              tabPanel(
-                "Packages used",
-                fluidPage(
-                  p(" "),
-                  tableOutput("packagestable")
-                )
-              ),
-              tabPanel(
-                "Datasets details",
-                fluidPage(
-                  p(" "),
-                  p("Most of the data used during the course of creating the dashboard
+                  data points at once.")
+            ),
+            tabPanel(
+              "Packages used",
+              fluidPage(
+                p(" "),
+                tableOutput("packagestable")
+              )
+            ),
+            tabPanel(
+              "Datasets details",
+              fluidPage(
+                p(" "),
+                p(
+                  "Most of the data used during the course of creating the dashboard
                     originates from the", a("CBS Statine website",
-                                            href = "https://opendata.cbs.nl/statline#/CBS/nl/"
-                    ),
-                    ", with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK). The datasets used are introduced in the table below.",
-                    style = "font-family: 'times'; font-si18pt"
+                    href = "https://opendata.cbs.nl/statline#/CBS/nl/"
                   ),
-                  tableOutput("datatable")
-                )
+                  ", with data used for plotting maps obtained from the Publieke Dienstverlening Op de Kaart (PDOK). The datasets used are introduced in the table below."
+                ),
+                tableOutput("datatable")
               )
             )
           )
